@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <QuantowerRoot Condition="'$(QuantowerRoot)'==''">C:\Quantower1\TradingPlatform\v1.144.12</QuantowerRoot>
+    <QuantowerBin>$(QuantowerRoot)\bin</QuantowerBin>
+    <QuantowerSettings>$(QuantowerRoot)\..\..\Settings</QuantowerSettings>
+  </PropertyGroup>
+</Project>
+

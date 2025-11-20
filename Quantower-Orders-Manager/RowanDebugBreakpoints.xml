@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BreakpointCollection Version="2.0">
+  <Breakpoint>
+    <Name>DEBUG TODO 1</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>54</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 2</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>160</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 3</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>166</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 4</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>179</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 5</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>192</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 6</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>202</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 7</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>219</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 8</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>228</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 9</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>265</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 10</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\DivergentStrV0_1.cs</File>
+      <Line>272</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Strategy Host</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 11</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>54</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 12</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>161</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 13</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>178</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 14</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>204</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 15</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>208</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 16</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>216</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 17</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>246</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 18</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>247</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 19</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>296</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 20</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>380</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 21</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>408</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 22</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>416</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 23</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>424</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 24</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanStrategy.cs</File>
+      <Line>434</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - Core Logic</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 25</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>22</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 26</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>29</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 27</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>49</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 28</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>52</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 29</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>66</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 30</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>104</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 31</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>116</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 32</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>117</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 33</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>123</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 34</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>130</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 35</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>141</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 36</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>142</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 37</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>149</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+  <Breakpoint>
+    <Name>DEBUG TODO 38</Name>
+    <Enabled>true</Enabled>
+    <Message/>
+    <Condition/>
+    <HitCountType>None</HitCountType>
+    <HitCount/>
+    <Filter/>
+    <Language>CSharp</Language>
+    <FunctionLocation/>
+    <Location>
+      <File>C:\Users\tagli\Desktop\Condivisa (DESKTOP-URRF676.station)\LastRowan\OrderManager\Quantower-Orders-Manager\Strategies\RowanSlTpStrategy.cs</File>
+      <Line>150</Line>
+      <Column>1</Column>
+      <Context/>
+    </Location>
+    <WhenHit/>
+    <Group>Rowan - SLTP</Group>
+  </Breakpoint>
+</BreakpointCollection>

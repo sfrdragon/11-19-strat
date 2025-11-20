@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Platforms>AnyCPU</Platforms>
+    <AlgoType>Strategy</AlgoType>
+    <AssemblyName>DivergentStrV0_1</AssemblyName>
+    <RootNamespace>DivergentStrV0_1</RootNamespace>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(QuantowerRoot)\Console.StarterNew.exe</StartProgram>
+    <StartArguments>--address 127.0.0.1 --port 56362</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>$(QuantowerSettings)\Scripts\Strategies\DivergentStrV0-1\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>$(QuantowerSettings)\Scripts\Strategies\DivergentStrV0-1\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="TradingPlatform.BusinessLayer">
+      <HintPath>$(QuantowerBin)\TradingPlatform.BusinessLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="TradingPlatform.PresentationLayer">
+      <HintPath>$(QuantowerBin)\TradingPlatform.PresentationLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="TradingPlatform.PresentationLayer.Plugins">
+      <HintPath>$(QuantowerBin)\TradingPlatform.PresentationLayer.Plugins.dll</HintPath>
+    </Reference>
+    <Reference Include="TradingPlatform.PresentationLayer.Renderers.GDI.Tree">
+      <HintPath>$(QuantowerBin)\TradingPlatform.PresentationLayer.Renderers.GDI.Tree.dll</HintPath>
+    </Reference>
+    <Reference Include="TradingPlatform.RTD">
+      <HintPath>$(QuantowerBin)\TradingPlatform.RTD.dll</HintPath>
+    </Reference>
+    <Reference Include="TradingPlatform.RTD.Protocol">
+      <HintPath>$(QuantowerBin)\TradingPlatform.RTD.Protocol.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

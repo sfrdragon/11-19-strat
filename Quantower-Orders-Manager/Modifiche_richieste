@@ -1,0 +1,13 @@
+1. I seem to be having an issue loading historical volume delta data. Trades seem to be occurring off the close < or > HMA and RVOL  indicators, but upon testing the entry conditions individually I realized trades had solely been occurring off those two and no trades where made when only volume delta based entry conditions were selected.(Even with very low threshold multipliers) 
+
+2. session times- Are default sessions times over ridden when using custom session times? Also in regards to custom session times having an associated date does this mean the trades would only occur during that date or would it still trade for those hours during all selected days of the week?
+
+3. I see we have the variable length HMA for RVOL. Could we please add an extra option to have close > or < hma to include the variable atr length based HMA as well?
+
+4. Stop loss logic
+Is stop loss currently only readjusted if it leaves min max range?
+Could we also have an option where it always trails to the most recent previous candle high or low (still inside that same min max range)? EX: we are long on 1 min chart and current candle is 12:01 so stop loss is at the 12:00 low. It's now 12:02 so stop loss moves to 12:01 candle low.
+
+5.  For for the median option. I see it is taking the median of each individual candle in the look back window. Would we be able to change that so it is taking the median value of the look back window. For example if we have a look back window of 10 and values are 5, 6, 7, 4, 3, 2, 9, 8, 10, 2 when using the median option it would be - 5.5 (the purpose of this is to remove extreme high and low volume deltas from our look back window)
+
+6. lastly for the option to load setting from a file it would be great t get a guide/walk through on doing that.

@@ -1,0 +1,28 @@
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.deps.json
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.dll
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.pdb
+C:\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.deps.json
+C:\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.dll
+C:\Quantower\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.pdb
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.csproj.AssemblyReference.cache
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.AssemblyInfoInputs.cache
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.AssemblyInfo.cs
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.csproj.CoreCompileInputs.cache
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.sourcelink.json
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.dll
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\refint\DeltaBasedIndicators.dll
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.pdb
+C:\Projects\RowanQuantTower\Strategy\DeltaBasedIndicators\obj\Debug\ref\DeltaBasedIndicators.dll
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.deps.json
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.dll
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\refint\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\DeltaBasedIndicators\obj\Debug\ref\DeltaBasedIndicators.dll

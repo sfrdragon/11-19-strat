@@ -1,0 +1,33 @@
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.deps.json
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.dll
+C:\Quantower1\Settings\Scripts\Indicators\DeltaBasedIndicators\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\refint\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\DeltaBasedIndicators\obj\Release\ref\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\refint\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\DeltaBasedIndicators\obj\Release\ref\DeltaBasedIndicators.dll
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DeltaBasedIndicators.deps.json
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DeltaBasedIndicators.dll
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\refint\DeltaBasedIndicators.dll
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\DeltaBasedIndicators.pdb
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\DeltaBasedIndicators\obj\Release\ref\DeltaBasedIndicators.dll

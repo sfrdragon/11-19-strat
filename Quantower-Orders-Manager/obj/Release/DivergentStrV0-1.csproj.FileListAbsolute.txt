@@ -1,0 +1,13 @@
+C:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DivergentStrV0_1.deps.json
+C:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DivergentStrV0_1.dll
+C:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\DivergentStrV0_1.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0-1.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0-1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0-1.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0-1.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0-1.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\Divergen.28379687.Up2Date
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0_1.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\refint\DivergentStrV0_1.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\DivergentStrV0_1.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Quantower-Orders-Manager\obj\Release\ref\DivergentStrV0_1.dll
