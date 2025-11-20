@@ -1,0 +1,161 @@
+﻿Element-by-element logic in plain English
+Trade session gating
+* Allowed to trade only during active Trade sessions.
+* If any Trade session is Active → trading allowed.
+* If no Trade session is Active → block all new entries.
+* When a Trade session becomes Active, reset the “session PnL baseline” used for the daily max‑loss guard.
+Daily max-loss guard (per-session)
+* Compute session PnL = current NetProfit − baseline recorded at session start.
+* If session PnL ≤ −MaxSessionLossUSD → block trading; if currently in a Trade session and not already handled, force close open positions once.
+* Otherwise → pass.
+Max open positions
+* If current number of open positions ≥ MaxOpenPositions → block any new entries.
+* Otherwise → pass.
+Indicator flags (what each “element” means)
+* RVOL momentum (“RvolSignal”)
+* Compare normalized RVOL momentum between the last two closed bars.
+* If the absolute change exceeds the configured slope threshold:
+* If RVOL increased → bullish flag.
+* If RVOL decreased → bearish flag.
+* Otherwise → neutral (0).
+* HMA direction (“HMA_Direction”)
+* Compare previous bar Close to the selected HMA line (pure or ATR‑scaled composite).
+* If Close > HMA → bullish flag.
+* If Close < HMA → bearish flag.
+* Otherwise → neutral (0).
+* VDPS (APAVD: price-per-delta vs baseline)
+* Compute current CPVD = absolute price move of last closed bar divided by absolute VD of that bar.
+* Compute a central baseline of CPVD over a lookback (mean or median).
+* If CPVD > baseline × threshold:
+* If delta is positive → bullish flag.
+* If delta is negative → bearish flag.
+* Otherwise → neutral (0).
+* VD Strength (magnitude of VD vs baseline)
+* Compare |delta| of the last closed bar to a central baseline (mean/median) over a lookback.
+* If |delta| > baseline × threshold:
+* If delta is positive → bullish flag.
+* If delta is negative → bearish flag.
+* Otherwise → neutral (0).
+* VD-Price Divergence (direction disagreement with magnitude filter)
+* Determine price direction sign over the last closed bar (Close − Open).
+* Determine VD sign over the same bar.
+* If price sign and VD sign differ AND |delta| is greater than its central baseline × divergence threshold:
+* If delta is positive (but price fell) → bullish divergence flag.
+* If delta is negative (but price rose) → bearish divergence flag.
+* Otherwise → neutral (0).
+* VDtV (VD to Volume ratio strength)
+* Compute current ratio = |delta| / Volume on last closed bar.
+* Compute baseline ratio = average of |delta| over lookback divided by average Volume over the same lookback.
+* If current ratio > baseline ratio × threshold:
+* If delta is positive → bullish flag.
+* If delta is negative → bearish flag .
+* Otherwise → neutral (0).
+* Tick-based VD (optional mode inside the VD indicator)
+* If enabled, per-bar delta = up-ticks count − down-ticks count for each bar.
+* If disabled, use volume-analysis delta for each bar.
+* All VD-based conditions above use whichever delta source is active.
+Building the entry signal (enabled elements only)
+* For each enabled entry element, get its flag sign:
+* Count how many are bullish (positive) and how many are bearish (negative).
+* Decision:
+* If bullish count > bearish count AND bullish count ≥ EntryMinConditions → Entry signal = OpenBuy.
+* Else if bearish count > bullish count AND bearish count ≥ EntryMinConditions → Entry signal = OpenSell.
+* Else → Entry signal = Wait.
+Building the exit signal (enabled elements only)
+* For each enabled exit element, get its flag sign:
+* Count bullish vs bearish as above.
+* Decision:
+* If bullish count > bearish count AND bullish count ≥ ExitMinConditions → Exit signal = Close short positions (CloseSell).
+* Else if bearish count > bullish count AND bearish count ≥ ExitMinConditions → Exit signal = Close long positions (CloseLong).
+* Else → Exit signal = Wait.
+Mapping signals to actions (considering current exposure)
+* If currently Long:
+* If Exit signal says CloseLong AND Entry signal is not OpenSell → action = Close (flatten).
+* Else if Entry signal is OpenSell → action = Revert (close then open short).
+* Else if Entry signal is OpenBuy → action = Buy (attempt to add another long, still subject to MaxOpen guard).
+* Else → action = Wait.
+* If currently Short:
+* If Exit signal says CloseSell AND Entry signal is not OpenBuy → action = Close (flatten).
+* Else if Entry signal is OpenBuy → action = Revert (close then open long).
+* Else if Entry signal is OpenSell → action = Sell (attempt to add another short, subject to MaxOpen guard).
+* Else → action = Wait.
+* If currently Unexposed (flat):
+* If Entry signal is OpenBuy → action = Buy.
+* If Entry signal is OpenSell → action = Sell.
+* Otherwise → action = Wait.
+* If inconsistent (both long and short found) → action = Force close everything (safety).
+Entry execution timing
+* Default (no offset entry): act on bar close using the new bar’s Open as the reference price for SL/TP computations; send a market order immediately.
+* Offset entry enabled:
+* Compute a target price using ATR × OffsetMultiplier in ticks relative to the bar Open:
+* For longs: target below Open.
+* For shorts: target above Open.
+* Limit mode:
+* Place a limit order at the target immediately.
+* If not completely filled by the end of the same bar, cancel the order (valid for one bar).
+* If filled, entry is complete.
+* Market mode:
+* Do not place an order immediately.
+* Watch intrabar ticks; when the last price reaches the target, send a market order.
+Reversal execution
+* If an opposite entry signal appears while exposed:
+* If there are no open positions, enter the opposite side immediately (or schedule offset as configured).
+* If there are open positions, send close orders and wait until all tracked positions report as closed; then submit the opposite entry. If the closure takes too long, abort the reversal (timeout safeguard).
+Initial Stop Loss (SL) at entry
+* Compute a pivot from the previous bar:
+* For longs: previous bar Low; for shorts: previous bar High.
+* Compute distance in ticks from entry price to that pivot.
+* Add an extra cushion in ticks equal to ATR (converted to ticks) × ATR_Slippage_Multiplier (clamped between 0 and 2).
+* Clamp the total SL distance to [MinSLTicks, MaxSLTicks].
+* Place SL on the protective side at that tick distance from the entry price.
+Trailing Stop Loss (SL) modes
+* Mode 0 – Previous Candle Trailing (default):
+* For longs:
+* Trail the SL up to the previous bar Low, but never closer than MinSLTicks from current price, and never farther than MaxSLTicks.
+* Only move the SL upward (never loosen).
+* For shorts:
+* Trail the SL down to the previous bar High, with the same min/max distance rules.
+* Only move the SL downward (never loosen).
+* Mode 1 – ATR Distance Snap:
+* If the SL drifts beyond a configured tick delta from current price, snap it to exactly MaxSLTicks away from current price (protective side), then clamp within [MinSLTicks, MaxSLTicks].
+* If not beyond that delta, leave unchanged.
+* Mode 2 – ATR Trailing:
+* Keep SL at round(|ATR_in_ticks| × ATR_Trailing_Multiplier) from current price (protective side), clamped to [MinSLTicks, MaxSLTicks].
+* Only trail favorably (tighten), never loosen.
+* Application to broker:
+* On each evaluation, compute the new SL price with the selected mode; if it differs from the current SL order, round to tick size and send an order modification.
+Take Profit (TP)
+* Fixed mode:
+* Place TP at a fixed tick distance from entry in the favorable direction, clamped to [MinTPTicks, MaxTPTicks].
+* Dynamic session-based mode:
+* From recent session windows (Regular, Overnight, Morning), collect their High and Low levels around “now.”
+* From these candidates, pick the ones in the favorable direction that sit within [MinTPTicks, MaxTPTicks] from the entry.
+* Choose the nearest valid candidate by tick distance; if none is valid, fall back to the in-range boundary.
+* TP trailing:
+* Not implemented. TP remains where it was initially set.
+Order placement and protection
+* For market entries:
+* Submit a market order for the entry.
+* Attach SL and TP as tick offsets from the entry price (server-side OCO protections when supported).
+* For offset-limit entries:
+* Submit a limit order at the rounded target price; attach SL/TP using tick offsets relative to that limit price.
+* The manager tracks the broker’s SL/TP order IDs (via the entry order’s group) to reliably tighten SL and to cancel SL/TP during manual quits.
+Forced closing and cleanup
+* When asked to close (reversal or max-loss case):
+* Request to close each open position (market).
+* Attempt to cancel any outstanding SL/TP orders using the saved SL/TP order IDs.
+* Update internal state to reflect closure; log the result.
+Update cadence
+* By default, entries/exits and SL trailing are evaluated on bar close events only.
+* If offset entry is enabled in market mode, the strategy also listens to intrabar price updates to trigger the waiting market entry when the target is touched.
+Sizing
+* Market entries use 1 contract by default.
+* If the “Lot System” is enabled, the limit offset entry path uses the computed lot quantity for the entry size.
+* In all cases, SL/TP tick offsets are computed in symbol ticks and snapped to the symbol’s tick size.
+Logging (what you will see)
+* Entry/exit decision breakdown: for each enabled element, a line-level “buy/wait/sell” or equivalent flag summary.
+* Offset scheduling and execution: target price, rounding, and request details; bar-close cancellations for unfilled limits.
+* Reversal: which positions are closing, progress updates, and either completion or timeout.
+* SL trailing: mode, pivot/ATR calculations, clamp decisions, and each ModifyOrder sent.
+* Session guard: activation/deactivation and max-loss triggers.
+* Exposure guard: blocks when MaxOpen is reached.
