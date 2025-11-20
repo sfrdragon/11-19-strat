@@ -105,7 +105,14 @@ namespace DivergentStrV0_1.Strategies
             public bool FullyFilled => Math.Abs(CumulativeFilled - OrderQuantity) < 0.001;
         }
         private ReversalOrderTracker _activeReversal = null;
-        
+
+        // NEW ROBUST MANAGERS (for comprehensive SL/TP fix)
+        private ProtectiveOrderManager _protectiveOrderManager;
+        private AtomicReversalManager _atomicReversalManager;
+        private PositionHealthMonitor _healthMonitor;
+        private DateTime _lastHealthCheck = DateTime.MinValue;
+        private const int HEALTH_CHECK_INTERVAL_MS = 500;  // Health check every 500ms
+
         /// <summary>
         /// Tracks emergency close attempts to prevent infinite retry loops
         /// </summary>
@@ -1532,6 +1539,31 @@ namespace DivergentStrV0_1.Strategies
                     this.HistoryProvider.HistoricalData.AddIndicator(this._offsetAtrIndicator);
             }
 
+            // Initialize robust SL/TP managers (after base.Init so Symbol/Account are available)
+            try
+            {
+                _protectiveOrderManager = new ProtectiveOrderManager(this.Symbol, this.Account);
+                _atomicReversalManager = new AtomicReversalManager(
+                    this.Symbol,
+                    this.Account,
+                    _protectiveOrderManager,
+                    this._manager as TpSlPositionManager,
+                    this.Strategy);
+                _healthMonitor = new PositionHealthMonitor(
+                    this.Symbol,
+                    this.Account,
+                    _protectiveOrderManager,
+                    this.Strategy);
+
+                AppLog.System("RowanStrategy", "RobustManagers",
+                    "✅ Initialized robust SL/TP managers (ProtectiveOrderManager, AtomicReversalManager, PositionHealthMonitor)");
+            }
+            catch (Exception ex)
+            {
+                AppLog.Error("RowanStrategy", "RobustManagers",
+                    $"Failed to initialize robust managers: {ex.Message}");
+            }
+
         }
 
         /// <summary>
@@ -2529,6 +2561,37 @@ namespace DivergentStrV0_1.Strategies
 
             if (double.IsNaN(atrInTicks) || atrInTicks < 0)
                 atrInTicks = 0.0;
+
+            // PHASE 1.5: HEALTH CHECK - Run every 500ms (NEW ROBUST SYSTEM)
+            // Validates all positions have SL/TP and auto-repairs any issues
+            if (_healthMonitor != null && (DateTime.UtcNow - _lastHealthCheck).TotalMilliseconds >= HEALTH_CHECK_INTERVAL_MS)
+            {
+                try
+                {
+                    var healthMarketData = new SlTpData
+                    {
+                        Symbol = this.Symbol,
+                        currentPrice = currentBarPrice,
+                        AtrInTicks = atrInTicks,
+                        PreviousLow = previousLow,
+                        PreviousHigh = previousHigh
+                    };
+
+                    var healthResult = _healthMonitor.CheckAndRepair(healthMarketData);
+
+                    if (!healthResult.AllHealthy || healthResult.OrphansRemoved > 0 ||
+                        healthResult.RepairsSucceeded > 0 || healthResult.EmergencyFlattens > 0)
+                    {
+                        AppLog.System("RowanStrategy", "HealthCheck", $"⚠️ {healthResult}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppLog.Error("RowanStrategy", "HealthCheck", $"Health check failed: {ex.Message}");
+                }
+
+                _lastHealthCheck = DateTime.UtcNow;
+            }
 
             // PHASE 2: Execute SL Trailing on EVERY TICK for all open positions
             if (this._manager is TpSlPositionManager trailingManager && this.Strategy != null && !double.IsNaN(currentBarPrice))
