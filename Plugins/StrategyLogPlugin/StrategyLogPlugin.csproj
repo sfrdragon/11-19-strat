@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>$(QuantowerSettings)\Scripts\plug-ins\StrategyLogViewer\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>$(QuantowerSettings)\Scripts\plug-ins\StrategyLogViewer\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="HTML\layout.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="HTML\layout.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DivergentStrV0_1">
+      <HintPath>$(QuantowerSettings)\Scripts\Strategies\DivergentStrV0-1\DivergentStrV0_1.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TradingPlatform.BusinessLayer">
+      <HintPath>$(QuantowerBin)\TradingPlatform.BusinessLayer.dll</HintPath>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+    <Reference Include="TradingPlatform.PresentationLayer">
+      <HintPath>$(QuantowerBin)\TradingPlatform.PresentationLayer.dll</HintPath>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+    <Reference Include="TradingPlatform.PresentationLayer.Plugins">
+      <HintPath>$(QuantowerBin)\TradingPlatform.PresentationLayer.Plugins.dll</HintPath>
+      <CopyLocal>false</CopyLocal>
+    </Reference>
+  </ItemGroup>
+</Project>
+

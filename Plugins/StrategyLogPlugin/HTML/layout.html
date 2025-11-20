@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Strategy Log Viewer</title>
+    <link rel="stylesheet" href="../../../themes/default/css/colors.css" />
+    <link rel="stylesheet" href="../../../themes/default/css/core.css" />
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-background-color, #252b36);
+        }
+
+        body > panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        panelHeader {
+            flex: 0 0 auto;
+        }
+
+        panelBody {
+            flex: 1;
+            display: flex;
+            padding: 0;
+            min-height: 0;
+        }
+
+        panelBody > .log-wrapper {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .log-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            padding: 12px;
+            box-sizing: border-box;
+            gap: 12px;
+        }
+
+        .log-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .log-controls label {
+            font-size: 12px;
+            color: var(--text-secondary-color, #bfc1c5);
+        }
+
+        .log-controls select,
+        .log-controls input[type="text"] {
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-primary-color, #f0f1f4);
+            border-radius: 4px;
+            min-width: 120px;
+        }
+
+        .log-controls button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-primary-color, #f0f1f4);
+            cursor: pointer;
+        }
+
+        .log-table {
+            flex: 1;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            display: flex;
+        }
+
+        .log-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table thead {
+            background: rgba(255,255,255,0.04);
+        }
+
+        .log-table th,
+        .log-table td {
+            padding: 6px 8px;
+            font-size: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: top;
+        }
+
+        .log-table tbody {
+            display: block;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .log-table thead, .log-table tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .log-table tbody tr:nth-child(odd) {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .log-table tbody tr.system {
+            color: #5db9ff;
+        }
+
+        .log-table tbody tr.error {
+            color: #ff5d68;
+        }
+
+        .log-table tbody tr.trading {
+            color: #ffc857;
+        }
+
+        .log-status {
+            font-size: 11px;
+            color: var(--text-secondary-color, #bfc1c5);
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+    <script>
+        (function () {
+            async function ensureBinding() {
+                if (window.CefSharp && window.CefSharp.BindObjectAsync)
+                    await window.CefSharp.BindObjectAsync("bound");
+            }
+
+            ensureBinding();
+
+            const state = {
+                autoScroll: true
+            };
+
+            function escapeHtml(text) {
+                if (!text) return "";
+                return text
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
+
+            function severityClass(level) {
+                switch ((level || "").toLowerCase()) {
+                    case "error": return "error";
+                    case "trading": return "trading";
+                    default: return "system";
+                }
+            }
+
+            function renderRows(rows) {
+                const body = document.getElementById("logRows");
+                if (!body) return;
+                const html = rows.map(row =>
+                    `<tr class="${severityClass(row.level)}">` +
+                    `<td>${escapeHtml(row.timestamp)}</td>` +
+                    `<td>${escapeHtml(row.level)}</td>` +
+                    `<td>${escapeHtml(row.source)}</td>` +
+                    `<td>${escapeHtml(row.message)}</td>` +
+                    `</tr>`).join("");
+                body.innerHTML = html;
+                if (state.autoScroll) {
+                    body.scrollTop = body.scrollHeight;
+                }
+            }
+
+            function updateStatus(info) {
+                const status = document.getElementById("logStatus");
+                if (!status) return;
+                const level = info.level || "All";
+                const search = info.search ? ` | filter: ${escapeHtml(info.search)}` : "";
+                status.textContent = `${info.shown} shown of ${info.total} logs | level: ${level}${search}`;
+            }
+
+            window.strategyLogs = {
+                replaceLogs: renderRows,
+                updateStatus,
+                setAutoScroll: (value) => {
+                    state.autoScroll = !!value;
+                    const toggle = document.getElementById("autoScrollToggle");
+                    if (toggle) toggle.checked = state.autoScroll;
+                }
+            };
+        })();
+    </script>
+</head>
+<body>
+    <panel id="panel" class="customPlugin">
+        <panelHeader draggable="draggable">
+            <panelTitle id="window_title">
+                <panelTitleText id="window_title_text">Strategy Log Viewer</panelTitleText>
+            </panelTitle>
+            <panelControls>
+                <icon id="window_minimize" class="minimize"></icon>
+                <icon id="window_fullScreen" class="fullScreen"></icon>
+                <icon id="window_close" class="close"></icon>
+            </panelControls>
+        </panelHeader>
+        <panelBody>
+            <div class="log-wrapper">
+                <div class="log-controls">
+                    <label for="levelFilter">Level</label>
+                    <select id="levelFilter">
+                        <option value="ALL">All</option>
+                        <option value="System">System</option>
+                        <option value="Trading">Trading</option>
+                        <option value="Error">Error</option>
+                    </select>
+
+                    <label for="searchInput">Search</label>
+                    <input id="searchInput" type="text" placeholder="source or message" />
+
+                    <label>
+                        <input id="autoScrollToggle" type="checkbox" checked /> Auto scroll
+                    </label>
+
+                    <button id="refreshLogsButton" type="button">Refresh snapshot</button>
+                    <button id="clearLogsButton" type="button">Clear</button>
+                </div>
+
+                <div class="log-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">Time</th>
+                                <th style="width: 80px;">Level</th>
+                                <th style="width: 140px;">Source</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logRows"></tbody>
+                    </table>
+                </div>
+
+                <div class="log-status" id="logStatus">No logs yet</div>
+            </div>
+        </panelBody>
+    </panel>
+</body>
+</html>
+

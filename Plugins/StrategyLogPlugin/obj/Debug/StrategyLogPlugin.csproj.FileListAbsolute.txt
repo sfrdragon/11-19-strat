@@ -1,0 +1,18 @@
+C:\Projects\RowanQuantTower\Strategy\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\RowanQuantTower\Strategy\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.AssemblyInfoInputs.cache
+C:\Projects\RowanQuantTower\Strategy\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.AssemblyInfo.cs
+C:\Projects\RowanQuantTower\Strategy\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.csproj.CoreCompileInputs.cache
+C:\Projects\RowanQuantTower\Strategy\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.sourcelink.json
+C:\Quantower1\Settings\Scripts\plug-ins\StrategyLogViewer\StrategyLogPlugin.deps.json
+C:\Quantower1\Settings\Scripts\plug-ins\StrategyLogViewer\StrategyLogPlugin.dll
+C:\Quantower1\Settings\Scripts\plug-ins\StrategyLogViewer\StrategyLogPlugin.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\Strategy.644B0032.Up2Date
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\refint\StrategyLogPlugin.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\StrategyLogPlugin.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\Plugins\StrategyLogPlugin\obj\Debug\ref\StrategyLogPlugin.dll

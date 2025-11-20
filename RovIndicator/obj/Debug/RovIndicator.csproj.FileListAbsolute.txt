@@ -1,0 +1,28 @@
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.deps.json
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.dll
+C:\Users\grzeg\Desktop\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.pdb
+C:\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.deps.json
+C:\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.dll
+C:\Quantower\Settings\Scripts\Indicators\RovIndicator\RovIndicator.pdb
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.csproj.AssemblyReference.cache
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.AssemblyInfoInputs.cache
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.AssemblyInfo.cs
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.csproj.CoreCompileInputs.cache
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.sourcelink.json
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.dll
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\refint\RovIndicator.dll
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\RovIndicator.pdb
+C:\Projects\RowanQuantTower\Strategy\RovIndicator\obj\Debug\ref\RovIndicator.dll
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.deps.json
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.dll
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\refint\RovIndicator.dll
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\RovIndicator.pdb
+C:\Users\rfsim\Downloads\Strategy-update\Strategy update\RovIndicator\obj\Debug\ref\RovIndicator.dll

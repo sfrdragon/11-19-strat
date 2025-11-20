@@ -1,0 +1,33 @@
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.deps.json
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.dll
+C:\Quantower1\Settings\Scripts\Indicators\RovIndicator\RovIndicator.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\refint\RovIndicator.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\RovIndicator.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update\OrderManager-feature-trailing-median-update\RovIndicator\obj\Release\ref\RovIndicator.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\refint\RovIndicator.dll
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\RovIndicator.pdb
+C:\Users\rfsim\Downloads\OrderManager-feature-trailing-median-update 1-20251027T035043Z-1-01\OrderManager-feature-trailing-median-update 1\RovIndicator\obj\Release\ref\RovIndicator.dll
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\RovIndicator.deps.json
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\RovIndicator.dll
+F:\Quantower1\Settings\Scripts\Strategies\DivergentStrV0-1\RovIndicator.pdb
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.AssemblyInfoInputs.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.AssemblyInfo.cs
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.csproj.CoreCompileInputs.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.csproj.AssemblyReference.cache
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.dll
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\refint\RovIndicator.dll
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\RovIndicator.pdb
+C:\Users\rfsim\Downloads\Strategy (gzr)\Strategy\RovIndicator\obj\Release\ref\RovIndicator.dll
