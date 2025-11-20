@@ -1,0 +1,673 @@
+═══════════════════════════════════════════════════════════════════════════════
+QUANTOWER API - MISSING ELEMENTS ADDENDUM
+═══════════════════════════════════════════════════════════════════════════════
+
+This document contains additional patterns, utilities, and code examples discovered
+during verification that were not included in the main reference documents.
+
+ADD THESE TO YOUR COMPLETE REFERENCE FOR 100% COVERAGE
+
+═══════════════════════════════════════════════════════════════════════════════
+1. STATIC UTILITY METHODS
+═══════════════════════════════════════════════════════════════════════════════
+
+1.1 STATICUTILS CLASS
+─────────────────────
+public static class StaticUtils {
+    
+    // Extract Period from HistoricalData
+    public static Period GetPeriod(HistoricalData history) {
+        if (history.Aggregation is HistoryAggregationTime) {
+            var agg = (HistoryAggregationTime)history.Aggregation;
+            return agg.Period;
+        } 
+        else if (history.Aggregation is HistoryAggregationTickBars) {
+            var agg = (HistoryAggregationTickBars)history.Aggregation;
+            return new Period(BasePeriod.Tick, agg.TicksCount);
+        }
+        return new Period();
+    }
+    
+    // Dynamic Indicator Generator
+    public static Indicator GenerateIndicator(
+        string indicatorName, 
+        HistoricalData hd, 
+        IList<SettingItem> settings = null
+    ) {
+        if (hd == null)
+            return null;
+        
+        try {
+            var indInfo = Core.Instance.Indicators.All.First(x => x.Name == indicatorName);
+            Indicator indicator = Core.Instance.Indicators.CreateIndicator(indInfo);
+            
+            if (settings != null)
+                indicator.Settings = settings;
+            
+            // Automatically add to historical data
+            hd.AddIndicator(indicator);
+            
+            return indicator;
+        } catch (Exception ex) {
+            Core.Instance.Loggers.Log("Indicator Generation Failed", LoggingLevel.Error);
+            Core.Instance.Loggers.Log($"Failed with: {ex.Message}", LoggingLevel.Error);
+            return null;
+        }
+    }
+}
+
+// Usage Examples
+var period = StaticUtils.GetPeriod(historicalData);
+
+var sma = StaticUtils.GenerateIndicator("SMA", historicalData, new List<SettingItem> {
+    new SettingItemInteger("Period", 20),
+    new SettingItemSelector("Price Type", new[] { "Close", "Open" }, 0)
+});
+
+1.2 INMARKETUTC - STANDARD MARKET HOURS
+────────────────────────────────────────
+public static class InMarketUtc {
+    // Configure daily break times (UTC)
+    public static TimeOnly DailyBreakStartUtc = new(21, 0);  // Daily close start
+    public static TimeOnly DailyBreakEndUtc = new(22, 0);    // Daily reopen
+    
+    // Weekend times (optional tracking)
+    public static TimeOnly WeekendFriCloseStartUtc = new(21, 0);
+    public static TimeOnly WeekendSunReopenUtc = new(22, 0);
+    
+    // Build standard in-market sessions (Sun-Thu)
+    public static List<SimpleSessionUtc> Build() {
+        var inMarketDays = new[] {
+            DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday,
+            DayOfWeek.Wednesday, DayOfWeek.Thursday
+        };
+        
+        return new List<SimpleSessionUtc> {
+            new SimpleSessionUtc(
+                name: "InMarket Sun-Thu (UTC)",
+                days: inMarketDays,
+                openUtc: DailyBreakEndUtc,      // 22:00
+                closeUtc: DailyBreakStartUtc    // 21:00 (overnight)
+            )
+        };
+    }
+    
+    // Parametric version
+    public static List<SimpleSessionUtc> Build(TimeOnly breakStartUtc, TimeOnly breakEndUtc) {
+        DailyBreakStartUtc = breakStartUtc;
+        DailyBreakEndUtc = breakEndUtc;
+        return Build();
+    }
+}
+
+// Usage
+var marketSessions = InMarketUtc.Build();
+foreach (var session in marketSessions) {
+    StaticSessionManager.AddSession(session, SessionType.Trade);
+}
+
+1.3 OFFMARKETUTC - MARKET CLOSE HOURS
+──────────────────────────────────────
+public static class OffMarketUtc {
+    // Daily close times (UTC)
+    public static TimeOnly DailyCloseStartUtc = new(21, 0);
+    public static TimeOnly DailyCloseEndUtc = new(22, 0);
+    
+    // Weekend close times
+    public static TimeOnly WeekendFriStartUtc = new(21, 0);
+    public static TimeOnly WeekendSunEndUtc = new(22, 0);
+    
+    public static List<SimpleSessionUtc> Build() {
+        var list = new List<SimpleSessionUtc>();
+        
+        // Daily close (Mon-Fri)
+        list.Add(new SimpleSessionUtc(
+            "DailyClose Mon-Thu (UTC)",
+            new[] { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, 
+                    DayOfWeek.Thursday, DayOfWeek.Friday },
+            DailyCloseStartUtc, 
+            DailyCloseEndUtc
+        ));
+        
+        // Weekend sessions (split across days)
+        list.Add(new SimpleSessionUtc(
+            "Weekend Fri (UTC)",
+            new[] { DayOfWeek.Friday },
+            WeekendFriStartUtc, 
+            new TimeOnly(0, 0)  // Fri start → Sat 00:00
+        ));
+        
+        list.Add(new SimpleSessionUtc(
+            "Weekend Sat (UTC)",
+            new[] { DayOfWeek.Saturday },
+            new TimeOnly(0, 0), 
+            new TimeOnly(0, 0)  // Full day (00:00→00:00)
+        ));
+        
+        list.Add(new SimpleSessionUtc(
+            "Weekend Sun (UTC)",
+            new[] { DayOfWeek.Sunday },
+            new TimeOnly(0, 0), 
+            WeekendSunEndUtc    // 00:00 → end
+        ));
+        
+        return list;
+    }
+}
+
+// Usage
+var closedSessions = OffMarketUtc.Build();
+foreach (var session in closedSessions) {
+    StaticSessionManager.AddSession(session, SessionType.Target);
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+2. ENHANCED CONNECTION DIAGNOSTIC
+═══════════════════════════════════════════════════════════════════════════════
+
+2.1 COMPREHENSIVE DIAGNOSTIC CLASS
+───────────────────────────────────
+public static class ConnectionDiagnostic {
+    public static string RunDiagnostic(HistoricalData historicalData, Symbol symbol) {
+        var report = new StringBuilder();
+        report.AppendLine("=== DATA CONNECTION DIAGNOSTIC ===");
+        report.AppendLine($"Connection Name: {symbol?.ConnectionId}");
+        report.AppendLine($"Symbol: {symbol?.Name}");
+        report.AppendLine($"Time: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+        report.AppendLine();
+        
+        // Check historical data
+        if (historicalData == null || historicalData.Count == 0) {
+            report.AppendLine("❌ ERROR: No historical data available");
+            return report.ToString();
+        }
+        
+        // Volume data structure analysis
+        var latestBar = historicalData[0];
+        report.AppendLine("=== VOLUME DATA STRUCTURE ===");
+        report.AppendLine($"Has VolumeAnalysisData: {latestBar.VolumeAnalysisData != null}");
+        
+        if (latestBar.VolumeAnalysisData != null) {
+            var vad = latestBar.VolumeAnalysisData;
+            report.AppendLine($"Has Total: {vad.Total != null}");
+            
+            if (vad.Total != null) {
+                report.AppendLine($"Total Volume: {vad.Total.Volume}");
+                report.AppendLine($"Buy Volume: {vad.Total.BuyVolume}");
+                report.AppendLine($"Sell Volume: {vad.Total.SellVolume}");
+                report.AppendLine($"Delta: {vad.Total.Delta}");
+                report.AppendLine($"Buy Trades: {vad.Total.BuyTrades}");
+                report.AppendLine($"Sell Trades: {vad.Total.SellTrades}");
+            } else {
+                report.AppendLine("❌ Total is NULL - Volume Delta cannot be calculated!");
+            }
+            
+            // Check price levels
+            report.AppendLine($"\nHas Price Levels: {vad.PriceLevels != null}");
+            if (vad.PriceLevels != null) {
+                report.AppendLine($"Price Level Count: {vad.PriceLevels.Count}");
+            }
+        } else {
+            report.AppendLine("❌ VolumeAnalysisData is NULL - Connection does not support volume analysis!");
+        }
+        
+        // Check aggressor flags (for tick data)
+        report.AppendLine("\n=== TRADE DIRECTION DATA ===");
+        try {
+            var lastItem = historicalData[0];
+            if (lastItem is HistoryItemLast trade) {
+                report.AppendLine($"Has Aggressor Flag: {trade.AggressorFlag != AggressorFlag.Unknown}");
+                report.AppendLine($"Aggressor Flag Value: {trade.AggressorFlag}");
+            } else {
+                report.AppendLine("Not tick/trade data - cannot check aggressor flags");
+            }
+        } catch {
+            report.AppendLine("Could not access trade data");
+        }
+        
+        // Connection-specific recommendations
+        report.AppendLine("\n=== RECOMMENDATIONS ===");
+        if (latestBar.VolumeAnalysisData?.Total?.Delta == null) {
+            report.AppendLine("⚠️ This connection CANNOT run delta-based strategies!");
+            report.AppendLine("Options:");
+            report.AppendLine("1. Switch to Rithmic connection");
+            report.AppendLine("2. Modify strategy to calculate delta manually");
+            report.AppendLine("3. Use price-action based approach instead");
+        } else {
+            report.AppendLine("✅ This connection SHOULD support delta-based strategies!");
+        }
+        
+        return report.ToString();
+    }
+}
+
+// Usage in OnInit()
+protected override void OnInit() {
+    var diagnostic = ConnectionDiagnostic.RunDiagnostic(HistoricalData, Symbol);
+    Core.Instance.Loggers.Log(diagnostic, LoggingLevel.Trading);
+    
+    // Can also check before strategy runs
+    if (!diagnostic.Contains("✅")) {
+        Core.Instance.Loggers.Log(
+            "WARNING: Connection may not support required features!", 
+            LoggingLevel.Error
+        );
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+3. ADDITIONAL SL/TP STRATEGY IMPLEMENTATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 FIXED PERCENTAGE SL/TP STRATEGY
+────────────────────────────────────
+public class FixedSlTpStrategy : ISlTpStrategy<double> {
+    private readonly double _slPercent;
+    private readonly double _tpPercent;
+    
+    public FixedSlTpStrategy(double slPercent, double tpPercent) {
+        if (slPercent <= 0)
+            throw new ArgumentException("SL percent must be positive");
+        if (tpPercent <= 0)
+            throw new ArgumentException("TP percent must be positive");
+        
+        _slPercent = slPercent;
+        _tpPercent = tpPercent;
+    }
+    
+    public List<double> CalculateSl(double marketData, Side side, double entryPrice) {
+        if (entryPrice <= 0)
+            throw new ArgumentException("Entry price must be positive");
+        
+        double slPrice = side == Side.Buy
+            ? entryPrice * (1 - _slPercent)  // Buy: SL below entry
+            : entryPrice * (1 + _slPercent); // Sell: SL above entry
+        
+        return new List<double> { slPrice };
+    }
+    
+    public List<double> CalculateTp(double marketData, Side side, double entryPrice) {
+        if (entryPrice <= 0)
+            throw new ArgumentException("Entry price must be positive");
+        
+        double tpPrice = side == Side.Buy
+            ? entryPrice * (1 + _tpPercent)  // Buy: TP above entry
+            : entryPrice * (1 - _tpPercent); // Sell: TP below entry
+        
+        return new List<double> { tpPrice };
+    }
+    
+    public Func<double, double> UpdateSl(double marketData, SlTpItems item) {
+        // Fixed strategy - SL doesn't move
+        return currentSl => currentSl;
+    }
+    
+    public Func<double, double> UpdateTp(double marketData, SlTpItems item) {
+        // Fixed strategy - TP doesn't move
+        return currentTp => currentTp;
+    }
+}
+
+// Usage
+var strategy = new FixedSlTpStrategy(
+    slPercent: 0.02,  // 2% stop loss
+    tpPercent: 0.04   // 4% take profit
+);
+
+conditionable.InjectStrategy(strategy);
+
+3.2 DELTA DIVERGENCE TEST STRATEGY
+───────────────────────────────────
+internal class StrategyTest : ConditionableBase<double> {
+    private double _lastDelta;
+    
+    public StrategyTest() : base() { }
+    
+    public override double SetQuantity() {
+        return Account.Balance;
+    }
+    
+    public void CustomTrade(Side side, double price) 
+        => Trade(side, price, price, price);
+    
+    public override void Update(object obj) {
+        // Don't trade if already exposed
+        if (Metrics.Exposed)
+            return;
+        
+        try {
+            var item = (HistoryEventArgs)obj;
+            var data = (HistoryItem)item.HistoryItem;
+            
+            // Check for delta divergence
+            double currentDelta = data.VolumeAnalysisData.Total.Delta;
+            double sign;
+            
+            if (_lastDelta != 0 && 
+                (sign = Math.Sign(currentDelta)) != Math.Sign(_lastDelta)) {
+                
+                // Delta changed direction - trade in new direction
+                Side side = sign > 0 ? Side.Buy : Side.Sell;
+                CustomTrade(side, data[PriceType.Close]);
+            }
+            
+            _lastDelta = currentDelta;
+        } catch (Exception ex) {
+            Core.Instance.Loggers.Log($"Error in Update: {ex.Message}", LoggingLevel.Error);
+        }
+    }
+    
+    protected override List<HistoryUpdAteType> GetUpdateTypes() {
+        return new List<HistoryUpdAteType> {
+            HistoryUpdAteType.NewItem
+        };
+    }
+    
+    public override void Dispose() => base.Dispose();
+}
+
+// Usage
+var testStrategy = new StrategyTest();
+testStrategy.Init(
+    historyRequest,
+    account,
+    loadAsync: true,
+    description: "Delta Divergence Test"
+);
+
+═══════════════════════════════════════════════════════════════════════════════
+4. AGGREGATION TYPE HANDLING
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 AGGREGATION TYPES
+─────────────────────
+// HistoryAggregationTime - Time-based bars
+var aggTime = new HistoryAggregationTime(Period.MIN5, HistoryType.Last);
+
+// HistoryAggregationTickBars - Tick-based bars
+var aggTick = new HistoryAggregationTickBars(100);  // 100-tick bars
+
+// Extract period from aggregation
+if (historicalData.Aggregation is HistoryAggregationTime timeAgg) {
+    Period period = timeAgg.Period;
+    HistoryType historyType = timeAgg.HistoryType;
+}
+
+if (historicalData.Aggregation is HistoryAggregationTickBars tickAgg) {
+    int tickCount = tickAgg.TicksCount;
+    Period period = new Period(BasePeriod.Tick, tickCount);
+}
+
+4.2 BASE PERIOD ENUM
+────────────────────
+BasePeriod.Tick
+BasePeriod.Second
+BasePeriod.Minute
+BasePeriod.Hour
+BasePeriod.Day
+BasePeriod.Week
+BasePeriod.Month
+BasePeriod.Year
+
+// Create custom period
+var customPeriod = new Period(BasePeriod.Minute, 15);  // 15-minute bars
+
+═══════════════════════════════════════════════════════════════════════════════
+5. TRADE ACTION & SIGNAL ENUMS
+═══════════════════════════════════════════════════════════════════════════════
+
+5.1 TRADE ACTION ENUM
+─────────────────────
+internal enum TradeAction {
+    Buy,     // Open long position
+    Sell,    // Open short position
+    Close,   // Close current position
+    Revert,  // Close and reverse (close long, open short or vice versa)
+    Wait     // No action
+}
+
+// Usage in strategy logic
+TradeAction action = TradeAction.Wait;
+
+switch (metrics.ExposedSide) {
+    case ExpositionSide.Long:
+        if (signal == TradeSignal.CloseLong)
+            action = TradeAction.Close;
+        else if (signal == TradeSignal.OpenSell)
+            action = TradeAction.Revert;  // Reverse to short
+        else if (signal == TradeSignal.OpenBuy)
+            action = TradeAction.Buy;     // Add to long
+        break;
+    
+    case ExpositionSide.Short:
+        if (signal == TradeSignal.CloseSell)
+            action = TradeAction.Close;
+        else if (signal == TradeSignal.OpenBuy)
+            action = TradeAction.Revert;  // Reverse to long
+        else if (signal == TradeSignal.OpenSell)
+            action = TradeAction.Sell;    // Add to short
+        break;
+    
+    case ExpositionSide.Unexposed:
+        if (signal == TradeSignal.OpenBuy)
+            action = TradeAction.Buy;
+        else if (signal == TradeSignal.OpenSell)
+            action = TradeAction.Sell;
+        break;
+}
+
+5.2 TRADE SIGNAL ENUM
+─────────────────────
+internal enum TradeSignal {
+    OpenBuy,     // Signal to open long
+    OpenSell,    // Signal to open short
+    CloseLong,   // Signal to close long
+    CloseSell,   // Signal to close short
+    Wait,        // No signal
+    Unknown      // Indeterminate signal
+}
+
+// Signal calculation example
+private TradeSignal CalculateTradeSignal() {
+    int longSignals = 0;
+    int shortSignals = 0;
+    
+    // Count signals from indicators
+    foreach (var line in deltaIndicator.LinesSeries) {
+        double value = line.GetValue();
+        if (!double.IsNaN(value)) {
+            if (value > 0) longSignals++;
+            else if (value < 0) shortSignals++;
+        }
+    }
+    
+    // Determine signal
+    if (longSignals == shortSignals)
+        return TradeSignal.Unknown;
+    
+    if (longSignals > shortSignals) {
+        if (longSignals >= minSignalsForEntry)
+            return TradeSignal.OpenBuy;
+        else if (shortSignals >= minSignalsForExit)
+            return TradeSignal.CloseSell;
+        else
+            return TradeSignal.Wait;
+    }
+    
+    if (shortSignals > longSignals) {
+        if (shortSignals >= minSignalsForEntry)
+            return TradeSignal.OpenSell;
+        else if (longSignals >= minSignalsForExit)
+            return TradeSignal.CloseLong;
+        else
+            return TradeSignal.Wait;
+    }
+    
+    return TradeSignal.Unknown;
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+6. POSITION REVERSAL PATTERN
+═══════════════════════════════════════════════════════════════════════════════
+
+6.1 REVERSE POSITION METHOD
+────────────────────────────
+public virtual void ReversePosition<T>(
+    Side side, 
+    double price, 
+    T slMarketData, 
+    T tpMarketData
+) {
+    // Close all active positions
+    foreach (var item in GetActiveGuid()) {
+        var closeReq = new PlaceOrderRequestParameters {
+            Account = Account,
+            Symbol = Symbol,
+            Side = item.Side == Side.Buy ? Side.Sell : Side.Buy,
+            Quantity = RoundQuantity(item.Quantity - item.ClosedQuantity),
+            Price = price,
+            TriggerPrice = price,
+            OrderTypeId = Symbol.GetAlowedOrderTypes(OrderTypeUsage.Order)
+                .FirstOrDefault(x => x.Behavior == OrderTypeBehavior.Market).Id,
+            Comment = $"{item.Id}.{OrderTypeSubcomment.StopLoss}",
+            AdditionalParameters = new List<SettingItem> {
+                new SettingItemBoolean(OrderType.REDUCE_ONLY, true)
+            }
+        };
+        
+        // Cancel all linked orders
+        item.CloseAll();
+        
+        // Place market order to close
+        Core.Instance.PlaceOrder(closeReq);
+    }
+    
+    // Open new position in opposite direction
+    Trade(side, price, slMarketData, tpMarketData);
+}
+
+// Usage
+if (action == TradeAction.Revert) {
+    bool closeSuccess = ForceClosePositions(maxAttempts: 5);
+    if (closeSuccess) {
+        Log("Positions closed for reversal");
+        Side newSide = signal == TradeSignal.OpenBuy ? Side.Buy : Side.Sell;
+        ReversePosition(newSide, currentPrice, slData, tpData);
+        Log("Reversal position opened");
+    }
+}
+
+6.2 FORCE CLOSE POSITIONS
+─────────────────────────
+private bool ForceClosePositions(int maxAttempts) {
+    int attempt = 0;
+    
+    // Close all positions
+    var positions = Core.Instance.Positions
+        .Where(p => p.Symbol == Symbol && p.Account == Account)
+        .ToList();
+    
+    foreach (var pos in positions)
+        pos.Close();
+    
+    // Wait for positions to close
+    while (Core.Instance.Positions
+        .Any(p => p.Symbol == Symbol && p.Account == Account) 
+        && attempt < maxAttempts) {
+        
+        Thread.Sleep(500);
+        attempt++;
+        
+        if (attempt >= maxAttempts) {
+            Log($"Failed to close positions after {maxAttempts} attempts!", LoggingLevel.Error);
+            return false;
+        }
+    }
+    
+    // Cancel all remaining orders
+    attempt = 0;
+    var orders = Core.Instance.Orders
+        .Where(o => o.Symbol == Symbol && o.Account == Account &&
+            (o.Status == OrderStatus.Opened || o.Status == OrderStatus.PartiallyFilled))
+        .ToList();
+    
+    foreach (var order in orders)
+        order.Cancel();
+    
+    while (Core.Instance.Orders
+        .Any(o => o.Symbol == Symbol && o.Account == Account &&
+            (o.Status == OrderStatus.Opened || o.Status == OrderStatus.PartiallyFilled))
+        && attempt < maxAttempts) {
+        
+        Thread.Sleep(500);
+        attempt++;
+        
+        if (attempt >= maxAttempts) {
+            Log($"Failed to cancel orders after {maxAttempts} attempts!", LoggingLevel.Error);
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+7. KEY CORRECTIONS TO MAIN REFERENCE
+═══════════════════════════════════════════════════════════════════════════════
+
+7.1 HISTORY UPDATE TYPE ENUM
+─────────────────────────────
+// CORRECTION: The enum is HistoryUpdAteType (note the typo in actual code)
+public enum HistoryUpdAteType {
+    NewItem,
+    UpdateItem,
+    VolumeUpdate
+}
+
+// NOT HistoryUpdateType as shown in supplement
+
+7.2 DELTA CALCULATION TYPE
+───────────────────────────
+// Available in VolumeAnalysisCalculationParameters
+DeltaCalculationType.AggressorFlag  // Uses bid/ask aggressor detection
+DeltaCalculationType.BidAsk         // Alternative method
+
+var volParams = new VolumeAnalysisCalculationParameters {
+    CalculatePriceLevels = false,
+    DeltaCalculationType = DeltaCalculationType.AggressorFlag  // or BidAsk
+};
+
+7.3 GLOBAL TPSL MANAGER SINGLETON
+──────────────────────────────────
+public sealed class GlobalTpSlManager {
+    private static readonly Lazy<TpSlManager> lazyInstance = 
+        new(() => new TpSlManager());
+    
+    public static TpSlManager Instance => lazyInstance.Value;
+    
+    private GlobalTpSlManager() { }
+}
+
+// Usage in ConditionableBase
+public virtual TpSlManager _manager { get; private set; } 
+    = GlobalTpSlManager.Instance;
+
+═══════════════════════════════════════════════════════════════════════════════
+END OF MISSING ELEMENTS ADDENDUM
+═══════════════════════════════════════════════════════════════════════════════
+
+SUMMARY OF ADDITIONS:
+✅ StaticUtils class with GetPeriod() and GenerateIndicator()
+✅ InMarketUtc and OffMarketUtc session builders
+✅ Enhanced ConnectionDiagnostic with volume data structure checks
+✅ FixedSlTpStrategy implementation (percentage-based)
+✅ StrategyTest example (delta divergence)
+✅ Aggregation type handling
+✅ TradeAction and TradeSignal enums with usage
+✅ Position reversal pattern
+✅ Force close positions utility
+✅ Key corrections (HistoryUpdAteType typo, DeltaCalculationType)
+
+INTEGRATE THESE WITH THE MAIN REFERENCE FOR COMPLETE COVERAGE!
+
+═══════════════════════════════════════════════════════════════════════════════

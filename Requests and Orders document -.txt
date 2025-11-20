@@ -1,0 +1,705 @@
+Requests and Orders document - 
+
+Class OrderRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public abstract class OrderRequestParameters : TradingRequestParameters
+Constructors
+OrderRequestParameters()
+Declaration
+protected OrderRequestParameters()
+OrderRequestParameters(IOrder)
+Declaration
+protected OrderRequestParameters(IOrder order)
+Parameters
+Type	Name	Description
+IOrder	order	
+OrderRequestParameters(OrderRequestParameters)
+Declaration
+protected OrderRequestParameters(OrderRequestParameters origin)
+Parameters
+Type	Name	Description
+OrderRequestParameters	origin	
+Properties
+Account
+Declaration
+public Account Account { get; set; }
+Property Value
+Type	Description
+Account	
+AccountId
+Declaration
+public string AccountId { get; set; }
+Property Value
+Type	Description
+string	
+AdditionalParameters
+Declaration
+public IList<SettingItem> AdditionalParameters { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Comment
+Declaration
+public string Comment { get; set; }
+Property Value
+Type	Description
+string	
+ConnectionId
+Declaration
+public override string ConnectionId { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.ConnectionId
+ExpirationTime
+Declaration
+public DateTime ExpirationTime { get; set; }
+Property Value
+Type	Description
+DateTime	
+GroupId
+Declaration
+public string GroupId { get; set; }
+Property Value
+Type	Description
+string	
+Message
+Declaration
+public override string Message { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Message
+OrderType
+Declaration
+public OrderType OrderType { get; }
+Property Value
+Type	Description
+OrderType	
+OrderTypeId
+Declaration
+public string OrderTypeId { get; set; }
+Property Value
+Type	Description
+string	
+PositionId
+Declaration
+public string PositionId { get; set; }
+Property Value
+Type	Description
+string	
+Price
+Declaration
+public double Price { get; set; }
+Property Value
+Type	Description
+double	
+Quantity
+Declaration
+public double Quantity { get; set; }
+Property Value
+Type	Description
+double	
+QuantityDefinitionSettingName
+Declaration
+public string QuantityDefinitionSettingName { get; set; }
+Property Value
+Type	Description
+string	
+Side
+Declaration
+public Side Side { get; set; }
+Property Value
+Type	Description
+Side	
+Slippage
+Declaration
+public int Slippage { get; set; }
+Property Value
+Type	Description
+int	
+StopLoss
+Declaration
+public SlTpHolder StopLoss { get; set; }
+Property Value
+Type	Description
+SlTpHolder	
+StopLossItems
+Declaration
+public List<SlTpHolder> StopLossItems { get; }
+Property Value
+Type	Description
+List<SlTpHolder>	
+Symbol
+Declaration
+public Symbol Symbol { get; set; }
+Property Value
+Type	Description
+Symbol	
+SymbolId
+Declaration
+public string SymbolId { get; set; }
+Property Value
+Type	Description
+string	
+TakeProfit
+Declaration
+public SlTpHolder TakeProfit { get; set; }
+Property Value
+Type	Description
+SlTpHolder	
+TakeProfitItems
+Declaration
+public List<SlTpHolder> TakeProfitItems { get; }
+Property Value
+Type	Description
+List<SlTpHolder>	
+TimeInForce
+Declaration
+public TimeInForce TimeInForce { get; set; }
+Property Value
+Type	Description
+TimeInForce	
+Total
+Declaration
+public double Total { get; set; }
+Property Value
+Type	Description
+double	
+TrailOffset
+Declaration
+public double TrailOffset { get; set; }
+Property Value
+Type	Description
+double	
+TriggerPrice
+Declaration
+public double TriggerPrice { get; set; }
+Property Value
+Type	Description
+double	
+Methods
+ApplyValuesFrom(OrderRequestParameters)
+Declaration
+public void ApplyValuesFrom(OrderRequestParameters other)
+Parameters
+Type	Name	Description
+OrderRequestParameters	other	
+Clone()
+Creates a new object that is a copy of the current instance.
+
+Declaration
+public abstract object Clone()
+Returns
+Type	Description
+object	
+A new object that is a copy of this instance.
+
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+RequestParameters.Equals(object)
+Equals(OrderRequestParameters)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(OrderRequestParameters other)
+Parameters
+Type	Name	Description
+OrderRequestParameters	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+FromXElement(XElement, DeserializationInfo)
+Declaration
+public void FromXElement(XElement element, DeserializationInfo deserializationInfo)
+Parameters
+Type	Name	Description
+XElement	element	
+DeserializationInfo	deserializationInfo	
+GetAccount()
+Declaration
+protected override Account GetAccount()
+Returns
+Type	Description
+Account	
+Overrides
+TradingRequestParameters.GetAccount()
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+RequestParameters.GetHashCode()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+RequestParameters.ToString()
+ToXElement()
+Declaration
+public XElement ToXElement()
+Returns
+Type	Description
+XElement	
+UpdateFrom(OrderRequestParameters)
+Declaration
+public void UpdateFrom(OrderRequestParameters origin)
+Parameters
+Type	Name	Description
+OrderRequestParameters	origin	
+
+Class TradingRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public abstract class TradingRequestParameters : RequestParameters
+Constructors
+TradingRequestParameters()
+Declaration
+public TradingRequestParameters()
+TradingRequestParameters(TradingRequestParameters)
+Declaration
+public TradingRequestParameters(TradingRequestParameters origin)
+Parameters
+Type	Name	Description
+TradingRequestParameters	origin	
+Properties
+ConnectionId
+Declaration
+public abstract string ConnectionId { get; }
+Property Value
+Type	Description
+string	
+Event
+Declaration
+public abstract string Event { get; }
+Property Value
+Type	Description
+string	
+Message
+Declaration
+public abstract string Message { get; }
+Property Value
+Type	Description
+string	
+ParentOperation
+Declaration
+public GroupTradingOperation ParentOperation { get; init; }
+Property Value
+Type	Description
+GroupTradingOperation	
+Methods
+GetAccount()
+Declaration
+protected abstract Account GetAccount()
+Returns
+Type	Description
+Account	
+Class PlaceOrderRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class PlaceOrderRequestParameters : OrderRequestParameters
+Constructors
+PlaceOrderRequestParameters()
+Declaration
+public PlaceOrderRequestParameters()
+PlaceOrderRequestParameters(IOrder)
+Declaration
+public PlaceOrderRequestParameters(IOrder order)
+Parameters
+Type	Name	Description
+IOrder	order	
+PlaceOrderRequestParameters(OrderRequestParameters)
+Declaration
+public PlaceOrderRequestParameters(OrderRequestParameters original)
+Parameters
+Type	Name	Description
+OrderRequestParameters	original	
+Properties
+Event
+Declaration
+public override string Event { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Event
+Type
+Declaration
+public override RequestType Type { get; }
+Property Value
+Type	Description
+RequestType	
+Overrides
+RequestParameters.Type
+Methods
+Clone()
+Creates a new object that is a copy of the current instance.
+
+Declaration
+public override object Clone()
+Returns
+Type	Description
+object	
+A new object that is a copy of this instance.
+
+Overrides
+OrderRequestParameters.Clone()
+Class ModifyOrderRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class ModifyOrderRequestParameters : OrderRequestParameters
+Constructors
+ModifyOrderRequestParameters(IOrder)
+Declaration
+public ModifyOrderRequestParameters(IOrder order)
+Parameters
+Type	Name	Description
+IOrder	order	
+ModifyOrderRequestParameters(ModifyOrderRequestParameters)
+Declaration
+public ModifyOrderRequestParameters(ModifyOrderRequestParameters original)
+Parameters
+Type	Name	Description
+ModifyOrderRequestParameters	original	
+Properties
+Event
+Declaration
+public override string Event { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Event
+OrderId
+Id of the order
+
+Declaration
+public string OrderId { get; set; }
+Property Value
+Type	Description
+string	
+Type
+Declaration
+public override RequestType Type { get; }
+Property Value
+Type	Description
+RequestType	
+Overrides
+RequestParameters.Type
+Methods
+Clone()
+Creates a new object that is a copy of the current instance.
+
+Declaration
+public override object Clone()
+Returns
+Type	Description
+object	
+A new object that is a copy of this instance.
+
+Overrides
+OrderRequestParameters.Clone()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+OrderRequestParameters.ToString()
+Class ClosePositionRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class ClosePositionRequestParameters : TradingRequestParameters
+Constructors
+ClosePositionRequestParameters()
+Declaration
+public ClosePositionRequestParameters()
+ClosePositionRequestParameters(ClosePositionRequestParameters)
+Declaration
+public ClosePositionRequestParameters(ClosePositionRequestParameters origin)
+Parameters
+Type	Name	Description
+ClosePositionRequestParameters	origin	
+Properties
+CloseQuantity
+Declaration
+public double CloseQuantity { get; set; }
+Property Value
+Type	Description
+double	
+ConnectionId
+Declaration
+public override string ConnectionId { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.ConnectionId
+Event
+Declaration
+public override string Event { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Event
+Message
+Declaration
+public override string Message { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Message
+Position
+Declaration
+public Position Position { get; set; }
+Property Value
+Type	Description
+Position	
+Type
+Declaration
+public override RequestType Type { get; }
+Property Value
+Type	Description
+RequestType	
+Overrides
+RequestParameters.Type
+Methods
+GetAccount()
+Declaration
+protected override Account GetAccount()
+Returns
+Type	Description
+Account	
+Overrides
+TradingRequestParameters.GetAccount()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+RequestParameters.ToString()
+
+Class CancelOrderRequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class CancelOrderRequestParameters : TradingRequestParameters
+Constructors
+CancelOrderRequestParameters()
+Declaration
+public CancelOrderRequestParameters()
+CancelOrderRequestParameters(CancelOrderRequestParameters)
+Declaration
+public CancelOrderRequestParameters(CancelOrderRequestParameters original)
+Parameters
+Type	Name	Description
+CancelOrderRequestParameters	original	
+Properties
+ConnectionId
+Declaration
+public override string ConnectionId { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.ConnectionId
+Event
+Declaration
+public override string Event { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Event
+Message
+Declaration
+public override string Message { get; }
+Property Value
+Type	Description
+string	
+Overrides
+TradingRequestParameters.Message
+Order
+Declaration
+public IOrder Order { get; set; }
+Property Value
+Type	Description
+IOrder	
+OrderId
+Declaration
+public string OrderId { get; set; }
+Property Value
+Type	Description
+string	
+Type
+Declaration
+public override RequestType Type { get; }
+Property Value
+Type	Description
+RequestType	
+Overrides
+RequestParameters.Type
+Methods
+GetAccount()
+Declaration
+protected override Account GetAccount()
+Returns
+Type	Description
+Account	
+Overrides
+TradingRequestParameters.GetAccount()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+RequestParameters.ToString()
+
+Class RequestParameters
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public abstract class RequestParameters
+Constructors
+RequestParameters()
+Declaration
+protected RequestParameters()
+RequestParameters(RequestParameters)
+Declaration
+protected RequestParameters(RequestParameters origin)
+Parameters
+Type	Name	Description
+RequestParameters	origin	
+Properties
+CancellationToken
+Declaration
+public CancellationToken CancellationToken { get; set; }
+Property Value
+Type	Description
+CancellationToken	
+RequestId
+Declaration
+public long RequestId { get; }
+Property Value
+Type	Description
+long	
+SendingSource
+Declaration
+public string SendingSource { get; set; }
+Property Value
+Type	Description
+string	
+Type
+Declaration
+public abstract RequestType Type { get; }
+Property Value
+Type	Description
+RequestType	
+Methods
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(RequestParameters)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(RequestParameters other)
+Parameters
+Type	Name	Description
+RequestParameters	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+object.GetHashCode()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()

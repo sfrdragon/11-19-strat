@@ -1,0 +1,836 @@
+═══════════════════════════════════════════════════════════════════════════════
+QUANTOWER API - ADVANCED PATTERNS SUPPLEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+This document supplements the main Quantower API reference with advanced patterns
+discovered in production code. Use this alongside the main reference.
+
+═══════════════════════════════════════════════════════════════════════════════
+1. ASYNC VOLUME LOADING PATTERNS
+═══════════════════════════════════════════════════════════════════════════════
+
+1.1 ASYNC SIGNAL HELPER
+────────────────────────
+// Clean async/await pattern for waiting on volume data
+public class AsyncSignal {
+    private readonly TaskCompletionSource<bool> _tcs = 
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+    
+    public Task WaitAsync(CancellationToken token = default) {
+        return _tcs.Task.WaitAsync(token);
+    }
+    
+    public void Signal() {
+        if (!_tcs.Task.IsCompleted)
+            _tcs.SetResult(true);
+    }
+}
+
+// Usage
+private readonly AsyncSignal _volumeReadySignal = new();
+
+// Signal when ready
+if (e.ProgressPercent == 100)
+    _volumeReadySignal.Signal();
+
+// Wait for signal
+await _volumeReadySignal.WaitAsync(cancellationToken);
+
+1.2 ASYNC VOLUME HISTORY PROVIDER
+───────────────────────────────────
+public interface IHistoryDataProvider {
+    Task<HistoricalData> LoadAsync(DateTime from, Period period, CancellationToken token);
+    Task WaitForReadyAsync(CancellationToken token);
+    event Action OnNewData;
+}
+
+public class VolumeHistoryProvider : IHistoryDataProvider {
+    private readonly Symbol _symbol;
+    private HistoricalData _history;
+    private IVolumeAnalysisCalculationProgress _progress;
+    private readonly AsyncSignal _profileReadySignal = new();
+    
+    public event Action OnNewData;
+    
+    public async Task<HistoricalData> LoadAsync(
+        DateTime from, 
+        Period period, 
+        CancellationToken token
+    ) {
+        _history = _symbol.GetHistory(period, from);
+        _history.NewHistoryItem += (s, e) => OnNewData?.Invoke();
+        
+        var parameters = new VolumeAnalysisCalculationParameters {
+            DeltaCalculationType = DeltaCalculationType.AggressorFlag
+        };
+        
+        _progress = Core.Instance.VolumeAnalysis.CalculateProfile(_history, parameters);
+        _progress.ProgressChanged += (s, e) => {
+            if (e.ProgressPercent == 100)
+                _profileReadySignal.Signal();
+        };
+        
+        return _history;
+    }
+    
+    public Task WaitForReadyAsync(CancellationToken token) 
+        => _profileReadySignal.WaitAsync(token);
+}
+
+1.3 HISTORY PROVIDER WITH ASYNC/SYNC MODES
+───────────────────────────────────────────
+public enum HistoryUpdateType {
+    NewItem,
+    UpdateItem,
+    VolumeUpdate
+}
+
+public class HistoryDataProvider : IDisposable {
+    public HistoricalData HistoricalData { get; private set; }
+    public Symbol Symbol { get; }
+    public bool VolumeDataReady { get; private set; } = false;
+    public bool LoadAsAsync { get; }
+    
+    public event Action<HistoryEventArgs> HistoryItemUpdate;
+    public event Action VolumeAnalysisCompleted;
+    
+    private Thread worker;
+    private CancellationTokenSource cancToken;
+    private readonly int _timeoutMs;
+    private readonly int _retryDelayMs;
+    
+    public HistoryDataProvider(
+        HistoryRequestParameters request,
+        Symbol symbol,
+        List<HistoryUpdateType> updateTypes,
+        VolumeAnalysisCalculationParameters volReq = null,
+        bool loadAsync = false,
+        int timeoutMs = 10000,
+        int retryDelayMs = 500
+    ) {
+        HistoricalData = symbol.GetHistory(request);
+        Symbol = symbol;
+        LoadAsAsync = loadAsync;
+        _timeoutMs = timeoutMs;
+        _retryDelayMs = retryDelayMs;
+        
+        // Load volume data
+        if (volReq != null) {
+            if (loadAsync) {
+                cancToken = new CancellationTokenSource();
+                ExecuteAsync(volReq, cancToken.Token);
+                WaitForReady(timeoutMs);
+            } else {
+                LoadVolumeSync(volReq);
+            }
+        }
+        
+        // Subscribe to update events
+        if (updateTypes.Contains(HistoryUpdateType.NewItem)) {
+            HistoricalData.NewHistoryItem += OnNewHistoryItem;
+        }
+        if (updateTypes.Contains(HistoryUpdateType.UpdateItem)) {
+            HistoricalData.HistoryItemUpdated += OnHistoryItemUpdated;
+        }
+    }
+    
+    public Task ExecuteAsync(VolumeAnalysisCalculationParameters req, CancellationToken token) {
+        worker = new Thread(() => {
+            try {
+                var progress = Core.Instance.VolumeAnalysis.CalculateProfile(
+                    HistoricalData, req);
+                progress.ProgressChanged += OnVolumeProgressChanged;
+            } catch (Exception ex) {
+                Core.Instance.Loggers.Log(
+                    $"Error in volume thread: {ex.Message}", 
+                    LoggingLevel.Error);
+            }
+        });
+        
+        worker.IsBackground = true;
+        worker.Name = "VolumeProfileWatcher";
+        worker.Start();
+        
+        return Task.CompletedTask;
+    }
+    
+    private void WaitForReady(int maxWaitMs) {
+        int elapsed = 0;
+        Core.Instance.Loggers.Log(
+            $"⏳ Waiting for VolumeData ({elapsed} ms)...", 
+            LoggingLevel.System);
+        
+        while (!VolumeDataReady && !cancToken.IsCancellationRequested && elapsed < maxWaitMs) {
+            Thread.Sleep(_retryDelayMs);
+            elapsed += _retryDelayMs;
+        }
+        
+        Core.Instance.Loggers.Log(
+            $"✅ VolumeData wait complete ({elapsed} ms)", 
+            LoggingLevel.System);
+    }
+    
+    public void Dispose() {
+        if (worker != null) {
+            cancToken?.Cancel();
+            worker = null;
+        }
+        
+        if (HistoricalData != null) {
+            HistoricalData.NewHistoryItem -= OnNewHistoryItem;
+            HistoricalData.HistoryItemUpdated -= OnHistoryItemUpdated;
+            HistoricalData.Dispose();
+            HistoricalData = null;
+        }
+    }
+}
+
+// Factory Pattern
+public static class HistoryDataProviderFactory {
+    public static HistoryDataProvider Create(
+        HistoryRequestParameters request,
+        Symbol symbol,
+        List<HistoryUpdateType> updateTypes,
+        VolumeAnalysisCalculationParameters volumeRequest = null,
+        bool async = false,
+        Action<HistoryEventArgs> onUpdate = null,
+        Action onVolumeReady = null,
+        int timeoutMs = 10000,
+        int retryDelayMs = 500
+    ) {
+        var provider = new HistoryDataProvider(
+            request, symbol, updateTypes, volumeRequest, 
+            async, timeoutMs, retryDelayMs);
+        
+        if (onUpdate != null)
+            provider.HistoryItemUpdate += onUpdate;
+        
+        if (onVolumeReady != null)
+            provider.VolumeAnalysisCompleted += onVolumeReady;
+        
+        return provider;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+2. COMMENT-BASED ORDER TRACKING SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+
+2.1 ORDER COMMENT STRUCTURE
+─────────────────────────────
+// Format: "UniqueID.OrderType"
+// Examples:
+//   "Strategy_abc123def.Entry"
+//   "Strategy_abc123def.StopLoss"
+//   "Strategy_abc123def.TakeProfit"
+
+public enum OrderTypeSubcomment {
+    Entry,
+    StopLoss,
+    TakeProfit
+}
+
+2.2 COMMENT GENERATION & PARSING
+─────────────────────────────────
+// Generate unique comment
+private string GenerateComment() {
+    var guid = Guid.NewGuid().ToString("N");  // No hyphens
+    return $"{StrategyName}_{guid}";
+}
+
+// Add order type suffix
+string entryComment = $"{baseComment}.{OrderTypeSubcomment.Entry}";
+string slComment = $"{baseComment}.{OrderTypeSubcomment.StopLoss}";
+string tpComment = $"{baseComment}.{OrderTypeSubcomment.TakeProfit}";
+
+// Parse comment
+private (string id, OrderTypeSubcomment type)? ParseComment(string comment) {
+    try {
+        var parts = comment.Split('.');
+        if (parts.Length != 2) return null;
+        
+        if (Enum.TryParse<OrderTypeSubcomment>(parts[1], out var type)) {
+            return (parts[0], type);
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+2.3 MANAGER WITH TRACKING
+──────────────────────────
+public class TpSlManager : IDisposable {
+    public List<SlTpItems> Items { get; private set; }
+    public List<SlTpItems> ClosedItems { get; private set; }
+    private Dictionary<string, List<string>> _itemsDictionary;
+    
+    public TpSlManager() {
+        Items = new List<SlTpItems>();
+        ClosedItems = new List<SlTpItems>();
+        _itemsDictionary = new Dictionary<string, List<string>>();
+        
+        Core.Instance.OrderAdded += OnOrderAdded;
+        Core.Instance.TradeAdded += OnTradeAdded;
+    }
+    
+    private void OnOrderAdded(Order order) {
+        if (order.Status != OrderStatus.Opened || string.IsNullOrEmpty(order.Comment))
+            return;
+        
+        var parsed = ParseComment(order.Comment);
+        if (!parsed.HasValue) return;
+        
+        var (id, type) = parsed.Value;
+        
+        // Create item if doesn't exist
+        if (!_itemsDictionary.ContainsKey(id)) {
+            var item = new SlTpItems(id);
+            Items.Add(item);
+            _itemsDictionary.Add(id, new List<string>());
+        }
+        
+        // Track order ID
+        _itemsDictionary[id].Add(order.Id);
+        
+        // Attach order
+        var selected = Items.FirstOrDefault(x => x.Id == id);
+        switch (type) {
+            case OrderTypeSubcomment.Entry:
+                selected?.AttachEntryOrder(order);
+                break;
+            case OrderTypeSubcomment.StopLoss:
+                selected?.AttachSlOrder(order);
+                break;
+            case OrderTypeSubcomment.TakeProfit:
+                selected?.AttachTpOrder(order);
+                break;
+        }
+    }
+    
+    public void PlaceEntryOrder(
+        PlaceOrderRequestParameters req,
+        string comment,
+        List<PlaceOrderRequestParameters> slOrders,
+        List<PlaceOrderRequestParameters> tpOrders
+    ) {
+        // Entry order with comment
+        req.Comment = $"{comment}.{OrderTypeSubcomment.Entry}";
+        var result = Core.Instance.PlaceOrder(req);
+        
+        if (result.Status == TradingOperationResultStatus.Success) {
+            // SL orders
+            foreach (var sl in slOrders) {
+                sl.Comment = $"{comment}.{OrderTypeSubcomment.StopLoss}";
+                Core.Instance.PlaceOrder(sl);
+            }
+            
+            // TP orders
+            foreach (var tp in tpOrders) {
+                tp.Comment = $"{comment}.{OrderTypeSubcomment.TakeProfit}";
+                Core.Instance.PlaceOrder(tp);
+            }
+        }
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+3. BACKGROUND BACKTEST MODE PATTERN
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 DETECTING BACKTEST MODE
+─────────────────────────────
+protected override void OnRun() {
+    // ... initialization ...
+    
+    // Detect background backtest: many bars loaded = backtest
+    isBackgroundBacktest = (historicalData != null && historicalData.Count > 100);
+    
+    Log($"Mode: {(isBackgroundBacktest ? "Background Backtest" : "Live Trading")}");
+    
+    if (isBackgroundBacktest) {
+        Log($"Processing {historicalData.Count} historical bars");
+        
+        // Process all bars immediately
+        for (int i = 1; i < historicalData.Count; i++) {
+            ProcessHistoricalBar(i);
+        }
+        
+        Log($"Backtest Complete. Trades: {tradeCount}");
+    }
+}
+
+3.2 DUAL MODE STRATEGY
+──────────────────────
+// Handle both backtest and live modes
+protected override void OnRun() {
+    // ... initialization ...
+    
+    isBackgroundBacktest = (historicalData?.Count > 100);
+    
+    if (isBackgroundBacktest) {
+        ProcessBacktest();
+    } else {
+        Log("Live mode - waiting for events");
+    }
+}
+
+private void ProcessBacktest() {
+    for (int i = 1; i < historicalData.Count; i++) {
+        ProcessHistoricalBar(i);
+    }
+}
+
+// Event handler (for live mode only)
+private void HistoricalData_NewHistoryItem(object sender, HistoryEventArgs e) {
+    if (isBackgroundBacktest)
+        return; // Already processed
+    
+    ProcessNewCandle(e.HistoryItem);
+}
+
+3.3 HISTORICAL BAR PROCESSING
+──────────────────────────────
+private void ProcessHistoricalBar(int currentIndex) {
+    if (currentIndex < 1) return;
+    
+    // Get closed candle (bar that just completed)
+    IHistoryItem closedCandle = historicalData[currentIndex - 1];
+    
+    // Check session
+    bool inSession = IsInTradingSession(
+        closedCandle.TimeLeft, 
+        out var sessionType, 
+        out var sessionEnd);
+    
+    // Session exit handling
+    if (!inSession && wasInSession) {
+        if (currentPosition != null && autoCloseOnSessionEnd) {
+            ClosePosition("Session ended");
+        }
+        ResetSessionState();
+        return;
+    }
+    
+    if (!inSession) {
+        wasInSession = false;
+        return;
+    }
+    
+    // In session - execute strategy
+    wasInSession = true;
+    bool isNewSession = IsNewSession(closedCandle.TimeLeft);
+    
+    if (!hasTraded && currentPosition == null) {
+        AnalyzeCandle(closedCandle);
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+4. PERFORMANCE METRICS WITH ATTRIBUTES
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 METRIC ATTRIBUTE
+────────────────────
+[AttributeUsage(AttributeTargets.Property)]
+public class MetricAttribute : Attribute {
+    public string Category { get; }
+    public string DisplayName { get; }
+    public string Unit { get; }
+    
+    public MetricAttribute(string category, string displayName = null, string unit = "") {
+        Category = category;
+        DisplayName = displayName;
+        Unit = unit;
+    }
+}
+
+4.2 PERFORMANCE METRICS CLASS
+──────────────────────────────
+public class PerformanceMetrics {
+    private readonly TpSlManager manager = GlobalTpSlManager.Instance;
+    
+    public Account Account { get; private set; }
+    public bool EnableHeavyMetrics { get; set; }
+    public string StrategyTag { get; private set; }
+    
+    [Metric("Base", "Account Balance", "$")]
+    public double AccountBalance => Account?.Balance ?? 0;
+    
+    [Metric("Base", "Net Profit", "$")]
+    public double NetProfit => 
+        manager.Items.Sum(i => i.NetProfit) + 
+        manager.ClosedItems.Sum(i => i.NetProfit);
+    
+    [Metric("Base", "Win Rate", "%")]
+    public double WinRate {
+        get {
+            int total = PositiveOperations + NegativeOperations;
+            return total == 0 ? 0 : (double)PositiveOperations / total * 100;
+        }
+    }
+    
+    [Metric("Performance", "Profit Factor")]
+    public double ProfitFactor {
+        get {
+            double losses = manager.ClosedItems
+                .Where(i => i.NetProfit < 0)
+                .Sum(i => Math.Abs(i.NetProfit));
+            
+            if (losses == 0) return double.NaN;
+            
+            double wins = manager.ClosedItems
+                .Where(i => i.NetProfit > 0)
+                .Sum(i => i.NetProfit);
+            
+            return wins / losses;
+        }
+    }
+    
+    [Metric("Performance", "Sharpe Ratio")]
+    public double SharpeRatio {
+        get {
+            if (!EnableHeavyMetrics || ProfitStdDev == 0) 
+                return double.NaN;
+            return AverageProfitPerTrade / ProfitStdDev;
+        }
+    }
+    
+    [Metric("Exposure", "Exposed Side")]
+    public ExpositionSide ExposedSide {
+        get {
+            bool hasLong = manager.Items.Any(x => x.Side == Side.Buy);
+            bool hasShort = manager.Items.Any(x => x.Side == Side.Sell);
+            
+            if (hasLong && hasShort) return ExpositionSide.Both;
+            if (hasLong) return ExpositionSide.Long;
+            if (hasShort) return ExpositionSide.Short;
+            return ExpositionSide.Unexposed;
+        }
+    }
+    
+    // Export using reflection
+    public void ExportToMeter(Meter meter, string prefix = "metric_") {
+        var properties = GetType()
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(p => p.GetCustomAttribute<MetricAttribute>() != null);
+        
+        foreach (var prop in properties) {
+            var attr = prop.GetCustomAttribute<MetricAttribute>();
+            string name = $"{prefix}{attr.Category?.ToLower().Replace(" ", "_") ?? "general"}_{prop.Name.ToLower()}";
+            string desc = $"{attr.Category?.ToUpper()}: {attr.DisplayName ?? prop.Name} {attr.Unit}";
+            
+            if (prop.PropertyType == typeof(double)) {
+                meter.CreateObservableGauge(name, 
+                    () => (double)prop.GetValue(this), desc);
+            } else if (prop.PropertyType == typeof(int)) {
+                meter.CreateObservableGauge(name, 
+                    () => (int)prop.GetValue(this), desc);
+            } else if (prop.PropertyType == typeof(bool)) {
+                meter.CreateObservableGauge(name, 
+                    () => ((bool)prop.GetValue(this)) ? 1 : 0, desc);
+            }
+        }
+    }
+}
+
+public enum ExpositionSide {
+    Unexposed, Long, Short, Both
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+5. INTERFACE PATTERNS
+═══════════════════════════════════════════════════════════════════════════════
+
+5.1 ICONDITIONABLE INTERFACE
+─────────────────────────────
+public interface IConditionable {
+    TpSlManager Manager { get; }
+    PerformanceMetrics Metrics { get; }
+    bool Initialized { get; }
+    Account Account { get; }
+    Symbol Symbol { get; }
+    double Quantity { get; }
+    string StrategyName { get; }
+    string Description { get; }
+    List<string> RegistredGuid { get; }
+    
+    void Init(
+        HistoryRequestParameters req, 
+        Account account, 
+        bool loadAsync, 
+        string description = "", 
+        bool allowHeavyMetrics = false
+    );
+    
+    void RegisterHandlers();
+    void InjectStrategy(object strategy);
+    void Update(object obj);
+    void Dispose();
+    double SetQuantity();
+}
+
+5.2 ISLTPSTRATEGY INTERFACE
+────────────────────────────
+public interface ISlTpStrategy<T> {
+    List<double> CalculateSl(T marketData, Side side, double entryPrice);
+    List<double> CalculateTp(T marketData, Side side, double entryPrice);
+    Func<double, double> UpdateSl(T marketData, SlTpItems item);
+    Func<double, double> UpdateTp(T marketData, SlTpItems item);
+}
+
+// Market data struct
+public struct SlTpData {
+    public Symbol Symbol { get; set; }
+    public double SlTriggerPrice { get; set; }
+    public double CurrentPrice { get; set; }
+}
+
+5.3 IMPLEMENTATION EXAMPLE
+──────────────────────────
+public class RowanSlTpStrategy : ISlTpStrategy<SlTpData> {
+    public int MaxSlInTicks { get; set; }
+    public int MinSlInTicks { get; set; }
+    public int MinTpInTicks { get; set; }
+    
+    public List<double> CalculateSl(SlTpData data, Side side, double entry) {
+        var slTicks = data.Symbol.CalculateTicks(entry, data.SlTriggerPrice);
+        slTicks = Math.Min(Math.Abs(slTicks), MaxSlInTicks);
+        
+        double slPrice = side == Side.Buy
+            ? data.Symbol.CalculatePrice(entry, -slTicks)
+            : data.Symbol.CalculatePrice(entry, slTicks);
+        
+        return new List<double> { slPrice };
+    }
+    
+    public List<double> CalculateTp(SlTpData data, Side side, double entry) {
+        // Get TP levels from manager
+        if (!StaticSessionManager.TpLevels.Levels.Any())
+            StaticSessionManager.CalculateTPLevels();
+        
+        var minTpPrice = data.Symbol.CalculatePrice(
+            data.CurrentPrice,
+            side == Side.Buy ? MinTpInTicks : -MinTpInTicks
+        );
+        
+        // Find closest valid level
+        var validLevels = new List<double>();
+        foreach (var level in StaticSessionManager.TpLevels.Levels) {
+            if (side == Side.Buy) {
+                if (level.High > minTpPrice) validLevels.Add(level.High);
+                if (level.Low > minTpPrice) validLevels.Add(level.Low);
+            } else {
+                if (level.High < minTpPrice) validLevels.Add(level.High);
+                if (level.Low < minTpPrice) validLevels.Add(level.Low);
+            }
+        }
+        
+        double tpPrice = validLevels.Any()
+            ? (side == Side.Buy 
+                ? validLevels.OrderBy(x => x).First()
+                : validLevels.OrderByDescending(x => x).First())
+            : minTpPrice;
+        
+        return new List<double> { tpPrice };
+    }
+    
+    public Func<double, double> UpdateSl(SlTpData data, SlTpItems item) {
+        return currentSl => {
+            // Update based on new market data
+            var delta = item.Symbol.CalculateTicks(currentSl, data.CurrentPrice);
+            
+            if (Math.Abs(delta) <= MaxSlInTicks - MinSlInTicks)
+                return currentSl;
+            
+            return item.Side == Side.Buy
+                ? item.Symbol.CalculatePrice(data.CurrentPrice, -MaxSlInTicks)
+                : item.Symbol.CalculatePrice(data.CurrentPrice, MaxSlInTicks);
+        };
+    }
+    
+    public Func<double, double> UpdateTp(SlTpData data, SlTpItems item) {
+        // TP is fixed
+        return currentTp => currentTp;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+6. STATIC SESSION MANAGER WITH TP LEVELS
+═══════════════════════════════════════════════════════════════════════════════
+
+6.1 TP LEVEL STRUCTURES
+───────────────────────
+public sealed class TPLevelItem {
+    public string Name { get; }
+    public double High { get; }
+    public double Low { get; }
+    
+    public TPLevelItem(string name, double high, double low) {
+        Name = name ?? "UNNAMED";
+        High = high;
+        Low = low;
+    }
+}
+
+public sealed class TPLevelsDto {
+    public IReadOnlyList<TPLevelItem> Levels { get; }
+    
+    public TPLevelsDto(List<TPLevelItem> levels = null) {
+        Levels = levels ?? new List<TPLevelItem>();
+    }
+    
+    public TPLevelItem GetByName(string name) =>
+        Levels.FirstOrDefault(x => 
+            string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+}
+
+6.2 SESSION MANAGER
+───────────────────
+public enum SessionType { Trade, Target }
+
+public static class StaticSessionManager {
+    public static List<SimpleSessionUtc> TargetSessions { get; set; } = new();
+    public static List<SimpleSessionUtc> TradeSessions { get; set; } = new();
+    public static TPLevelsDto TpLevels { get; private set; } = new();
+    
+    private static HistoryDataProvider _dataProvider;
+    
+    public static event EventHandler<Status> TradeSessionsStatusChanged;
+    
+    public static Status CurrentStatus =>
+        TradeSessions.Any(s => s.Status == Status.Active) 
+            ? Status.Active 
+            : Status.Inactive;
+    
+    public static void Initialize(HistoryDataProvider provider) {
+        _dataProvider = provider ?? throw new ArgumentNullException();
+    }
+    
+    public static void AddSession(SimpleSessionUtc session, SessionType type) {
+        if (type == SessionType.Target) {
+            TargetSessions.Add(session);
+            session.StatusChanged += (s, e) => CalculateTPLevels();
+        } else {
+            TradeSessions.Add(session);
+            session.StatusChanged += (s, e) => TradeSessionsStatusChanged?.Invoke(s, e);
+        }
+    }
+    
+    public static void Update(IHistoryItem item) {
+        foreach (var s in TargetSessions) s.UpdateStatus(item);
+        foreach (var s in TradeSessions) s.UpdateStatus(item);
+    }
+    
+    public static void CalculateTPLevels() {
+        var hd = _dataProvider?.HistoricalData;
+        if (hd == null) return;
+        
+        var symbol = hd.Symbol;
+        var items = new List<TPLevelItem>();
+        
+        // Previous Day
+        {
+            DateTime toTime = hd[0].TimeLeft;
+            DateTime fromTime = Math.Max(toTime.AddDays(-3), hd.FromTime);
+            
+            var hdDay = symbol.GetHistory(Period.DAY1, fromTime);
+            try {
+                items.Add(new TPLevelItem(
+                    "__PREV_DAY__",
+                    hdDay[1][PriceType.High],
+                    hdDay[1][PriceType.Low]
+                ));
+            } finally {
+                hdDay?.Dispose();
+            }
+        }
+        
+        // Target Sessions
+        if (TargetSessions.Count > 0) {
+            var period = ((HistoryAggregationTime)hd.Aggregation).Period;
+            
+            foreach (var sess in TargetSessions) {
+                var prev = sess.GetPreviousSessionRangeUtc(hd);
+                if (prev.HasValue) {
+                    var (start, end) = prev.Value;
+                    var h = symbol.GetHistory(period, start, end);
+                    try {
+                        items.Add(new TPLevelItem(
+                            sess.Name ?? "UNNAMED",
+                            h.High(),
+                            h.Low()
+                        ));
+                    } finally {
+                        h?.Dispose();
+                    }
+                }
+            }
+        }
+        
+        TpLevels = new TPLevelsDto(items);
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+7. CONNECTION DIAGNOSTIC
+═══════════════════════════════════════════════════════════════════════════════
+
+public static class ConnectionDiagnostic {
+    public static string RunDiagnostic(HistoricalData hd, Symbol symbol) {
+        var sb = new StringBuilder();
+        sb.AppendLine("═══════════════════════════════════════");
+        sb.AppendLine("CONNECTION DIAGNOSTIC REPORT");
+        sb.AppendLine("═══════════════════════════════════════");
+        
+        sb.AppendLine("\nSYMBOL INFORMATION:");
+        sb.AppendLine($"  Name: {symbol?.Name ?? "NULL"}");
+        sb.AppendLine($"  Connection ID: {symbol?.ConnectionId ?? "NULL"}");
+        sb.AppendLine($"  State: {symbol?.State ?? BusinessObjectState.Fake}");
+        sb.AppendLine($"  TickSize: {symbol?.TickSize ?? 0}");
+        
+        sb.AppendLine("\nHISTORICAL DATA:");
+        sb.AppendLine($"  Count: {hd?.Count ?? 0}");
+        sb.AppendLine($"  FromTime: {hd?.FromTime ?? DateTime.MinValue}");
+        
+        if (hd?.VolumeAnalysisCalculationProgress != null) {
+            sb.AppendLine("\nVOLUME ANALYSIS:");
+            sb.AppendLine($"  State: {hd.VolumeAnalysisCalculationProgress.State}");
+            sb.AppendLine($"  Progress: {hd.VolumeAnalysisCalculationProgress.ProgressPercent}%");
+        }
+        
+        var conn = Core.Instance.Connections
+            .FirstOrDefault(c => c.Id == symbol?.ConnectionId);
+        if (conn != null) {
+            sb.AppendLine("\nCONNECTION:");
+            sb.AppendLine($"  Name: {conn.Name}");
+            sb.AppendLine($"  State: {conn.State}");
+        }
+        
+        sb.AppendLine("═══════════════════════════════════════");
+        return sb.ToString();
+    }
+}
+
+// Usage
+var diagnostic = ConnectionDiagnostic.RunDiagnostic(HistoricalData, Symbol);
+Core.Instance.Loggers.Log(diagnostic, LoggingLevel.Trading);
+
+═══════════════════════════════════════════════════════════════════════════════
+END OF ADVANCED PATTERNS SUPPLEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+KEY PATTERNS SUMMARY:
+✅ AsyncSignal - Clean async/await for volume loading
+✅ HistoryDataProvider - Async/sync volume loading with factory
+✅ Comment Tracking - "ID.OrderType" format for multi-order management
+✅ Backtest Mode - Auto-detect and process historical bars
+✅ MetricAttribute - Reflection-based performance metrics
+✅ IConditionable/ISlTpStrategy - Modular strategy interfaces
+✅ StaticSessionManager - TP levels from previous session ranges
+✅ ConnectionDiagnostic - Troubleshooting utility
+
+Use these advanced patterns alongside the main API reference for production-grade
+Quantower strategy development.
+
+═══════════════════════════════════════════════════════════════════════════════

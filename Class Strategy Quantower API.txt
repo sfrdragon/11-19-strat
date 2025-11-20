@@ -1,0 +1,4881 @@
+Class Strategy
+The base class for strategies
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public abstract class Strategy : ExecutionEntity
+Constructors
+Strategy()
+The base class for strategies
+
+Declaration
+protected Strategy()
+Properties
+Id
+Unique ID of the strategy
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+InstanceName
+The base class for strategies
+
+Declaration
+public string InstanceName { get; set; }
+Property Value
+Type	Description
+string	
+MonitoringConnectionsIds
+The base class for strategies
+
+Declaration
+public virtual string[] MonitoringConnectionsIds { get; }
+Property Value
+Type	Description
+string[]	
+NewVersionAvailable
+The base class for strategies
+
+Declaration
+public bool NewVersionAvailable { get; }
+Property Value
+Type	Description
+bool	
+Settings
+The base class for strategies
+
+Declaration
+public override IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Overrides
+ExecutionEntity.Settings
+State
+The current state of the strategy
+
+Declaration
+public StrategyState State { get; }
+Property Value
+Type	Description
+StrategyState	
+Methods
+GetConnectionStateDependency()
+The base class for strategies
+
+Declaration
+public ConnectionDependency GetConnectionStateDependency()
+Returns
+Type	Description
+ConnectionDependency	
+GetLogs(DateTime, DateTime)
+Get logs from the strategy for specified date range
+
+Declaration
+public LoggerEvent[] GetLogs(DateTime from, DateTime to)
+Parameters
+Type	Name	Description
+DateTime	from	
+DateTime	to	
+Returns
+Type	Description
+LoggerEvent[]	
+GetMetrics()
+Get current metrics from the strategy
+
+Declaration
+public List<StrategyMetric> GetMetrics()
+Returns
+Type	Description
+List<StrategyMetric>	
+Log(string, StrategyLoggingLevel)
+Write log message
+
+Declaration
+protected void Log(string message, StrategyLoggingLevel level = StrategyLoggingLevel.Info)
+Parameters
+Type	Name	Description
+string	message	
+StrategyLoggingLevel	level	
+OnCreated()
+The base class for strategies
+
+Declaration
+protected virtual void OnCreated()
+OnGetMetrics()
+The base class for strategies
+
+Declaration
+protected virtual List<StrategyMetric> OnGetMetrics()
+Returns
+Type	Description
+List<StrategyMetric>	
+OnInitializeMetrics(Meter)
+The base class for strategies
+
+Declaration
+protected virtual void OnInitializeMetrics(Meter meter)
+Parameters
+Type	Name	Description
+Meter	meter	
+OnRemove()
+The base class for strategies
+
+Declaration
+protected virtual void OnRemove()
+OnRun()
+The base class for strategies
+
+Declaration
+protected virtual void OnRun()
+OnStop()
+The base class for strategies
+
+Declaration
+protected virtual void OnStop()
+Remove()
+Remove the strategy
+
+Declaration
+public void Remove()
+Run()
+Run strategy
+
+Declaration
+public void Run()
+Stop()
+Stop strategy
+
+Declaration
+public void Stop()
+Events
+NewLog
+Event occured when strategy write a new log
+
+Declaration
+public event StrategyEventHandler NewLog
+Event Type
+Type	Description
+StrategyEventHandler	
+SettingsChanged
+Event occured if any of strategy settings was changed
+
+Declaration
+public event Action<Strategy> SettingsChanged
+Event Type
+Type	Description
+Action<Strategy>	
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class StrategyMetric
+Properties
+FormattedValue
+Declaration
+public string FormattedValue { get; set; }
+Property Value
+Type	Description
+string	
+Name
+Declaration
+public string Name { get; set; }
+Property Value
+Type	Description
+string	
+Methods
+FromXElement(XElement, DeserializationInfo)
+Declaration
+public void FromXElement(XElement element, DeserializationInfo deserializationInfo)
+Parameters
+Type	Name	Description
+XElement	element	
+DeserializationInfo	deserializationInfo	
+ToXElement()
+Declaration
+public XElement ToXElement()
+Returns
+Type	Description
+XElement	
+
+lass Core
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Core
+Properties
+AccountOperations
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public AccountOperation[] AccountOperations { get; }
+Property Value
+Type	Description
+AccountOperation[]	
+Accounts
+Gets all available Accounts from open connections
+
+Declaration
+public Account[] Accounts { get; }
+Property Value
+Type	Description
+Account[]	
+AdvancedTradingOperations
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public AdvancedTradingOperations AdvancedTradingOperations { get; }
+Property Value
+Type	Description
+AdvancedTradingOperations	
+Assets
+Gets all available Assets from open connections
+
+Declaration
+public Asset[] Assets { get; }
+Property Value
+Type	Description
+Asset[]	
+BrandingInformation
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public IBrandingInformation BrandingInformation { get; }
+Property Value
+Type	Description
+IBrandingInformation	
+ClosedPositions
+Gets all available ClosedPositions from open connections
+
+Declaration
+public ClosedPosition[] ClosedPositions { get; }
+Property Value
+Type	Description
+ClosedPosition[]	
+Connections
+Gets an access to all created connections and manages them
+
+Declaration
+public ConnectionsManager Connections { get; }
+Property Value
+Type	Description
+ConnectionsManager	
+CorporateActions
+Gets all available CorporateActions from open connections
+
+Declaration
+public CorporateAction[] CorporateActions { get; }
+Property Value
+Type	Description
+CorporateAction[]	
+CurrentVersion
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public Version CurrentVersion { get; }
+Property Value
+Type	Description
+Version	
+CustomAccountPropertiesProvider
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public CustomAccountPropertiesProvider CustomAccountPropertiesProvider { get; }
+Property Value
+Type	Description
+CustomAccountPropertiesProvider	
+CustomSessions
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public CustomSessionsManager CustomSessions { get; }
+Property Value
+Type	Description
+CustomSessionsManager	
+DeliveredAssets
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public DeliveredAsset[] DeliveredAssets { get; }
+Property Value
+Type	Description
+DeliveredAsset[]	
+Exchanges
+Gets all available Exchanges from open connections
+
+Declaration
+public Exchange[] Exchanges { get; }
+Property Value
+Type	Description
+Exchange[]	
+Indicators
+Gets an access to the all available indicators and creates them
+
+Declaration
+public IndicatorManager Indicators { get; }
+Property Value
+Type	Description
+IndicatorManager	
+Instance
+Gets a singleton instance of Core. API entry point
+
+Declaration
+public static Core Instance { get; }
+Property Value
+Type	Description
+Core	
+LocalOrders
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public LocalOrdersManager LocalOrders { get; }
+Property Value
+Type	Description
+LocalOrdersManager	
+Loggers
+Gets an access to the system logging mechanism
+
+Declaration
+public LoggerManager Loggers { get; }
+Property Value
+Type	Description
+LoggerManager	
+MailUtils
+Gets SMTP mail service for sending emails
+
+Declaration
+public MailUtils MailUtils { get; }
+Property Value
+Type	Description
+MailUtils	
+Messengers
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public MessengersManager Messengers { get; }
+Property Value
+Type	Description
+MessengersManager	
+OrderPlacingStrategies
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public OrderPlacingStrategiesManager OrderPlacingStrategies { get; }
+Property Value
+Type	Description
+OrderPlacingStrategiesManager	
+OrderTypes
+Gets all available OrderTypes from open connections
+
+Declaration
+public OrderType[] OrderTypes { get; }
+Property Value
+Type	Description
+OrderType[]	
+Orders
+Gets all available Orders from open connections
+
+Declaration
+public Order[] Orders { get; }
+Property Value
+Type	Description
+Order[]	
+Positions
+Gets all available Positions from open connections
+
+Declaration
+public Position[] Positions { get; }
+Property Value
+Type	Description
+Position[]	
+ReportTypes
+Gets all available ReportTypes from open connections. Otherwise returns empty list
+
+Declaration
+public ReportType[] ReportTypes { get; }
+Property Value
+Type	Description
+ReportType[]	
+Strategies
+Gets an access to the all available trading strategies and manages them
+
+Declaration
+public StrategyManager Strategies { get; }
+Property Value
+Type	Description
+StrategyManager	
+SymbolTypes
+Gets all available SymbolTypes from open connections
+
+Declaration
+public SymbolType[] SymbolTypes { get; }
+Property Value
+Type	Description
+SymbolType[]	
+Symbols
+Gets all available Symbols from open connections
+
+Declaration
+public Symbol[] Symbols { get; }
+Property Value
+Type	Description
+Symbol[]	
+SymbolsMapping
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public SymbolsMappingManager SymbolsMapping { get; }
+Property Value
+Type	Description
+SymbolsMappingManager	
+TimeUtils
+Gets a time based conversion and synchronization mechanism
+
+Declaration
+public TimeUtils TimeUtils { get; }
+Property Value
+Type	Description
+TimeUtils	
+TradingProtection
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingProtector TradingProtection { get; }
+Property Value
+Type	Description
+TradingProtector	
+TradingSignals
+Gets all available TradingSignals from open connections. Otherwise returns empty list
+
+Declaration
+public TradingSignal[] TradingSignals { get; }
+Property Value
+Type	Description
+TradingSignal[]	
+TradingStatus
+Represents current trading status
+
+Declaration
+public TradingStatus TradingStatus { get; set; }
+Property Value
+Type	Description
+TradingStatus	
+VolumeAnalysis
+Access to Volume Analysis calculations
+
+Declaration
+public VolumeAnalysisManager VolumeAnalysis { get; }
+Property Value
+Type	Description
+VolumeAnalysisManager	
+Methods
+Alert(string, string, string, Action)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(string text, string symbolName = "", string connectionName = "", Action onConfirm = null)
+Parameters
+Type	Name	Description
+string	text	
+string	symbolName	
+string	connectionName	
+Action	onConfirm	
+Alert(string, string, string, Action, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(string text, string symbolName, string connectionName, Action onConfirm, string alertName)
+Parameters
+Type	Name	Description
+string	text	
+string	symbolName	
+string	connectionName	
+Action	onConfirm	
+string	alertName	
+Alert(Alert)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(Alert alert)
+Parameters
+Type	Name	Description
+Alert	alert	
+CalculatePnL(PnLRequestParameters)
+Gets Profit'n'Loss PnL with given request parameters from open connection. Otherwise returns null
+
+Declaration
+public PnL CalculatePnL(PnLRequestParameters parameters)
+Parameters
+Type	Name	Description
+PnLRequestParameters	parameters	
+Returns
+Type	Description
+PnL	
+CancelOrder(CancelOrderRequestParameters)
+Cancels Order with given request parameters
+
+Declaration
+public TradingOperationResult CancelOrder(CancelOrderRequestParameters request)
+Parameters
+Type	Name	Description
+CancelOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+CancelOrder(IOrder, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult CancelOrder(IOrder order, string sendingSource = null)
+Parameters
+Type	Name	Description
+IOrder	order	
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+CancelOrder(Order, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult CancelOrder(Order order, string sendingSource = null)
+Parameters
+Type	Name	Description
+Order	order	
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+ClosePosition(ClosePositionRequestParameters)
+Closes Position with given request parameters
+
+Declaration
+public TradingOperationResult ClosePosition(ClosePositionRequestParameters request)
+Parameters
+Type	Name	Description
+ClosePositionRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+ClosePosition(Position, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult ClosePosition(Position position, double closeQuantity = -1)
+Parameters
+Type	Name	Description
+Position	position	
+double	closeQuantity	
+Returns
+Type	Description
+TradingOperationResult	
+ForceTimeSync()
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void ForceTimeSync()
+GetAccount(BusinessObjectInfo)
+Gets an instance of exist Account or creates a new one with given info parameter
+
+Declaration
+public Account GetAccount(BusinessObjectInfo accountInfo)
+Parameters
+Type	Name	Description
+BusinessObjectInfo	accountInfo	
+Returns
+Type	Description
+Account	
+GetOrderById(string, string)
+Gets Order instance by given Id string. Otherwise returns null
+
+Declaration
+public Order GetOrderById(string orderId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	orderId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+Order	
+GetOrderType(string, string)
+Gets OrderType instance by given Id string. Otherwise returns null
+
+Declaration
+public OrderType GetOrderType(string orderTypeId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	orderTypeId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+OrderType	
+GetOrdersHistory(OrdersHistoryRequestParameters, string)
+Gets collection of OrderHistory by given parameters
+
+Declaration
+public IList<OrderHistory> GetOrdersHistory(OrdersHistoryRequestParameters parameters, string connectionId = null)
+Parameters
+Type	Name	Description
+OrdersHistoryRequestParameters	parameters	
+string	connectionId	
+Returns
+Type	Description
+IList<OrderHistory>	
+GetPositionById(string, string)
+Gets Position instance by given Id string. Otherwise returns null
+
+Declaration
+public Position GetPositionById(string positionId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	positionId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+Position	
+GetReport(ReportRequestParameters)
+Returns Report with given request parameters from open connection
+
+Declaration
+public Report GetReport(ReportRequestParameters requestParameters)
+Parameters
+Type	Name	Description
+ReportRequestParameters	requestParameters	
+Returns
+Type	Description
+Report	
+GetSymbol(BusinessObjectInfo)
+Gets an instance of exist symbol or creates a new one with given info parameter
+
+Declaration
+public Symbol GetSymbol(BusinessObjectInfo symbolInfo)
+Parameters
+Type	Name	Description
+BusinessObjectInfo	symbolInfo	
+Returns
+Type	Description
+Symbol	
+GetSymbol(GetSymbolRequestParameters, string, NonFixedListDownload)
+Retrieves any Symbol by given request parameters. Otherwise returns null
+
+Declaration
+public Symbol GetSymbol(GetSymbolRequestParameters requestParameters, string connectionId = null, NonFixedListDownload downloadSymbol = NonFixedListDownload.Download)
+Parameters
+Type	Name	Description
+GetSymbolRequestParameters	requestParameters	
+string	connectionId	
+Must be specified if open connections total is more than one. Will search only in Synthetic symbols list if id is equal to SYNTHETIC_CONNECTION_ID
+
+NonFixedListDownload	downloadSymbol	
+Returns
+Type	Description
+Symbol	
+GetTrades(TradesHistoryRequestParameters, string)
+Gets collection of Trade by given parameters
+
+Declaration
+public IList<Trade> GetTrades(TradesHistoryRequestParameters parameters, string connectionId = null)
+Parameters
+Type	Name	Description
+TradesHistoryRequestParameters	parameters	
+string	connectionId	
+Returns
+Type	Description
+IList<Trade>	
+GetTrades(TradesHistoryRequestParameters, AccountTradesLoadingCallback, string)
+Gets collection of Trade by given parameters and callback
+
+Declaration
+public void GetTrades(TradesHistoryRequestParameters parameters, AccountTradesLoadingCallback callback, string connectionId = null)
+Parameters
+Type	Name	Description
+TradesHistoryRequestParameters	parameters	
+AccountTradesLoadingCallback	callback	
+string	connectionId	
+Exceptions
+Type	Condition
+ArgumentNullException	
+InitializeBrandingInformation()
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void InitializeBrandingInformation()
+ModifyOrder(ModifyOrderRequestParameters)
+Modifies Order by given request parameters
+
+Declaration
+public TradingOperationResult ModifyOrder(ModifyOrderRequestParameters request)
+Parameters
+Type	Name	Description
+ModifyOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+ModifyOrder(Order, TimeInForce, double, double, double, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult ModifyOrder(Order order, TimeInForce timeInForce = TimeInForce.Default, double quantity = 1, double price = -1, double triggerPrice = -1, double trailOffset = -1)
+Parameters
+Type	Name	Description
+Order	order	
+TimeInForce	timeInForce	
+double	quantity	
+double	price	
+double	triggerPrice	
+double	trailOffset	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrder(PlaceOrderRequestParameters)
+Places Order with given request parameters
+
+Declaration
+public TradingOperationResult PlaceOrder(PlaceOrderRequestParameters request)
+Parameters
+Type	Name	Description
+PlaceOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrder(Symbol, Account, Side, TimeInForce, double, double, double, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult PlaceOrder(Symbol symbol, Account account, Side side, TimeInForce timeInForce = TimeInForce.Day, double quantity = 1, double price = -1, double triggerPrice = -1, double trailOffset = -1)
+Parameters
+Type	Name	Description
+Symbol	symbol	
+Account	account	
+Side	side	
+TimeInForce	timeInForce	
+double	quantity	
+double	price	
+double	triggerPrice	
+double	trailOffset	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrders(ICollection<PlaceOrderRequestParameters>, GroupOrderType)
+Places multiple Orders with given request parameters
+
+Declaration
+public void PlaceOrders(ICollection<PlaceOrderRequestParameters> requests, GroupOrderType groupOrderType = GroupOrderType.None)
+Parameters
+Type	Name	Description
+ICollection<PlaceOrderRequestParameters>	requests	
+GroupOrderType	groupOrderType	
+RequestOTP(OTPHolder, string, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void RequestOTP(OTPHolder otpHolder, string title, string text)
+Parameters
+Type	Name	Description
+OTPHolder	otpHolder	
+string	title	
+string	text	
+SendCustomRequest(string, RequestParameters)
+Sends custom request if connection with given Id is open
+
+Declaration
+public void SendCustomRequest(string connectionId, RequestParameters parameters)
+Parameters
+Type	Name	Description
+string	connectionId	
+RequestParameters	parameters	
+SubscribeToCustomMessages(Action<CustomMessage>, params int[])
+Subscribe on custom messages
+
+Declaration
+public void SubscribeToCustomMessages(Action<CustomMessage> handler, params int[] messagesTypes)
+Parameters
+Type	Name	Description
+Action<CustomMessage>	handler	
+custom message handler
+
+int[]	messagesTypes	
+custom messages Id
+
+UnsubscribeFromCustomMessages(Action<CustomMessage>, params int[])
+Unsubscribe from custom messages
+
+Declaration
+public void UnsubscribeFromCustomMessages(Action<CustomMessage> handler, params int[] messagesTypes)
+Parameters
+Type	Name	Description
+Action<CustomMessage>	handler	
+custom message handler
+
+int[]	messagesTypes	
+custom messages Id
+
+Events
+AccountAdded
+Will be triggered when new Account added to the core
+
+Declaration
+public event Action<Account> AccountAdded
+Event Type
+Type	Description
+Action<Account>	
+ClosedPositionAdded
+Will be triggered when new ClosedPosition added
+
+Declaration
+public event Action<ClosedPosition> ClosedPositionAdded
+Event Type
+Type	Description
+Action<ClosedPosition>	
+ClosedPositionRemoved
+Will be triggered when ClosedPosition removed
+
+Declaration
+public event Action<ClosedPosition> ClosedPositionRemoved
+Event Type
+Type	Description
+Action<ClosedPosition>	
+CorporateActionAdded
+Will be triggered when new CorporateAction occured
+
+Declaration
+public event Action<CorporateAction> CorporateActionAdded
+Event Type
+Type	Description
+Action<CorporateAction>	
+DealTicketReceived
+Will be triggered when new DealTicket received
+
+Declaration
+public event Action<DealTicket> DealTicketReceived
+Event Type
+Type	Description
+Action<DealTicket>	
+DeliveredAssetAdded
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<DeliveredAsset> DeliveredAssetAdded
+Event Type
+Type	Description
+Action<DeliveredAsset>	
+DeliveredAssetRemoved
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<DeliveredAsset> DeliveredAssetRemoved
+Event Type
+Type	Description
+Action<DeliveredAsset>	
+NewPerformedRequest
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event EventHandler<PerformedRequestEventArgs> NewPerformedRequest
+Event Type
+Type	Description
+EventHandler<PerformedRequestEventArgs>	
+NewRequest
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event EventHandler<RequestEventArgs> NewRequest
+Event Type
+Type	Description
+EventHandler<RequestEventArgs>	
+OnAlert
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<Alert> OnAlert
+Event Type
+Type	Description
+Action<Alert>	
+OnAskUserConfirmationForTradingWithRunningEmulator
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Func<string, string, bool> OnAskUserConfirmationForTradingWithRunningEmulator
+Event Type
+Type	Description
+Func<string, string, bool>	
+OnRequestOTP
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<OTPHolder, string, string> OnRequestOTP
+Event Type
+Type	Description
+Action<OTPHolder, string, string>	
+OnTradingStatusChanged
+Will be triggered when TradingStatus changed
+
+Declaration
+public event Action<TradingStatus> OnTradingStatusChanged
+Event Type
+Type	Description
+Action<TradingStatus>	
+OrderAdded
+Will be triggered when new Order placed
+
+Declaration
+public event Action<Order> OrderAdded
+Event Type
+Type	Description
+Action<Order>	
+OrderRemoved
+Will be triggered when Order canceled
+
+Declaration
+public event Action<Order> OrderRemoved
+Event Type
+Type	Description
+Action<Order>	
+OrdersHistoryAdded
+Will be triggered when new OrderHistory added
+
+Declaration
+public event Action<OrderHistory> OrdersHistoryAdded
+Event Type
+Type	Description
+Action<OrderHistory>	
+PositionAdded
+Will be triggered when new Position opened
+
+Declaration
+public event Action<Position> PositionAdded
+Event Type
+Type	Description
+Action<Position>	
+PositionRemoved
+Will be triggered when Position closed
+
+Declaration
+public event Action<Position> PositionRemoved
+Event Type
+Type	Description
+Action<Position>	
+SymbolAdded
+Will be triggered when new Symbol added to the core
+
+Declaration
+public event Action<Symbol> SymbolAdded
+Event Type
+Type	Description
+Action<Symbol>	
+TradeAdded
+Will be triggered when new Trade occured
+
+Declaration
+public event Action<Trade> TradeAdded
+Event Type
+Type	Description
+Action<Trade>	
+TradingSignalUpdate
+Will be triggered when TradingSignal created/chenged/removed
+
+Declaration
+public event EventHandler<TradingSignalEventArgs> TradingSignalUpdate
+Event Type
+Type	Description
+EventHandler<TradingSignalEventArgs>
+
+Class Account
+Contains all user's account information
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Account : BusinessObject
+Properties
+AccountCurrency
+Gets base currency of account. Account CCY is always equal to the server CCY in AlgoStudio
+
+Declaration
+public Asset AccountCurrency { get; }
+Property Value
+Type	Description
+Asset	
+Balance
+Gets current balance of the account.
+
+Declaration
+public double Balance { get; }
+Property Value
+Type	Description
+double	
+Id
+Gets account unique code.
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+Name
+Obtaining account name.
+
+Declaration
+public string Name { get; }
+Property Value
+Type	Description
+string	
+NettingType
+Contains all user's account information
+
+Declaration
+public NettingType NettingType { get; set; }
+Property Value
+Type	Description
+NettingType	
+Methods
+CompareTo(object)
+Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+
+Declaration
+public int CompareTo(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+An object to compare with this instance.
+
+Returns
+Type	Description
+int	
+A value that indicates the relative order of the objects being compared. The return value has these meanings:
+
+Value	Meaning
+Less than zero	This instance precedes obj in the sort order.
+Zero	This instance occurs in the same position in the sort order as obj.
+Greater than zero	This instance follows obj in the sort order.
+Exceptions
+Type	Condition
+ArgumentException	
+obj is not the same type as this instance.
+
+CompareTo(Account)
+Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
+
+Declaration
+public int CompareTo(Account other)
+Parameters
+Type	Name	Description
+Account	other	
+An object to compare with this instance.
+
+Returns
+Type	Description
+int	
+A value that indicates the relative order of the objects being compared. The return value has these meanings:
+
+Value	Meaning
+Less than zero	This instance precedes other in the sort order.
+Zero	This instance occurs in the same position in the sort order as other.
+Greater than zero	This instance follows other in the sort order.
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(Account)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(Account other)
+Parameters
+Type	Name	Description
+Account	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+object.GetHashCode()
+Events
+Updated
+Will be triggered on each account information updating
+
+Declaration
+public event Action<Account> Updated
+Event Type
+Type	Description
+Type	Description
+Action<Account>
+
+Class Asset
+Defines asset entity
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Asset : BusinessObject
+Properties
+Description
+Asset description
+
+Declaration
+public string Description { get; }
+Property Value
+Type	Description
+string	
+Id
+Asset id bearer
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+IsoCode
+Gets asset ISO 4217 code
+
+Declaration
+public string IsoCode { get; }
+Property Value
+Type	Description
+string	
+MinimumChange
+Defines a number precision of the change value
+
+Declaration
+public double MinimumChange { get; set; }
+Property Value
+Type	Description
+double	
+Name
+Asset name bearer
+
+Declaration
+public string Name { get; }
+Property Value
+Type	Description
+string	
+Precision
+Gets precision value
+
+Declaration
+public int Precision { get; }
+Property Value
+Type	Description
+int	
+Methods
+FormatPrice(double)
+Formats price into precision normalized string
+
+Declaration
+public string FormatPrice(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+string	
+FormatPriceWithCurrency(double)
+Formats price into concatenated string which contains the precision normalized value and Asset's name
+
+Declaration
+public string FormatPriceWithCurrency(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+string	
+FormatWithCurrency(double)
+Defines asset entity
+
+Declaration
+public string FormatWithCurrency(double value)
+Parameters
+Type	Name	Description
+double	value	
+Returns
+Type	Description
+string	
+
+Class Exchange
+Contains all information which belong to the given exchange
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class Exchange : BusinessObject
+Properties
+ComplexId
+Contains all information which belong to the given exchange
+
+Declaration
+public ExchangeComplexIdentifier ComplexId { get; }
+Property Value
+Type	Description
+ExchangeComplexIdentifier	
+ExchangeName
+Gets Exchange name
+
+Declaration
+public string ExchangeName { get; }
+Property Value
+Type	Description
+string	
+Id
+Gets Exchange Id
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+SortIndex
+Used for the Exchanges comparing
+
+Declaration
+public int SortIndex { get; }
+Property Value
+Type	Description
+int	
+Methods
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Class Symbol
+Represent access to symbol information and properties.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Symbol : BusinessObject
+Constructors
+Symbol()
+Represent access to symbol information and properties.
+
+Declaration
+protected Symbol()
+Fields
+SPOT_SYMBOL_ID
+Represent access to symbol information and properties.
+
+Declaration
+public const string SPOT_SYMBOL_ID = "spotSymbolId"
+Field Value
+Type	Description
+string	
+TRADING_SYMBOL_ID
+Represent access to symbol information and properties.
+
+Declaration
+public const string TRADING_SYMBOL_ID = "TradingSymbol"
+Field Value
+Type	Description
+string	
+historyMetadata
+Represent access to symbol information and properties.
+
+Declaration
+protected HistoryMetadata historyMetadata
+Field Value
+Type	Description
+HistoryMetadata	
+volumeAnalysisMetadata
+Represent access to symbol information and properties.
+
+Declaration
+protected VolumeAnalysisMetadata volumeAnalysisMetadata
+Field Value
+Type	Description
+VolumeAnalysisMetadata	
+Properties
+Ask
+Gets Ask price
+
+Declaration
+public double Ask { get; }
+Property Value
+Type	Description
+double	
+AskSize
+Gets Ask size
+
+Declaration
+public double AskSize { get; }
+Property Value
+Type	Description
+double	
+AvailableFutures
+Represent access to symbol information and properties.
+
+Declaration
+public AvailableDerivatives AvailableFutures { get; }
+Property Value
+Type	Description
+AvailableDerivatives	
+AvailableOptions
+Represent access to symbol information and properties.
+
+Declaration
+public AvailableDerivatives AvailableOptions { get; }
+Property Value
+Type	Description
+AvailableDerivatives	
+AvailableOptionsExchanges
+Represent access to symbol information and properties.
+
+Declaration
+public Exchange[] AvailableOptionsExchanges { get; }
+Property Value
+Type	Description
+Exchange[]	
+AverageTradedPrice
+Represent access to symbol information and properties.
+
+Declaration
+public double AverageTradedPrice { get; }
+Property Value
+Type	Description
+double	
+Bid
+Gets Bid price
+
+Declaration
+public double Bid { get; }
+Property Value
+Type	Description
+double	
+BidSize
+Gets Bid size
+
+Declaration
+public double BidSize { get; }
+Property Value
+Type	Description
+double	
+BottomPriceLimit
+Represent access to symbol information and properties.
+
+Declaration
+public double BottomPriceLimit { get; }
+Property Value
+Type	Description
+double	
+Change
+Gets change value between Bid/Last and Close price
+
+Declaration
+public double Change { get; }
+Property Value
+Type	Description
+double	
+ChangePercentage
+Gets Change percentage value
+
+Declaration
+public double ChangePercentage { get; }
+Property Value
+Type	Description
+double	
+ComplexId
+Represent access to symbol information and properties.
+
+Declaration
+public SymbolComplexIdentifier ComplexId { get; }
+Property Value
+Type	Description
+SymbolComplexIdentifier	
+CurrentSessionsInfo
+Represent access to symbol information and properties.
+
+Declaration
+public SessionsContainer CurrentSessionsInfo { get; }
+Property Value
+Type	Description
+SessionsContainer	
+Delta
+Represent access to symbol information and properties.
+
+Declaration
+public double Delta { get; }
+Property Value
+Type	Description
+double	
+DeltaCalculationType
+Represent access to symbol information and properties.
+
+Declaration
+public DeltaCalculationType DeltaCalculationType { get; }
+Property Value
+Type	Description
+DeltaCalculationType	
+DepthOfMarket
+Gets Level2 data
+
+Declaration
+public DepthOfMarket DepthOfMarket { get; }
+Property Value
+Type	Description
+DepthOfMarket	
+Description
+Gets symbol description
+
+Declaration
+public string Description { get; }
+Property Value
+Type	Description
+string	
+Exchange
+Gets Exchange of current symbol
+
+Declaration
+public Exchange Exchange { get; protected set; }
+Property Value
+Type	Description
+Exchange	
+ExchangeId
+Gets Exchange id of current symbol
+
+Declaration
+public string ExchangeId { get; }
+Property Value
+Type	Description
+string	
+ExpirationDate
+Gets derivative expiration date
+
+Declaration
+public DateTime ExpirationDate { get; }
+Property Value
+Type	Description
+DateTime	
+FundingRate
+Represent access to symbol information and properties.
+
+Declaration
+public double FundingRate { get; }
+Property Value
+Type	Description
+double	
+FundingTime
+Represent access to symbol information and properties.
+
+Declaration
+public DateTime FundingTime { get; }
+Property Value
+Type	Description
+DateTime	
+FutureContractType
+Represent access to symbol information and properties.
+
+Declaration
+public FutureContractType? FutureContractType { get; }
+Property Value
+Type	Description
+FutureContractType?	
+Gamma
+Represent access to symbol information and properties.
+
+Declaration
+public double Gamma { get; }
+Property Value
+Type	Description
+double	
+Group
+Gets SymbolGroup
+
+Declaration
+public SymbolGroup Group { get; protected set; }
+Property Value
+Type	Description
+SymbolGroup	
+High
+Gets high price
+
+Declaration
+public double High { get; }
+Property Value
+Type	Description
+double	
+HistoryType
+Default history type
+
+Declaration
+public HistoryType HistoryType { get; }
+Property Value
+Type	Description
+HistoryType	
+IV
+Represent access to symbol information and properties.
+
+Declaration
+public double IV { get; }
+Property Value
+Type	Description
+double	
+Id
+Gets symbol Id
+
+Declaration
+public string Id { get; protected set; }
+Property Value
+Type	Description
+string	
+Last
+Gets last price
+
+Declaration
+public double Last { get; }
+Property Value
+Type	Description
+double	
+LastDateTime
+Gets last time
+
+Declaration
+public DateTime LastDateTime { get; }
+Property Value
+Type	Description
+DateTime	
+LastSize
+Gets last size
+
+Declaration
+public double LastSize { get; }
+Property Value
+Type	Description
+double	
+LastTradingDate
+Gets derivative last trading date
+
+Declaration
+public DateTime LastTradingDate { get; }
+Property Value
+Type	Description
+DateTime	
+LotSize
+Amount of base asset Product for one lot.
+
+Declaration
+public double LotSize { get; }
+Property Value
+Type	Description
+double	
+LotStep
+Step of the lot changes
+
+Declaration
+public double LotStep { get; }
+Property Value
+Type	Description
+double	
+Low
+Gets low price
+
+Declaration
+public double Low { get; }
+Property Value
+Type	Description
+double	
+Mark
+Gets mark price
+
+Declaration
+public double Mark { get; }
+Property Value
+Type	Description
+double	
+MarkSize
+Gets mark size
+
+Declaration
+public double MarkSize { get; }
+Property Value
+Type	Description
+double	
+MaturityDate
+Gets derivative maturity date
+
+Declaration
+public DateTime MaturityDate { get; }
+Property Value
+Type	Description
+DateTime	
+MaxLot
+The highest trade allowed
+
+Declaration
+public double MaxLot { get; }
+Property Value
+Type	Description
+double	
+MinLot
+The lowest trade allowed
+
+Declaration
+public double MinLot { get; }
+Property Value
+Type	Description
+double	
+MinVolumeAnalysisTickSize
+Represent access to symbol information and properties.
+
+Declaration
+public double MinVolumeAnalysisTickSize { get; }
+Property Value
+Type	Description
+double	
+Name
+Gets symbol name
+
+Declaration
+public string Name { get; protected set; }
+Property Value
+Type	Description
+string	
+NettingType
+Gets symbol NettingType
+
+Declaration
+public NettingType NettingType { get; }
+Property Value
+Type	Description
+NettingType	
+NotionalValueStep
+Step of the notional value changes
+
+Declaration
+public double NotionalValueStep { get; }
+Property Value
+Type	Description
+double	
+Open
+Gets open price
+
+Declaration
+public double Open { get; }
+Property Value
+Type	Description
+double	
+OpenInterest
+Represent access to symbol information and properties.
+
+Declaration
+public double OpenInterest { get; }
+Property Value
+Type	Description
+double	
+PrevClose
+Gets previous close price
+
+Declaration
+public double PrevClose { get; }
+Property Value
+Type	Description
+double	
+Product
+Gets symbol base Asset
+
+Declaration
+public Asset Product { get; protected set; }
+Property Value
+Type	Description
+Asset	
+QuoteAssetVolume
+Gets quote asset volume value
+
+Declaration
+public double QuoteAssetVolume { get; }
+Property Value
+Type	Description
+double	
+QuoteDateTime
+Gets quote time
+
+Declaration
+public DateTime QuoteDateTime { get; }
+Property Value
+Type	Description
+DateTime	
+QuoteDelay
+Returns delay with which quote come in platform.
+
+Declaration
+public TimeSpan QuoteDelay { get; }
+Property Value
+Type	Description
+TimeSpan	
+QuotingCurrency
+Gets symbol counter Asset
+
+Declaration
+public Asset QuotingCurrency { get; protected set; }
+Property Value
+Type	Description
+Asset	
+QuotingType
+Gets current SymbolQuotingType
+
+Declaration
+public SymbolQuotingType QuotingType { get; }
+Property Value
+Type	Description
+SymbolQuotingType	
+Rho
+Represent access to symbol information and properties.
+
+Declaration
+public double Rho { get; }
+Property Value
+Type	Description
+double	
+Root
+Gets derivative underlier name
+
+Declaration
+public string Root { get; }
+Property Value
+Type	Description
+string	
+Spread
+Gets spread value between Bid and Ask
+
+Declaration
+public double Spread { get; }
+Property Value
+Type	Description
+double	
+SpreadPercentage
+Gets Spread percentage value
+
+Declaration
+public double SpreadPercentage { get; }
+Property Value
+Type	Description
+double	
+SymbolType
+Gets symbol type
+
+Declaration
+public SymbolType SymbolType { get; }
+Property Value
+Type	Description
+SymbolType	
+Theta
+Represent access to symbol information and properties.
+
+Declaration
+public double Theta { get; }
+Property Value
+Type	Description
+double	
+TickSize
+Gets cached tick size if it available, else tries to obtain GetTickSize(double) with Last, Bid, Ask, first element of VariableTick list otherwise - DOUBLE_UNDEFINED
+
+Declaration
+public double TickSize { get; }
+Property Value
+Type	Description
+double	
+Ticks
+Gets ticks amount
+
+Declaration
+public long Ticks { get; }
+Property Value
+Type	Description
+long	
+TopPriceLimit
+Represent access to symbol information and properties.
+
+Declaration
+public double TopPriceLimit { get; }
+Property Value
+Type	Description
+double	
+TotalBuyQuantity
+Represent access to symbol information and properties.
+
+Declaration
+public double TotalBuyQuantity { get; }
+Property Value
+Type	Description
+double	
+TotalSellQuantity
+Represent access to symbol information and properties.
+
+Declaration
+public double TotalSellQuantity { get; }
+Property Value
+Type	Description
+double	
+Trades
+Gets trades amount
+
+Declaration
+public long Trades { get; }
+Property Value
+Type	Description
+long	
+Underlier
+Gets derivative underlier symbol
+
+Declaration
+public Symbol Underlier { get; }
+Property Value
+Type	Description
+Symbol	
+UnderlierId
+Gets derivative underlier symbol id
+
+Declaration
+public string UnderlierId { get; }
+Property Value
+Type	Description
+string	
+VariableTickList
+Stores list of symbol ticksizes
+
+Declaration
+public List<VariableTick> VariableTickList { get; }
+Property Value
+Type	Description
+List<VariableTick>	
+Vega
+Represent access to symbol information and properties.
+
+Declaration
+public double Vega { get; }
+Property Value
+Type	Description
+double	
+Volume
+Gets volume value
+
+Declaration
+public double Volume { get; }
+Property Value
+Type	Description
+double	
+VolumeType
+Gets SymbolVolumeType
+
+Declaration
+public SymbolVolumeType VolumeType { get; }
+Property Value
+Type	Description
+SymbolVolumeType	
+Methods
+CalculatePrice(double, double)
+Calculates new price which equal to given price shifted by a number of given ticks
+
+Declaration
+public double CalculatePrice(double price, double ticks)
+Parameters
+Type	Name	Description
+double	price	
+double	ticks	
+Returns
+Type	Description
+double	
+CalculateTicks(double, double)
+Calculates ticks between two prices
+
+Declaration
+public double CalculateTicks(double price1, double price2)
+Parameters
+Type	Name	Description
+double	price1	
+double	price2	
+Returns
+Type	Description
+double	
+DetermineTickDirection(double, double, TickDirection)
+Represent access to symbol information and properties.
+
+Declaration
+public static TickDirection DetermineTickDirection(double previousPrice, double currentPrice, TickDirection prevItemTickDirection)
+Parameters
+Type	Name	Description
+double	previousPrice	
+double	currentPrice	
+TickDirection	prevItemTickDirection	
+Returns
+Type	Description
+TickDirection	
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(Symbol)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(Symbol other)
+Parameters
+Type	Name	Description
+Symbol	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+FindVariableTick(double)
+Returns VariableTick if it can be retrived from VariableTick list by price or null
+
+Declaration
+public VariableTick FindVariableTick(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+VariableTick	
+FormatOffset(double, string)
+Returns string with formatted ticks value
+
+Declaration
+public string FormatOffset(double offset, string dimension = "ticks")
+Parameters
+Type	Name	Description
+double	offset	
+string	dimension	
+Returns
+Type	Description
+string	
+FormatPrice(double)
+Formats price value to the appropriative string with a counting on tick precision.
+
+Declaration
+public string FormatPrice(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+string	
+FormatPriceWithMaxPrecision(double)
+Formats price value to the appropriative string with a counting on max tick precision.
+
+Declaration
+public string FormatPriceWithMaxPrecision(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+string	
+FormatQuantity(double, bool, bool)
+Represent access to symbol information and properties.
+
+Declaration
+public virtual string FormatQuantity(double quantity, bool inLots = true, bool abbreviate = false)
+Parameters
+Type	Name	Description
+double	quantity	
+bool	inLots	
+bool	abbreviate	
+Returns
+Type	Description
+string	
+GetConnectionStateDependency()
+Represent access to symbol information and properties.
+
+Declaration
+public virtual ConnectionDependency GetConnectionStateDependency()
+Returns
+Type	Description
+ConnectionDependency	
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+object.GetHashCode()
+GetHistory(HistoryAggregation, DateTime, DateTime)
+Gets historical data according to aggregation and other parameters
+
+Declaration
+public HistoricalData GetHistory(HistoryAggregation aggregation, DateTime fromTime, DateTime toTime = default)
+Parameters
+Type	Name	Description
+HistoryAggregation	aggregation	
+DateTime	fromTime	
+DateTime	toTime	
+Returns
+Type	Description
+HistoricalData	
+GetHistory(HistoryRequestParameters)
+Gets historical data according to given history request
+
+Declaration
+public HistoricalData GetHistory(HistoryRequestParameters historyRequestParameters)
+Parameters
+Type	Name	Description
+HistoryRequestParameters	historyRequestParameters	
+Returns
+Type	Description
+HistoricalData	
+GetHistory(Period, DateTime, DateTime)
+Gets historical data according to period and other parameters
+
+Declaration
+public HistoricalData GetHistory(Period period, DateTime fromTime, DateTime toTime = default)
+Parameters
+Type	Name	Description
+Period	period	
+DateTime	fromTime	
+DateTime	toTime	
+Returns
+Type	Description
+HistoricalData	
+GetHistory(Period, HistoryType, DateTime, DateTime)
+Gets historical data according to period and other parameters
+
+Declaration
+public HistoricalData GetHistory(Period period, HistoryType historyType, DateTime fromTime, DateTime toTime = default)
+Parameters
+Type	Name	Description
+Period	period	
+HistoryType	historyType	
+DateTime	fromTime	
+DateTime	toTime	
+Returns
+Type	Description
+HistoricalData	
+GetMarginInfo(OrderRequestParameters)
+Represent access to symbol information and properties.
+
+Declaration
+public MarginInfo GetMarginInfo(OrderRequestParameters orderRequestParameters)
+Parameters
+Type	Name	Description
+OrderRequestParameters	orderRequestParameters	
+Returns
+Type	Description
+MarginInfo	
+GetTickCost(double)
+Gets symbol tick cost retrived from the VariableTick list by price
+
+Declaration
+public double GetTickCost(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+double	
+GetTickHistory(HistoryType, DateTime, DateTime)
+Gets historical ticks data according to given parameters
+
+Declaration
+public HistoricalData GetTickHistory(HistoryType historyType, DateTime fromTime, DateTime toTime = default)
+Parameters
+Type	Name	Description
+HistoryType	historyType	
+DateTime	fromTime	
+DateTime	toTime	
+Returns
+Type	Description
+HistoricalData	
+GetTickSize(double)
+Gets cached symbol tick size or retrives it from the VariableTick list
+
+Declaration
+public double GetTickSize(double price)
+Parameters
+Type	Name	Description
+double	price	
+Returns
+Type	Description
+double	
+IsTradingAllowed(Account)
+Represent access to symbol information and properties.
+
+Declaration
+public virtual bool IsTradingAllowed(Account account)
+Parameters
+Type	Name	Description
+Account	account	
+Returns
+Type	Description
+bool	
+OnConnectionStateChanged(Connection, ConnectionStateChangedEventArgs)
+Represent access to symbol information and properties.
+
+Declaration
+public virtual void OnConnectionStateChanged(Connection connection, ConnectionStateChangedEventArgs e)
+Parameters
+Type	Name	Description
+Connection	connection	
+ConnectionStateChangedEventArgs	e	
+RoundPriceToTickSize(double, double)
+Returns rounded to TickSize price
+
+Declaration
+public double RoundPriceToTickSize(double price, double tickSize = NaN)
+Parameters
+Type	Name	Description
+double	price	
+double	tickSize	
+Returns
+Type	Description
+double	
+SubscribeAction(SubscribeQuoteType)
+Represent access to symbol information and properties.
+
+Declaration
+protected virtual void SubscribeAction(SubscribeQuoteType type)
+Parameters
+Type	Name	Description
+SubscribeQuoteType	type	
+UnSubscribeAction(SubscribeQuoteType)
+Represent access to symbol information and properties.
+
+Declaration
+protected virtual void UnSubscribeAction(SubscribeQuoteType type)
+Parameters
+Type	Name	Description
+SubscribeQuoteType	type	
+Events
+NewDayBar
+Will be triggered when new correctional quote is comming from the vendor.
+
+Declaration
+public event DayBarHandler NewDayBar
+Event Type
+Type	Description
+DayBarHandler	
+NewLast
+Will be triggered when new trade quote is comming
+
+Declaration
+public event LastHandler NewLast
+Event Type
+Type	Description
+LastHandler	
+NewLevel2
+Will be triggered when new Level2 quote is comming
+
+Declaration
+public event Level2Handler NewLevel2
+Event Type
+Type	Description
+Level2Handler	
+NewMark
+Represent access to symbol information and properties.
+
+Declaration
+public event MarkHandler NewMark
+Event Type
+Type	Description
+MarkHandler	
+NewQuote
+Will be triggered when new Level1 quote is comming
+
+Declaration
+public event QuoteHandler NewQuote
+Event Type
+Type	Description
+QuoteHandler	
+Updated
+Will be triggered when symbol updated.
+
+Declaration
+public event SymbolUpdateHandler Updated
+Event Type
+Type	Description
+SymbolUpdateHandler
+
+Class SymbolGroup
+Provides possibility to group and sort symbols for each connection
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class SymbolGroup : BusinessObject
+Properties
+GroupName
+Gets group name
+
+Declaration
+public string GroupName { get; }
+Property Value
+Type	Description
+string	
+Id
+Gets group Id
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+SortIndex
+Gets sort index for comparing process
+
+Declaration
+public int SortIndex { get; }
+Property Value
+Type	Description
+int	
+
+Class Order
+Represents trading information about pending order
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Order : TradingObject
+Properties
+AverageFillPrice
+Represents trading information about pending order
+
+Declaration
+public double AverageFillPrice { get; }
+Property Value
+Type	Description
+double	
+ExpirationTime
+Gets orders expiration time
+
+Declaration
+public DateTime ExpirationTime { get; }
+Property Value
+Type	Description
+DateTime	
+FilledQuantity
+Filled quantity of the order
+
+Declaration
+public double FilledQuantity { get; }
+Property Value
+Type	Description
+double	
+GroupId
+The ID of the order group. This group created when trades done by the MAM account.
+
+Declaration
+public string GroupId { get; }
+Property Value
+Type	Description
+string	
+LastUpdateTime
+Gets orders last update time
+
+Declaration
+public DateTime LastUpdateTime { get; }
+Property Value
+Type	Description
+DateTime	
+OrderType
+Gets OrderType
+
+Declaration
+public OrderType OrderType { get; }
+Property Value
+Type	Description
+OrderType	
+OrderTypeId
+Orders Type Id. It is used for the orders type comparing.
+
+Declaration
+public string OrderTypeId { get; }
+Property Value
+Type	Description
+string	
+OriginalStatus
+Gets open order original status
+
+Declaration
+public string OriginalStatus { get; }
+Property Value
+Type	Description
+string	
+PositionId
+Gets Position Id.
+
+Declaration
+public string PositionId { get; }
+Property Value
+Type	Description
+string	
+Price
+Gets order price value
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+RemainingQuantity
+Remaining quantity of the order
+
+Declaration
+public double RemainingQuantity { get; }
+Property Value
+Type	Description
+double	
+Status
+Gets orders current status
+
+Declaration
+public OrderStatus Status { get; }
+Property Value
+Type	Description
+OrderStatus	
+StopLoss
+Gets StopLoss holder for given order
+
+Declaration
+public SlTpHolder StopLoss { get; }
+Property Value
+Type	Description
+SlTpHolder	
+StopLossItems
+Represents trading information about pending order
+
+Declaration
+public SlTpHolder[] StopLossItems { get; }
+Property Value
+Type	Description
+SlTpHolder[]	
+TakeProfit
+Gets TakeProfit holder for given order
+
+Declaration
+public SlTpHolder TakeProfit { get; }
+Property Value
+Type	Description
+SlTpHolder	
+TakeProfitItems
+Represents trading information about pending order
+
+Declaration
+public SlTpHolder[] TakeProfitItems { get; }
+Property Value
+Type	Description
+SlTpHolder[]	
+TimeInForce
+Gets order TIF(Time-In-Force) type
+
+Declaration
+public TimeInForce TimeInForce { get; }
+Property Value
+Type	Description
+TimeInForce	
+TotalQuantity
+Total quantity of the order
+
+Declaration
+public double TotalQuantity { get; }
+Property Value
+Type	Description
+double	
+TrailOffset
+Gets order trailing offset value
+
+Declaration
+public double TrailOffset { get; }
+Property Value
+Type	Description
+double	
+TriggerPrice
+Gets order trigger price value
+
+Declaration
+public double TriggerPrice { get; }
+Property Value
+Type	Description
+double	
+Methods
+BuildMessage()
+Represents trading information about pending order
+
+Declaration
+public MessageOpenOrder BuildMessage()
+Returns
+Type	Description
+MessageOpenOrder	
+Cancel(string)
+Cancels pending order
+
+Declaration
+public TradingOperationResult Cancel(string sendingSource = null)
+Parameters
+Type	Name	Description
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(Order)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(Order other)
+Parameters
+Type	Name	Description
+Order	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+object.GetHashCode()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on each UpdateByMessage(MessageOpenOrder) invocation
+
+Declaration
+public event Action<IOrder> Updated
+Event Type
+Type	Description
+Action<IOrder>
+
+Class Position
+Represents trading information about related position
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Position : TradingObject
+Properties
+CurrentPrice
+The market price obtainable from your broker.
+
+Declaration
+public double CurrentPrice { get; }
+Property Value
+Type	Description
+double	
+Fee
+Gets fee amount for the position.
+
+Declaration
+public PnLItem Fee { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnL
+Gets Profit/loss (without swaps or commissions) all calculated based on the current broker's price. For open position it shows the profit/loss you would make if you close the position at the current price. If position closed, this parameter show profit/loss what trader have after closing this position.
+
+Declaration
+public PnLItem GrossPnL { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnLTicks
+Returns ticks amount between open and current price.
+
+Declaration
+public double GrossPnLTicks { get; }
+Property Value
+Type	Description
+double	
+LiquidationPrice
+Represents trading information about related position
+
+Declaration
+public double LiquidationPrice { get; }
+Property Value
+Type	Description
+double	
+NetPnL
+Gets Profit/loss calculated based on the current broker's price. For open position it shows the profit/loss you would make if you close the position at the current price. If position closed, this parameter show profit/loss what trader have after closing this position.
+
+Declaration
+public PnLItem NetPnL { get; }
+Property Value
+Type	Description
+PnLItem	
+OpenPrice
+Gets position open order price
+
+Declaration
+public double OpenPrice { get; }
+Property Value
+Type	Description
+double	
+OpenTime
+Gets position openning time
+
+Declaration
+public DateTime OpenTime { get; }
+Property Value
+Type	Description
+DateTime	
+Quantity
+Gets position quantity value
+
+Declaration
+public double Quantity { get; }
+Property Value
+Type	Description
+double	
+StopLoss
+Gets StopLoss order which belongs to the position
+
+Declaration
+public Order StopLoss { get; }
+Property Value
+Type	Description
+Order	
+Swaps
+Gets PnL swaps
+
+Declaration
+public PnLItem Swaps { get; }
+Property Value
+Type	Description
+PnLItem	
+TakeProfit
+Gets TakeProfit order which belongs to the position
+
+Declaration
+public Order TakeProfit { get; }
+Property Value
+Type	Description
+Order	
+Methods
+BuildMessage()
+Represents trading information about related position
+
+Declaration
+public MessageOpenPosition BuildMessage()
+Returns
+Type	Description
+MessageOpenPosition	
+Close(double)
+Closes position if quantity is not specified else - uses partial closing operation.
+
+Declaration
+public virtual TradingOperationResult Close(double closeQuantity = -1)
+Parameters
+Type	Name	Description
+double	closeQuantity	
+Returns
+Type	Description
+TradingOperationResult	
+ForceRecalculatePnl()
+Represents trading information about related position
+
+Declaration
+public void ForceRecalculatePnl()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on each UpdateByMessage(MessageOpenPosition) and UpdatePnl(PnL) invocation
+
+Declaration
+public event Action<Position> Updated
+Event Type
+Type	Description
+Action<Position>
+
+Class Trade
+Represents information about trade.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Trade : TradingObject
+Constructors
+Trade(string)
+Represents information about trade.
+
+Declaration
+public Trade(string connectionId)
+Parameters
+Type	Name	Description
+string	connectionId	
+Properties
+DateTime
+Get the date and time when trade was executed
+
+Declaration
+public DateTime DateTime { get; }
+Property Value
+Type	Description
+DateTime	
+Fee
+Get the fee value that was charged for this trade
+
+Declaration
+public PnLItem Fee { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnl
+Get the trade Gross P&L
+
+Declaration
+public PnLItem GrossPnl { get; }
+Property Value
+Type	Description
+PnLItem	
+NetPnl
+Get the trade Net P&L
+
+Declaration
+public PnLItem NetPnl { get; }
+Property Value
+Type	Description
+PnLItem	
+OrderId
+Gets the unique identifier of the order initiating the trade.
+
+Declaration
+public string OrderId { get; }
+Property Value
+Type	Description
+string	
+OrderTypeId
+Get the trade order type
+
+Declaration
+public string OrderTypeId { get; }
+Property Value
+Type	Description
+string	
+PositionId
+Gets a unique identifier of the position, which is related to this trade.
+
+Declaration
+public string PositionId { get; }
+Property Value
+Type	Description
+string	
+PositionImpactType
+Represents information about trade.
+
+Declaration
+public PositionImpactType PositionImpactType { get; }
+Property Value
+Type	Description
+PositionImpactType	
+Price
+Get the price where trade was executed
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+Quantity
+Get the trade quantity
+
+Declaration
+public double Quantity { get; }
+Property Value
+Type	Description
+double	
+Methods
+BuildMessage()
+Represents information about trade.
+
+Declaration
+public MessageTrade BuildMessage()
+Returns
+Type	Description
+MessageTrade	
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on trade updating
+
+Declaration
+public event Action Updated
+Event Type
+Type	Description
+Action
+
+Class Quote
+Represent access to quote information.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Quote : MessageQuote
+Properties
+Ask
+Ask price
+
+Declaration
+public double Ask { get; set; }
+Property Value
+Type	Description
+double	
+AskSize
+Ask size
+
+Declaration
+public double AskSize { get; set; }
+Property Value
+Type	Description
+double	
+AskTickDirection
+Shows the direction of ask price movement, comparing to previous value.
+
+Declaration
+public TickDirection AskTickDirection { get; }
+Property Value
+Type	Description
+TickDirection	
+Bid
+Bid price
+
+Declaration
+public double Bid { get; set; }
+Property Value
+Type	Description
+double	
+BidSize
+Bid size
+
+Declaration
+public double BidSize { get; set; }
+Property Value
+Type	Description
+double	
+BidTickDirection
+Shows the direction of bid price movement, comparing to previous value.
+
+Declaration
+public TickDirection BidTickDirection { get; }
+Property Value
+Type	Description
+TickDirection	
+
+Class HistoricalData
+Represent access to historical data information and indicators control.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class HistoricalData
+Constructors
+HistoricalData(HistoryRequestParameters)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected HistoricalData(HistoryRequestParameters historyRequestParameters)
+Parameters
+Type	Name	Description
+HistoryRequestParameters	historyRequestParameters	
+Fields
+Indicators
+Represent access to historical data information and indicators control.
+
+Declaration
+protected readonly IndicatorsCollection Indicators
+Field Value
+Type	Description
+IndicatorsCollection	
+Parameters
+Represent access to historical data information and indicators control.
+
+Declaration
+protected HistoryRequestParameters Parameters
+Field Value
+Type	Description
+HistoryRequestParameters	
+itemsLocker
+Represent access to historical data information and indicators control.
+
+Declaration
+protected readonly object itemsLocker
+Field Value
+Type	Description
+object	
+Properties
+Aggregation
+Gets HistoricalData aggregation
+
+Declaration
+public HistoryAggregation Aggregation { get; }
+Property Value
+Type	Description
+HistoryAggregation	
+AttachedIndicators
+Gets array of attached indicators
+
+Declaration
+public Indicator[] AttachedIndicators { get; }
+Property Value
+Type	Description
+Indicator[]	
+BuiltInIndicators
+Gets access to built-in indicators
+
+Declaration
+public BuiltInIndicators BuiltInIndicators { get; }
+Property Value
+Type	Description
+BuiltInIndicators	
+Count
+Gets HistoricalData items amount
+
+Declaration
+public virtual int Count { get; }
+Property Value
+Type	Description
+int	
+FromTime
+Gets HistoricalData left time boundary
+
+Declaration
+public DateTime FromTime { get; }
+Property Value
+Type	Description
+DateTime	
+IndicatorCalculationBehavior
+Represent access to historical data information and indicators control.
+
+Declaration
+public IndicatorCalculationBehavior IndicatorCalculationBehavior { get; set; }
+Property Value
+Type	Description
+IndicatorCalculationBehavior	
+this[int, SeekOriginHistory]
+Retrieves HistoricalData item by indexing offset and direction to find.
+
+Declaration
+public virtual IHistoryItem this[int offset, SeekOriginHistory origin = SeekOriginHistory.End] { get; }
+Parameters
+Type	Name	Description
+int	offset	
+SeekOriginHistory	origin	
+Property Value
+Type	Description
+IHistoryItem	
+NeedSubscribe
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual bool NeedSubscribe { get; }
+Property Value
+Type	Description
+bool	
+Symbol
+Gets HistoricalData symbol
+
+Declaration
+public Symbol Symbol { get; }
+Property Value
+Type	Description
+Symbol	
+ToTime
+Gets HistoricalData right time boundary
+
+Declaration
+public DateTime ToTime { get; }
+Property Value
+Type	Description
+DateTime	
+Methods
+AddIndicator(string, params SettingItem[])
+Creates indicator by it's name and if it successfully created adds it to the HistoricalData
+
+Declaration
+public Indicator AddIndicator(string indicatorName, params SettingItem[] settings)
+Parameters
+Type	Name	Description
+string	indicatorName	
+SettingItem[]	settings	
+Returns
+Type	Description
+Indicator	
+AddIndicator(Indicator)
+Adds indicator to the HistoricalData
+
+Declaration
+public void AddIndicator(Indicator indicator)
+Parameters
+Type	Name	Description
+Indicator	indicator	
+AddNewItem(IHistoryItem, bool, HistoryEventArgs)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void AddNewItem(IHistoryItem historyItem, bool updateIndicators = true, HistoryEventArgs e = null)
+Parameters
+Type	Name	Description
+IHistoryItem	historyItem	
+bool	updateIndicators	
+HistoryEventArgs	e	
+CalculateVolumeProfile(VolumeAnalysisCalculationParameters)
+Represent access to historical data information and indicators control.
+
+Declaration
+public IVolumeAnalysisCalculationProgress CalculateVolumeProfile(VolumeAnalysisCalculationParameters volumeAnalysisCalculationParameters)
+Parameters
+Type	Name	Description
+VolumeAnalysisCalculationParameters	volumeAnalysisCalculationParameters	
+Returns
+Type	Description
+IVolumeAnalysisCalculationProgress	
+CreateHistoryProcessor()
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual IHistoryProcessor CreateHistoryProcessor()
+Returns
+Type	Description
+IHistoryProcessor	
+GetEnumerator()
+Returns an enumerator that iterates through a collection.
+
+Declaration
+public IEnumerator GetEnumerator()
+Returns
+Type	Description
+IEnumerator	
+An IEnumerator object that can be used to iterate through the collection.
+
+GetIndexByTime(long, SeekOriginHistory)
+Gets index by time with counting on search direction
+
+Declaration
+public double GetIndexByTime(long time, SeekOriginHistory origin = SeekOriginHistory.End)
+Parameters
+Type	Name	Description
+long	time	
+SeekOriginHistory	origin	
+Returns
+Type	Description
+double	
+GetTimeToNextBar()
+Represent access to historical data information and indicators control.
+
+Declaration
+public string GetTimeToNextBar()
+Returns
+Type	Description
+string	
+ProcessLast(Last)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void ProcessLast(Last last)
+Parameters
+Type	Name	Description
+Last	last	
+ProcessLevel2Qute(MessageQuote)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void ProcessLevel2Qute(MessageQuote quote)
+Parameters
+Type	Name	Description
+MessageQuote	quote	
+ProcessMark(Mark)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void ProcessMark(Mark mark)
+Parameters
+Type	Name	Description
+Mark	mark	
+ProcessQuote(Quote)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void ProcessQuote(Quote quote)
+Parameters
+Type	Name	Description
+Quote	quote	
+Reload()
+Reloads entire HistoricalData
+
+Declaration
+public void Reload()
+RemoveIndicator(Indicator)
+Removes indicator from the HistoricalData
+
+Declaration
+public void RemoveIndicator(Indicator indicator)
+Parameters
+Type	Name	Description
+Indicator	indicator	
+SubscribeSymbol()
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void SubscribeSymbol()
+Symbol_NewLast(Symbol, Last)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected void Symbol_NewLast(Symbol symbol, Last last)
+Parameters
+Type	Name	Description
+Symbol	symbol	
+Last	last	
+Symbol_NewQuote(Symbol, Quote)
+Represent access to historical data information and indicators control.
+
+Declaration
+protected void Symbol_NewQuote(Symbol symbol, Quote quote)
+Parameters
+Type	Name	Description
+Symbol	symbol	
+Quote	quote	
+UnSubscribeSymbol()
+Represent access to historical data information and indicators control.
+
+Declaration
+protected virtual void UnSubscribeSymbol()
+Events
+HistoryItemUpdated
+Will be triggered when current historical item changed or updated
+
+Declaration
+public event HistoryEventHandler HistoryItemUpdated
+Event Type
+Type	Description
+HistoryEventHandler	
+HistoryItemVolumeAnalysisUpdated
+Will be triggered when volume analysis of current historical item changed or updated
+
+Declaration
+public event Action HistoryItemVolumeAnalysisUpdated
+Event Type
+Type	Description
+Action	
+NewHistoryItem
+Will be triggered when new historical item created
+
+Declaration
+public event HistoryEventHandler NewHistoryItem
+Event Type
+Type	Description
+HistoryEventHandler
+
+Class HistoryItemBar
+Represents historical data bar item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class HistoryItemBar : HistoryItem
+Constructors
+HistoryItemBar()
+Creates HistoryItemBar instance with default OHLC price = DOUBLE_UNDEFINED
+
+Declaration
+public HistoryItemBar()
+Properties
+Close
+Defines Close price
+
+Declaration
+public double Close { get; set; }
+Property Value
+Type	Description
+double	
+FundingRate
+Represents historical data bar item
+
+Declaration
+public double FundingRate { get; set; }
+Property Value
+Type	Description
+double	
+High
+Defines High price
+
+Declaration
+public double High { get; set; }
+Property Value
+Type	Description
+double	
+this[PriceType]
+Gets price by indexing PriceType
+
+Declaration
+public override double this[PriceType priceType] { get; }
+Parameters
+Type	Name	Description
+PriceType	priceType	
+Property Value
+Type	Description
+double	
+Overrides
+HistoryItem.this[PriceType]
+Low
+Defines Low price
+
+Declaration
+public double Low { get; set; }
+Property Value
+Type	Description
+double	
+Median
+Gets Median (High+Low)/2 price
+
+Declaration
+public double Median { get; }
+Property Value
+Type	Description
+double	
+Open
+Defines Open price
+
+Declaration
+public double Open { get; set; }
+Property Value
+Type	Description
+double	
+OpenInterest
+Represents historical data bar item
+
+Declaration
+public double OpenInterest { get; set; }
+Property Value
+Type	Description
+double	
+QuoteAssetVolume
+Represents historical data bar item
+
+Declaration
+public double QuoteAssetVolume { get; set; }
+Property Value
+Type	Description
+double	
+Ticks
+Defines ticks amount
+
+Declaration
+public long Ticks { get; set; }
+Property Value
+Type	Description
+long	
+TicksRight
+Defines bar's ticks count
+
+Declaration
+public override long TicksRight { get; set; }
+Property Value
+Type	Description
+long	
+Overrides
+HistoryItem.TicksRight
+TimeRight
+Gets bar's right time border
+
+Declaration
+public DateTime TimeRight { get; }
+Property Value
+Type	Description
+DateTime	
+Typical
+Gets Typical (High+Low+Close)/3 price
+
+Declaration
+public double Typical { get; }
+Property Value
+Type	Description
+double	
+Volume
+Defines volume value
+
+Declaration
+public double Volume { get; set; }
+Property Value
+Type	Description
+double	
+Weighted
+Gets Weighted (High+Low+Close+Close)/4 price
+
+Declaration
+public double Weighted { get; }
+Property Value
+Type	Description
+double	
+
+Class HistoryItemLast
+Represents historical data trade item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class HistoryItemLast : HistoryItem
+Constructors
+HistoryItemLast()
+Creates HistoryItemLast instance
+
+Declaration
+public HistoryItemLast()
+HistoryItemLast(Last)
+Represents historical data trade item
+
+Declaration
+public HistoryItemLast(Last last)
+Parameters
+Type	Name	Description
+Last	last	
+Properties
+AggressorFlag
+Defines trade operation side as aggressor flag
+
+Declaration
+public AggressorFlag AggressorFlag { get; set; }
+Property Value
+Type	Description
+AggressorFlag	
+Buyer
+Represents historical data trade item
+
+Declaration
+public string Buyer { get; set; }
+Property Value
+Type	Description
+string	
+FundingRate
+Represents historical data trade item
+
+Declaration
+public double FundingRate { get; set; }
+Property Value
+Type	Description
+double	
+this[PriceType]
+Gets price by indexing PriceType
+
+Declaration
+public override double this[PriceType priceType] { get; }
+Parameters
+Type	Name	Description
+PriceType	priceType	
+Property Value
+Type	Description
+double	
+Overrides
+HistoryItem.this[PriceType]
+OpenInterest
+Represents historical data trade item
+
+Declaration
+public double OpenInterest { get; set; }
+Property Value
+Type	Description
+double	
+Price
+Defines price value
+
+Declaration
+public double Price { get; set; }
+Property Value
+Type	Description
+double	
+QuoteAssetVolume
+Represents historical data trade item
+
+Declaration
+public double QuoteAssetVolume { get; set; }
+Property Value
+Type	Description
+double	
+Seller
+Represents historical data trade item
+
+Declaration
+public string Seller { get; set; }
+Property Value
+Type	Description
+string	
+TickDirection
+Represents historical data trade item
+
+Declaration
+public TickDirection TickDirection { get; set; }
+Property Value
+Type	Description
+TickDirection	
+Volume
+Defines volume value
+
+Declaration
+public double Volume { get; set; }
+Property Value
+Type	Description
+double	
+
+Class HistoryItemTick
+Represents historical data tick item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class HistoryItemTick : HistoryItem
+Constructors
+HistoryItemTick()
+Creates HistoryItemBar instance with default Ask/AskSize/Bid/BidSize = DOUBLE_UNDEFINED
+
+Declaration
+public HistoryItemTick()
+Properties
+Ask
+Defines Ask price
+
+Declaration
+public double Ask { get; set; }
+Property Value
+Type	Description
+double	
+AskSize
+Defines Ask size
+
+Declaration
+public double AskSize { get; set; }
+Property Value
+Type	Description
+double	
+AskTickDirection
+Represents historical data tick item
+
+Declaration
+public TickDirection AskTickDirection { get; set; }
+Property Value
+Type	Description
+TickDirection	
+Bid
+Defines Bid price
+
+Declaration
+public double Bid { get; set; }
+Property Value
+Type	Description
+double	
+BidSize
+Defines Bid size
+
+Declaration
+public double BidSize { get; set; }
+Property Value
+Type	Description
+double	
+BidTickDirection
+Represents historical data tick item
+
+Declaration
+public TickDirection BidTickDirection { get; set; }
+Property Value
+Type	Description
+TickDirection	
+this[PriceType]
+Gets price by indexing PriceType
+
+Declaration
+public override double this[PriceType priceType] { get; }
+Parameters
+Type	Name	Description
+PriceType	priceType	
+Property Value
+Type	Description
+double	
+
+Class HistoryAggregation
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public abstract class HistoryAggregation
+Constructors
+HistoryAggregation()
+Declaration
+protected HistoryAggregation()
+HistoryAggregation(HistoryAggregation)
+Declaration
+protected HistoryAggregation(HistoryAggregation _)
+Parameters
+Type	Name	Description
+HistoryAggregation	_	
+Fields
+DELTA_BARS
+Declaration
+public const string DELTA_BARS = "Delta bars"
+Field Value
+Type	Description
+string	
+DOM_AGGREGATED
+Declaration
+public const string DOM_AGGREGATED = "Aggregated DOM"
+Field Value
+Type	Description
+string	
+DOM_BY_TICKS_COUNT
+Declaration
+public const string DOM_BY_TICKS_COUNT = "DOM by ticks count"
+Field Value
+Type	Description
+string	
+DOM_BY_TIME
+Declaration
+public const string DOM_BY_TIME = "DOM by time"
+Field Value
+Type	Description
+string	
+HEIKIN_ASHI
+Declaration
+public const string HEIKIN_ASHI = "Heikin Ashi"
+Field Value
+Type	Description
+string	
+KAGI
+Declaration
+public const string KAGI = "Kagi"
+Field Value
+Type	Description
+string	
+LEVEL2
+Declaration
+public const string LEVEL2 = "Level2"
+Field Value
+Type	Description
+string	
+LINE_BREAK
+Declaration
+public const string LINE_BREAK = "Line Break"
+Field Value
+Type	Description
+string	
+POINTS_AND_FIGURES
+Declaration
+public const string POINTS_AND_FIGURES = "Points & Figures"
+Field Value
+Type	Description
+string	
+POWER_TRADES
+Declaration
+public const string POWER_TRADES = "Power Trades"
+Field Value
+Type	Description
+string	
+PRICE_CHANGES_COUNT_BARS
+Declaration
+public const string PRICE_CHANGES_COUNT_BARS = "Price changes count bars"
+Field Value
+Type	Description
+string	
+RANGE_BARS
+Declaration
+public const string RANGE_BARS = "Range bars"
+Field Value
+Type	Description
+string	
+RENKO
+Declaration
+public const string RENKO = "Renko"
+Field Value
+Type	Description
+string	
+REVERSAL
+Declaration
+public const string REVERSAL = "Reversal"
+Field Value
+Type	Description
+string	
+SETTINGS_AGGREGATION_HISTORY_TYPE
+Declaration
+public const string SETTINGS_AGGREGATION_HISTORY_TYPE = "History type"
+Field Value
+Type	Description
+string	
+SETTINGS_AGGREGATION_PERIOD
+Declaration
+public const string SETTINGS_AGGREGATION_PERIOD = "Period"
+Field Value
+Type	Description
+string	
+TICK
+Declaration
+public const string TICK = "Tick"
+Field Value
+Type	Description
+string	
+TICK_BARS
+Declaration
+public const string TICK_BARS = "Tick bars"
+Field Value
+Type	Description
+string	
+TICK_LAST_AGGREGATED
+Declaration
+public const string TICK_LAST_AGGREGATED = "Aggregated ticks (Last)"
+Field Value
+Type	Description
+string	
+TIME
+Declaration
+public const string TIME = "Time"
+Field Value
+Type	Description
+string	
+TIME_STATISTICS
+Declaration
+public const string TIME_STATISTICS = "Time statistics"
+Field Value
+Type	Description
+string	
+VOLUME
+Declaration
+public const string VOLUME = "Volume"
+Field Value
+Type	Description
+string	
+VOLUME_PROFILE
+Declaration
+public const string VOLUME_PROFILE = "Volume profile"
+Field Value
+Type	Description
+string	
+VWAP
+Declaration
+public const string VWAP = "VWAP"
+Field Value
+Type	Description
+string	
+Properties
+DefaultRange
+Declaration
+public virtual Period DefaultRange { get; }
+Property Value
+Type	Description
+Period	
+IsWaitingFirstQuoteRequired
+Declaration
+public virtual bool IsWaitingFirstQuoteRequired { get; }
+Property Value
+Type	Description
+bool	
+Name
+Declaration
+public abstract string Name { get; }
+Property Value
+Type	Description
+string	
+Settings
+Declaration
+public virtual IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Title
+Declaration
+public virtual string Title { get; }
+Property Value
+Type	Description
+string	
+Methods
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(HistoryAggregation)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(HistoryAggregation other)
+Parameters
+Type	Name	Description
+HistoryAggregation	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+GetAggregationToDirectDownload(HistoryMetadata)
+Declaration
+public abstract HistoryAggregation GetAggregationToDirectDownload(HistoryMetadata metadata)
+Parameters
+Type	Name	Description
+HistoryMetadata	metadata	
+Returns
+Type	Description
+HistoryAggregation	
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Class HistoryAggregationTime
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class HistoryAggregationTime : HistoryAggregation, IHistoryAggregationHistoryTypeSupport
+Constructors
+HistoryAggregationTime(HistoryAggregationTime)
+Declaration
+protected HistoryAggregationTime(HistoryAggregationTime aggregation)
+Parameters
+Type	Name	Description
+HistoryAggregationTime	aggregation	
+HistoryAggregationTime(Period, HistoryType)
+Declaration
+public HistoryAggregationTime(Period period, HistoryType historyType)
+Parameters
+Type	Name	Description
+Period	period	
+HistoryType	historyType	
+Properties
+HistoryType
+Declaration
+public HistoryType HistoryType { get; set; }
+Property Value
+Type	Description
+HistoryType	
+Name
+Declaration
+public override string Name { get; }
+Property Value
+Type	Description
+string	
+Overrides
+HistoryAggregation.Name
+Period
+Declaration
+public Period Period { get; set; }
+Property Value
+Type	Description
+Period	
+Settings
+Declaration
+public override IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Overrides
+HistoryAggregation.Settings
+UsePrevCloseAsOpenPriceBar
+Declaration
+public bool UsePrevCloseAsOpenPriceBar { get; set; }
+Property Value
+Type	Description
+bool	
+Methods
+GetAggregationToDirectDownload(HistoryMetadata)
+Declaration
+public override HistoryAggregation GetAggregationToDirectDownload(HistoryMetadata metadata)
+Parameters
+Type	Name	Description
+HistoryMetadata	metadata	
+Returns
+Type	Description
+HistoryAggregation	
+Overrides
+HistoryAggregation.GetAggregationToDirectDownload(HistoryMetadata)
+Implements
+IHistoryAggregationHistoryTypeSupport
+
+Class HistoryAggregationRangeBars
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class HistoryAggregationRangeBars : HistoryAggregation, IHistoryAggregationHistoryTypeSupport
+Constructors
+HistoryAggregationRangeBars(int, HistoryType)
+Declaration
+public HistoryAggregationRangeBars(int rangeBars, HistoryType historyType)
+Parameters
+Type	Name	Description
+int	rangeBars	
+HistoryType	historyType	
+Fields
+SETTINGS_AGGREGATION_RANGE_BARS
+Declaration
+public const string SETTINGS_AGGREGATION_RANGE_BARS = "Range bars"
+Field Value
+Type	Description
+string	
+Properties
+GetPeriod
+Declaration
+public override Period GetPeriod { get; }
+Property Value
+Type	Description
+Period	
+Overrides
+HistoryAggregation.GetPeriod
+HistoryType
+Declaration
+public HistoryType HistoryType { get; set; }
+Property Value
+Type	Description
+HistoryType	
+Name
+Declaration
+public override string Name { get; }
+Property Value
+Type	Description
+string	
+Overrides
+HistoryAggregation.Name
+RangeBars
+Declaration
+public int RangeBars { get; }
+Property Value
+Type	Description
+int	
+Settings
+Declaration
+public override IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Overrides
+HistoryAggregation.Settings
+Methods
+GetAggregationToDirectDownload(HistoryMetadata)
+Declaration
+public override HistoryAggregation GetAggregationToDirectDownload(HistoryMetadata metadata)
+Parameters
+Type	Name	Description
+HistoryMetadata	metadata	
+Returns
+Type	Description
+HistoryAggregation	
+Overrides
+HistoryAggregation.GetAggregationToDirectDownload(HistoryMetadata)
+Implements
+IHistoryAggregationHistoryTypeSupport
+
+Class HistoryAggregationTick
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class HistoryAggregationTick : HistoryAggregation, IHistoryAggregationHistoryTypeSupport
+Constructors
+HistoryAggregationTick(HistoryAggregationTick)
+Declaration
+public HistoryAggregationTick(HistoryAggregationTick aggregation)
+Parameters
+Type	Name	Description
+HistoryAggregationTick	aggregation	
+HistoryAggregationTick(HistoryType)
+Declaration
+public HistoryAggregationTick(HistoryType historyType)
+Parameters
+Type	Name	Description
+HistoryType	historyType	
+Properties
+HistoryType
+Declaration
+public HistoryType HistoryType { get; set; }
+Property Value
+Type	Description
+HistoryType	
+Name
+Declaration
+public override string Name { get; }
+Property Value
+Type	Description
+string	
+Overrides
+HistoryAggregation.Name
+Settings
+Declaration
+public override IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Overrides
+HistoryAggregation.Settings
+Methods
+GetAggregationToDirectDownload(HistoryMetadata)
+Declaration
+public override HistoryAggregation GetAggregationToDirectDownload(HistoryMetadata metadata)
+Parameters
+Type	Name	Description
+HistoryMetadata	metadata	
+Returns
+Type	Description
+HistoryAggregation	
+Overrides
+HistoryAggregation.GetAggregationToDirectDownload(HistoryMetadata)
+Implements
+IHistoryAggregationHistoryTypeSupport
+
+Class HistoryAggregationPointsAndFigures
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class HistoryAggregationPointsAndFigures : HistoryAggregationTime, IHistoryAggregationHistoryTypeSupport
+Constructors
+HistoryAggregationPointsAndFigures(HistoryAggregationPointsAndFigures)
+Declaration
+protected HistoryAggregationPointsAndFigures(HistoryAggregationPointsAndFigures aggregation)
+Parameters
+Type	Name	Description
+HistoryAggregationPointsAndFigures	aggregation	
+HistoryAggregationPointsAndFigures(Period, HistoryType, int, int, PointsAndFiguresStyle)
+Declaration
+public HistoryAggregationPointsAndFigures(Period period, HistoryType historyType, int boxSize, int reversal, PointsAndFiguresStyle style)
+Parameters
+Type	Name	Description
+Period	period	
+HistoryType	historyType	
+int	boxSize	
+int	reversal	
+PointsAndFiguresStyle	style	
+Properties
+BoxSize
+Declaration
+public int BoxSize { get; }
+Property Value
+Type	Description
+int	
+Name
+Declaration
+public override string Name { get; }
+Property Value
+Type	Description
+string	
+Overrides
+HistoryAggregationTime.Name
+Reversal
+Declaration
+public int Reversal { get; }
+Property Value
+Type	Description
+int	
+Settings
+Declaration
+public override IList<SettingItem> Settings { get; set; }
+Property Value
+Type	Description
+IList<SettingItem>	
+Overrides
+HistoryAggregationTime.Settings
+Style
+Declaration
+public PointsAndFiguresStyle Style { get; }
+Property Value
+Type	Description
+PointsAndFiguresStyle	
+Implements
+IHistoryAggregationHistoryTypeSupport
+
+Struct Period
+Represents mechanism for supporting predefined and custom periods
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public struct Period
+Constructors
+Period(BasePeriod, int)
+Creates Period instance with PeriodMultiplier greater than 0
+
+Declaration
+public Period(BasePeriod basePeriod, int periodMultiplier)
+Parameters
+Type	Name	Description
+BasePeriod	basePeriod	
+int	periodMultiplier	
+Properties
+BasePeriod
+Gets base period type
+
+Declaration
+public readonly BasePeriod BasePeriod { get; }
+Property Value
+Type	Description
+BasePeriod	
+DAY1
+Predefined period
+
+Declaration
+public static Period DAY1 { get; }
+Property Value
+Type	Description
+Period	
+Duration
+Represents mechanism for supporting predefined and custom periods
+
+Declaration
+public TimeSpan Duration { get; }
+Property Value
+Type	Description
+TimeSpan	
+HOUR1
+Predefined period
+
+Declaration
+public static Period HOUR1 { get; }
+Property Value
+Type	Description
+Period	
+HOUR12
+Predefined period
+
+Declaration
+public static Period HOUR12 { get; }
+Property Value
+Type	Description
+Period	
+HOUR2
+Predefined period
+
+Declaration
+public static Period HOUR2 { get; }
+Property Value
+Type	Description
+Period	
+HOUR3
+Predefined period
+
+Declaration
+public static Period HOUR3 { get; }
+Property Value
+Type	Description
+Period	
+HOUR4
+Predefined period
+
+Declaration
+public static Period HOUR4 { get; }
+Property Value
+Type	Description
+Period	
+HOUR6
+Predefined period
+
+Declaration
+public static Period HOUR6 { get; }
+Property Value
+Type	Description
+Period	
+HOUR8
+Predefined period
+
+Declaration
+public static Period HOUR8 { get; }
+Property Value
+Type	Description
+Period	
+MIN1
+Predefined period
+
+Declaration
+public static Period MIN1 { get; }
+Property Value
+Type	Description
+Period	
+MIN10
+Predefined period
+
+Declaration
+public static Period MIN10 { get; }
+Property Value
+Type	Description
+Period	
+MIN15
+Predefined period
+
+Declaration
+public static Period MIN15 { get; }
+Property Value
+Type	Description
+Period	
+MIN2
+Predefined period
+
+Declaration
+public static Period MIN2 { get; }
+Property Value
+Type	Description
+Period	
+MIN3
+Predefined period
+
+Declaration
+public static Period MIN3 { get; }
+Property Value
+Type	Description
+Period	
+MIN30
+Predefined period
+
+Declaration
+public static Period MIN30 { get; }
+Property Value
+Type	Description
+Period	
+MIN4
+Predefined period
+
+Declaration
+public static Period MIN4 { get; }
+Property Value
+Type	Description
+Period	
+MIN5
+Predefined period
+
+Declaration
+public static Period MIN5 { get; }
+Property Value
+Type	Description
+Period	
+MONTH1
+Predefined period
+
+Declaration
+public static Period MONTH1 { get; }
+Property Value
+Type	Description
+Period	
+PeriodMultiplier
+Gets period multiplier
+
+Declaration
+public readonly int PeriodMultiplier { get; }
+Property Value
+Type	Description
+int	
+SECOND1
+Predefined period
+
+Declaration
+public static Period SECOND1 { get; }
+Property Value
+Type	Description
+Period	
+SECOND10
+Predefined period
+
+Declaration
+public static Period SECOND10 { get; }
+Property Value
+Type	Description
+Period	
+SECOND15
+Predefined period
+
+Declaration
+public static Period SECOND15 { get; }
+Property Value
+Type	Description
+Period	
+SECOND30
+Predefined period
+
+Declaration
+public static Period SECOND30 { get; }
+Property Value
+Type	Description
+Period	
+SECOND5
+Predefined period
+
+Declaration
+public static Period SECOND5 { get; }
+Property Value
+Type	Description
+Period	
+TICK1
+Predefined period
+
+Declaration
+public static Period TICK1 { get; }
+Property Value
+Type	Description
+Period	
+Ticks
+Gets ticks value as an result of base period TicksInBasePeriod(BasePeriod) multiplicated by PeriodMultiplier
+
+Declaration
+public long Ticks { get; }
+Property Value
+Type	Description
+long	
+WEEK1
+Predefined period
+
+Declaration
+public static Period WEEK1 { get; }
+Property Value
+Type	Description
+Period	
+YEAR1
+Predefined period
+
+Declaration
+public static Period YEAR1 { get; }
+Property Value
+Type	Description
+Period	
+Methods
+BasePeriodToShortString(BasePeriod)
+Returns shorted string according to base period type
+
+Declaration
+public static string BasePeriodToShortString(BasePeriod basePeriod)
+Parameters
+Type	Name	Description
+BasePeriod	basePeriod	
+Returns
+Type	Description
+string	
+TicksInBasePeriod(BasePeriod)
+Returns value in ticks according to base period type
+
+Declaration
+public static long TicksInBasePeriod(BasePeriod basePeriod)
+Parameters
+Type	Name	Description
+BasePeriod	basePeriod	
+Returns
+Type	Description
+long	
+ToDatesRange(out DateTime, out DateTime)
+Converts time gap into dates range
+
+Declaration
+public void ToDatesRange(out DateTime from, out DateTime to)
+Parameters
+Type	Name	Description
+DateTime	from	
+DateTime	to	
+TryParse(string, out Period)
+Represents mechanism for supporting predefined and custom periods
+
+Declaration
+public static bool TryParse(string value, out Period period)
+Parameters
+Type	Name	Description
+string	value	
+Period	period	
+Returns
+Type	Description
+bool	
+
+Class SettingItemAction
+Typecasts setting as Button item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemAction : SettingItem
+Constructors
+SettingItemAction()
+Typecasts setting as Button item
+
+Declaration
+public SettingItemAction()
+SettingItemAction(string, SettingItemActionDelegate, int)
+Typecasts setting as Button item
+
+Declaration
+public SettingItemAction(string name, SettingItemActionDelegate value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+SettingItemActionDelegate	value	
+int	sortIndex	
+SettingItemAction(SettingItemAction)
+Typecasts setting as Button item
+
+Declaration
+public SettingItemAction(SettingItemAction settingItem)
+Parameters
+Type	Name	Description
+SettingItemAction	settingItem	
+Properties
+LabelText
+Typecasts setting as Button item
+
+Declaration
+public string LabelText { get; set; }
+Property Value
+Type	Description
+string	
+Type
+Typecasts setting as Button item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+Methods
+ValueFromXElement(XElement, DeserializationInfo)
+Typecasts setting as Button item
+
+Declaration
+protected override void ValueFromXElement(XElement element, DeserializationInfo deserializationInfo)
+Parameters
+Type	Name	Description
+XElement	element	
+DeserializationInfo	deserializationInfo	
+Overrides
+SettingItem.ValueFromXElement(XElement, DeserializationInfo)
+
+lass SettingItemBoolean
+Typecasts setting as CheckBox item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemBoolean : SettingItem
+Constructors
+SettingItemBoolean()
+Typecasts setting as CheckBox item
+
+Declaration
+public SettingItemBoolean()
+SettingItemBoolean(string, bool, int)
+Typecasts setting as CheckBox item
+
+Declaration
+public SettingItemBoolean(string name, bool value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+bool	value	
+int	sortIndex	
+Properties
+Type
+Typecasts setting as CheckBox item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+
+Class SettingItemColor
+Typecasts setting as Color item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemColor : SettingItem
+Constructors
+SettingItemColor()
+Typecasts setting as Color item
+
+Declaration
+public SettingItemColor()
+SettingItemColor(string, Color, int)
+Typecasts setting as Color item
+
+Declaration
+public SettingItemColor(string name, Color value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+Color	value	
+int	sortIndex	
+Properties
+AllowDisableColor
+Typecasts setting as Color item
+
+Declaration
+public bool AllowDisableColor { get; set; }
+Property Value
+Type	Description
+bool	
+Checked
+Typecasts setting as Color item
+
+Declaration
+public bool Checked { get; set; }
+Property Value
+Type	Description
+bool	
+ColorText
+Typecasts setting as Color item
+
+Declaration
+public string ColorText { get; set; }
+Property Value
+Type	Description
+string	
+Type
+Typecasts setting as Color item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+WithCheckBox
+Typecasts setting as Color item
+
+Declaration
+public bool WithCheckBox { get; set; }
+Property Value
+Type	Description
+bool	
+
+Class SettingItemDouble
+Typecasts setting as NumericUpDown item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class SettingItemDouble : SettingItemNumber<double>
+Constructors
+SettingItemDouble()
+Typecasts setting as NumericUpDown item
+
+Declaration
+public SettingItemDouble()
+SettingItemDouble(string, double, int)
+Typecasts setting as NumericUpDown item
+
+Declaration
+public SettingItemDouble(string name, double value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+double	value	
+int	sortIndex	
+Properties
+DecimalPlaces
+Typecasts setting as NumericUpDown item
+
+Declaration
+[Bindable("decimalPlaces")]
+public int DecimalPlaces { get; set; }
+Property Value
+Type	Description
+int	
+Type
+Typecasts setting as NumericUpDown item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+Methods
+Equals(SettingItem)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public override bool Equals(SettingItem other)
+Parameters
+Type	Name	Description
+SettingItem	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+Overrides
+SettingItemNumber<double>.Equals(SettingItem)
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Class SettingItemInteger
+Typecasts setting as NumericUpDown item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemInteger : SettingItemNumber<int>
+Constructors
+SettingItemInteger()
+Typecasts setting as NumericUpDown item
+
+Declaration
+public SettingItemInteger()
+SettingItemInteger(string, int, int)
+Typecasts setting as NumericUpDown item
+
+Declaration
+public SettingItemInteger(string name, int value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+int	value	
+int	sortIndex	
+Properties
+Type
+Typecasts setting as NumericUpDown item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+
+Class SettingItemGroup
+Typecasts setting as TabControl item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemGroup : SettingItemList
+Constructors
+SettingItemGroup()
+Typecasts setting as TabControl item
+
+Declaration
+public SettingItemGroup()
+SettingItemGroup(string, IList<SettingItem>, int)
+Typecasts setting as TabControl item
+
+Declaration
+public SettingItemGroup(string name, IList<SettingItem> items, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+IList<SettingItem>	items	
+int	sortIndex	
+Fields
+AllowCreateEmptyGroup
+Typecasts setting as TabControl item
+
+Declaration
+public bool AllowCreateEmptyGroup
+Field Value
+Type	Description
+bool	
+Properties
+FirstActionInfo
+Typecasts setting as TabControl item
+
+Declaration
+public GroupActionInfo FirstActionInfo { get; set; }
+Property Value
+Type	Description
+GroupActionInfo	
+Items
+Typecasts setting as TabControl item
+
+Declaration
+protected override List<SettingItem> Items { get; set; }
+Property Value
+Type	Description
+List<SettingItem>	
+Overrides
+SettingItemList.Items
+SecondActionInfo
+Typecasts setting as TabControl item
+
+Declaration
+public GroupActionInfo SecondActionInfo { get; set; }
+Property Value
+Type	Description
+GroupActionInfo	
+Type
+Typecasts setting as TabControl item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+Methods
+AddItem(SettingItem)
+Typecasts setting as TabControl item
+
+Declaration
+public void AddItem(SettingItem item)
+Parameters
+Type	Name	Description
+SettingItem	item	
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+SettingItem.GetHashCode()
+
+Class SettingItemPeriod
+Typecasts setting as Period item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemPeriod : SettingItem
+Constructors
+SettingItemPeriod()
+Typecasts setting as Period item
+
+Declaration
+public SettingItemPeriod()
+SettingItemPeriod(string, Period, int)
+Typecasts setting as Period item
+
+Declaration
+public SettingItemPeriod(string name, Period value, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+Period	value	
+int	sortIndex	
+Properties
+ExcludedPeriods
+Typecasts setting as Period item
+
+Declaration
+public BasePeriod[] ExcludedPeriods { get; set; }
+Property Value
+Type	Description
+BasePeriod[]	
+MultiplierMaximum
+Typecasts setting as Period item
+
+Declaration
+public int MultiplierMaximum { get; set; }
+Property Value
+Type	Description
+int	
+MultiplierMinimum
+Typecasts setting as Period item
+
+Declaration
+public int MultiplierMinimum { get; set; }
+Property Value
+Type	Description
+int	
+Type
+Typecasts setting as Period item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+
+Class SettingItemSelector
+Typecasts setting as ComboBox item
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public sealed class SettingItemSelector : SettingItem
+Constructors
+SettingItemSelector()
+Typecasts setting as ComboBox item
+
+Declaration
+public SettingItemSelector()
+SettingItemSelector(string, string, IEnumerable<string>, int)
+Typecasts setting as ComboBox item
+
+Declaration
+public SettingItemSelector(string name, string value, IEnumerable<string> items, int sortIndex = 0)
+Parameters
+Type	Name	Description
+string	name	
+string	value	
+IEnumerable<string>	items	
+int	sortIndex	
+Properties
+Items
+Typecasts setting as ComboBox item
+
+Declaration
+[Bindable("items")]
+public IEnumerable<string> Items { get; set; }
+Property Value
+Type	Description
+IEnumerable<string>	
+Type
+Typecasts setting as ComboBox item
+
+Declaration
+public override SettingItemType Type { get; }
+Property Value
+Type	Description
+SettingItemType	
+Overrides
+SettingItem.Type
+
+Enum PriceType
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public enum PriceType
+Fields
+Name	Description
+AggressorFlag	
+Ask	
+AskSize	
+AskTickDirection	
+Bid	
+BidSize	
+BidTickDirection	
+Close	
+FundingRate	
+High	
+Last	
+Low	
+Mark	
+Median	
+Open	
+OpenInterest	
+QuoteAssetVolume	
+TickDirection	
+Ticks	
+Typical	
+Volume	
+Weighted
+
+A key part of each strategy is a trading algorithm it implements. In most cases it requires possibilities of placing a different type of orders, modifying and canceling them. In this topic, we will show you how to get access to this operations via Quantower API.
+
+Placing orders
+As we wrote in the previous topic, Core class is the main entry point for all major functions and placing orders (as well as all other trading operations) are not the exception. The most flexible way of placing orders is using the PlaceOrder method, that accepts PlaceOrderRequestParameters object as input parameter. This object provides you with more than 15 parameters and using them you can customize your order request according to your needs. It is not necessary to fill all, usually, you will need only main, such as:
+
+Parameter
+
+Description
+
+Account 
+
+An account for order 
+
+Symbol 
+
+A symbol for order 
+
+Side 
+
+Side of order: Buy or Sell
+
+Price
+
+Price for Limit or Stop Limit order
+
+TriggerPrice
+
+Trigger price for Stop or Stop Limit Order 
+
+Quantity
+
+Amount of the order (in lots)
+
+StopLoss
+
+An instance of SlTpHolder object, where you can specify price or offset for Stop Loss order 
+
+TakeProfit
+
+An instance of SlTpHolder object, where you can specify price or offset for Take Profit order
+
+OrderTypeID
+
+An ID of required order type. For most cases you will need only basic types, so you can use predefined constants: OrderType.Limit, OrderType.Stop, OrderType.Market and OrderType.StopLimit
+
+   And code example of using this method:
+
+Copy
+// Full form, allows you to specify all parameters
+Core.Instance.PlaceOrder(new PlaceOrderRequestParameters()
+{
+    Account = this.account,
+    Symbol = this.symbol,
+    Side = Side.Buy,
+    Price = this.symbol.Bid - this.symbol.TickSize * 10,
+    TimeInForce = TimeInForce.Day,
+    Quantity = 2,
+    StopLoss = SlTpHolder.CreateSL(20, PriceMeasurement.Offset),
+    TakeProfit = SlTpHolder.CreateSL(10, PriceMeasurement.Offset),                   
+    OrderTypeId = OrderType.Limit
+});
+Another option to send order request is using the overloaded PlaceOrder method, which accepts only basic order parameters. The shortest form will send Short or Long 1 lot position using a specified symbol and account:
+
+Copy
+Core.Instance.PlaceOrder(this.symbol, this.account, Side.Buy);
+You can also add other parameters, for example if you want to place a Limit order just need to specify Price:
+
+Copy
+Core.Instance.PlaceOrder(this.symbol, this.account, Side.Buy, price: this.symbol.Bid - this.symbol.TickSize * 5)
+Or Trigger price for Stop order:
+
+Copy
+Core.Instance.PlaceOrder(this.symbol, this.account, Side.Buy, triggerPrice: this.symbol.Bid - 5 * this.symbol.TickSize);
+Modifying orders
+Once you created your order you can modify its parameters - use ModifyOrder function in Core class for this. You can specify only parameter you want to change, for example, if you want to change Quantity of order:
+
+Copy
+Core.Instance.ModifyOrder(orderToModify, quantity: 5);
+If you need to change the price of the order:
+
+Copy
+Core.Instance.ModifyOrder(orderToModify, price: this.symbol.Bid - 10 * this.symbol.TickSize);
+Or, if you want, you can request changing all parameters simultaneously: quantity, time in force, price:
+
+Copy
+Core.Instance.ModifyOrder(orderToModify, quantity: 5, timeInForce: TimeInForce.GTC, price: this.symbol.Bid - 10*this.symbol.TickSize);
+Cancelling orders
+As expected there is a function for canceling Order - CancelOrder. All you need to specify is Order object:
+
+Copy
+Core.Instance.CancelOrder(orderToCancel);
+You can use also Cancel method of Order class as an alternative way:
+
+Copy
+orderToCancel.Cancel();
+Closing positions
+The closing of positions is very similar to canceling orders. Use ClosePosition method from Core:
+
+Copy
+Core.Instance.ClosePosition(positionToClose);
+Or method Close from Position class:
+
+Copy
+positionToClose.Close();
+If allowed by your current connection, you can request partial closing of position. Both ways of closing positions accept CloseQuantity parameter, which determines an amount that should be closed.
+
+Result of trading operations
+All trading operations return special object TradingOperationResult which contains information about the result of the processing request: 
+
+Parameter
+
+Description
+
+Status
+
+Success if a request was sent to server or Failure if some problems occurred
+
+Message 
+
+Text with detail information in case of errors
+
+Using these set of trading functions you can simply create any algorithm for your trading strategy. In our further articles, we will cover more specific and practical cases, such as specifying parameters for advanced order types and creating universal trading logic, for different connections.

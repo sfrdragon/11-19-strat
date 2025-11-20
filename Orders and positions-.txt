@@ -1,0 +1,531 @@
+Orders and positions- 
+
+Class Order
+Represents trading information about pending order
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Order : TradingObject
+Properties
+AverageFillPrice
+Represents trading information about pending order
+
+Declaration
+public double AverageFillPrice { get; }
+Property Value
+Type	Description
+double	
+ExpirationTime
+Gets orders expiration time
+
+Declaration
+public DateTime ExpirationTime { get; }
+Property Value
+Type	Description
+DateTime	
+FilledQuantity
+Filled quantity of the order
+
+Declaration
+public double FilledQuantity { get; }
+Property Value
+Type	Description
+double	
+GroupId
+The ID of the order group. This group created when trades done by the MAM account.
+
+Declaration
+public string GroupId { get; }
+Property Value
+Type	Description
+string	
+LastUpdateTime
+Gets orders last update time
+
+Declaration
+public DateTime LastUpdateTime { get; }
+Property Value
+Type	Description
+DateTime	
+OrderType
+Gets OrderType
+
+Declaration
+public OrderType OrderType { get; }
+Property Value
+Type	Description
+OrderType	
+OrderTypeId
+Orders Type Id. It is used for the orders type comparing.
+
+Declaration
+public string OrderTypeId { get; }
+Property Value
+Type	Description
+string	
+OriginalStatus
+Gets open order original status
+
+Declaration
+public string OriginalStatus { get; }
+Property Value
+Type	Description
+string	
+PositionId
+Gets Position Id.
+
+Declaration
+public string PositionId { get; }
+Property Value
+Type	Description
+string	
+Price
+Gets order price value
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+RemainingQuantity
+Remaining quantity of the order
+
+Declaration
+public double RemainingQuantity { get; }
+Property Value
+Type	Description
+double	
+Status
+Gets orders current status
+
+Declaration
+public OrderStatus Status { get; }
+Property Value
+Type	Description
+OrderStatus	
+StopLoss
+Gets StopLoss holder for given order
+
+Declaration
+public SlTpHolder StopLoss { get; }
+Property Value
+Type	Description
+SlTpHolder	
+StopLossItems
+Represents trading information about pending order
+
+Declaration
+public SlTpHolder[] StopLossItems { get; }
+Property Value
+Type	Description
+SlTpHolder[]	
+TakeProfit
+Gets TakeProfit holder for given order
+
+Declaration
+public SlTpHolder TakeProfit { get; }
+Property Value
+Type	Description
+SlTpHolder	
+TakeProfitItems
+Represents trading information about pending order
+
+Declaration
+public SlTpHolder[] TakeProfitItems { get; }
+Property Value
+Type	Description
+SlTpHolder[]	
+TimeInForce
+Gets order TIF(Time-In-Force) type
+
+Declaration
+public TimeInForce TimeInForce { get; }
+Property Value
+Type	Description
+TimeInForce	
+TotalQuantity
+Total quantity of the order
+
+Declaration
+public double TotalQuantity { get; }
+Property Value
+Type	Description
+double	
+TrailOffset
+Gets order trailing offset value
+
+Declaration
+public double TrailOffset { get; }
+Property Value
+Type	Description
+double	
+TriggerPrice
+Gets order trigger price value
+
+Declaration
+public double TriggerPrice { get; }
+Property Value
+Type	Description
+double	
+Methods
+BuildMessage()
+Represents trading information about pending order
+
+Declaration
+public MessageOpenOrder BuildMessage()
+Returns
+Type	Description
+MessageOpenOrder	
+Cancel(string)
+Cancels pending order
+
+Declaration
+public TradingOperationResult Cancel(string sendingSource = null)
+Parameters
+Type	Name	Description
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+Equals(object)
+Determines whether the specified object is equal to the current object.
+
+Declaration
+public override bool Equals(object obj)
+Parameters
+Type	Name	Description
+object	obj	
+The object to compare with the current object.
+
+Returns
+Type	Description
+bool	
+true if the specified object is equal to the current object; otherwise, false.
+
+Overrides
+object.Equals(object)
+Equals(Order)
+Indicates whether the current object is equal to another object of the same type.
+
+Declaration
+public bool Equals(Order other)
+Parameters
+Type	Name	Description
+Order	other	
+An object to compare with this object.
+
+Returns
+Type	Description
+bool	
+true if the current object is equal to the other parameter; otherwise, false.
+
+GetHashCode()
+Serves as the default hash function.
+
+Declaration
+public override int GetHashCode()
+Returns
+Type	Description
+int	
+A hash code for the current object.
+
+Overrides
+object.GetHashCode()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on each UpdateByMessage(MessageOpenOrder) invocation
+
+Declaration
+public event Action<IOrder> Updated
+Event Type
+Type	Description
+Action<IOrder>	
+
+Class Position
+Represents trading information about related position
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Position : TradingObject
+Properties
+CurrentPrice
+The market price obtainable from your broker.
+
+Declaration
+public double CurrentPrice { get; }
+Property Value
+Type	Description
+double	
+Fee
+Gets fee amount for the position.
+
+Declaration
+public PnLItem Fee { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnL
+Gets Profit/loss (without swaps or commissions) all calculated based on the current broker's price. For open position it shows the profit/loss you would make if you close the position at the current price. If position closed, this parameter show profit/loss what trader have after closing this position.
+
+Declaration
+public PnLItem GrossPnL { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnLTicks
+Returns ticks amount between open and current price.
+
+Declaration
+public double GrossPnLTicks { get; }
+Property Value
+Type	Description
+double	
+LiquidationPrice
+Represents trading information about related position
+
+Declaration
+public double LiquidationPrice { get; }
+Property Value
+Type	Description
+double	
+NetPnL
+Gets Profit/loss calculated based on the current broker's price. For open position it shows the profit/loss you would make if you close the position at the current price. If position closed, this parameter show profit/loss what trader have after closing this position.
+
+Declaration
+public PnLItem NetPnL { get; }
+Property Value
+Type	Description
+PnLItem	
+OpenPrice
+Gets position open order price
+
+Declaration
+public double OpenPrice { get; }
+Property Value
+Type	Description
+double	
+OpenTime
+Gets position openning time
+
+Declaration
+public DateTime OpenTime { get; }
+Property Value
+Type	Description
+DateTime	
+Quantity
+Gets position quantity value
+
+Declaration
+public double Quantity { get; }
+Property Value
+Type	Description
+double	
+StopLoss
+Gets StopLoss order which belongs to the position
+
+Declaration
+public Order StopLoss { get; }
+Property Value
+Type	Description
+Order	
+Swaps
+Gets PnL swaps
+
+Declaration
+public PnLItem Swaps { get; }
+Property Value
+Type	Description
+PnLItem	
+TakeProfit
+Gets TakeProfit order which belongs to the position
+
+Declaration
+public Order TakeProfit { get; }
+Property Value
+Type	Description
+Order	
+Methods
+BuildMessage()
+Represents trading information about related position
+
+Declaration
+public MessageOpenPosition BuildMessage()
+Returns
+Type	Description
+MessageOpenPosition	
+Close(double)
+Closes position if quantity is not specified else - uses partial closing operation.
+
+Declaration
+public virtual TradingOperationResult Close(double closeQuantity = -1)
+Parameters
+Type	Name	Description
+double	closeQuantity	
+Returns
+Type	Description
+TradingOperationResult	
+ForceRecalculatePnl()
+Represents trading information about related position
+
+Declaration
+public void ForceRecalculatePnl()
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on each UpdateByMessage(MessageOpenPosition) and UpdatePnl(PnL) invocation
+
+Declaration
+public event Action<Position> Updated
+Event Type
+Type	Description
+Action<Position>
+
+Class Trade
+Represents information about trade.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Trade : TradingObject
+Constructors
+Trade(string)
+Represents information about trade.
+
+Declaration
+public Trade(string connectionId)
+Parameters
+Type	Name	Description
+string	connectionId	
+Properties
+DateTime
+Get the date and time when trade was executed
+
+Declaration
+public DateTime DateTime { get; }
+Property Value
+Type	Description
+DateTime	
+Fee
+Get the fee value that was charged for this trade
+
+Declaration
+public PnLItem Fee { get; }
+Property Value
+Type	Description
+PnLItem	
+GrossPnl
+Get the trade Gross P&L
+
+Declaration
+public PnLItem GrossPnl { get; }
+Property Value
+Type	Description
+PnLItem	
+NetPnl
+Get the trade Net P&L
+
+Declaration
+public PnLItem NetPnl { get; }
+Property Value
+Type	Description
+PnLItem	
+OrderId
+Gets the unique identifier of the order initiating the trade.
+
+Declaration
+public string OrderId { get; }
+Property Value
+Type	Description
+string	
+OrderTypeId
+Get the trade order type
+
+Declaration
+public string OrderTypeId { get; }
+Property Value
+Type	Description
+string	
+PositionId
+Gets a unique identifier of the position, which is related to this trade.
+
+Declaration
+public string PositionId { get; }
+Property Value
+Type	Description
+string	
+PositionImpactType
+Represents information about trade.
+
+Declaration
+public PositionImpactType PositionImpactType { get; }
+Property Value
+Type	Description
+PositionImpactType	
+Price
+Get the price where trade was executed
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+Quantity
+Get the trade quantity
+
+Declaration
+public double Quantity { get; }
+Property Value
+Type	Description
+double	
+Methods
+BuildMessage()
+Represents information about trade.
+
+Declaration
+public MessageTrade BuildMessage()
+Returns
+Type	Description
+MessageTrade	
+ToString()
+Returns a string that represents the current object.
+
+Declaration
+public override string ToString()
+Returns
+Type	Description
+string	
+A string that represents the current object.
+
+Overrides
+object.ToString()
+Events
+Updated
+Will be triggered on trade updating
+
+Declaration
+public event Action Updated
+Event Type
+Type	Description
+Action		

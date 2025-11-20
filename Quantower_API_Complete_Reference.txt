@@ -1,0 +1,2140 @@
+═══════════════════════════════════════════════════════════════════════════════
+QUANTOWER TRADING PLATFORM - COMPLETE API REFERENCE FOR AI AGENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+VERSION: 2024 (Comprehensive)
+PURPOSE: Complete reference for AI coding agents developing Quantower strategies
+BASED ON: Live production code examples and API patterns
+
+═══════════════════════════════════════════════════════════════════════════════
+TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+ 1. CORE ARCHITECTURE & CONCEPTS
+ 2. STRATEGY LIFECYCLE & BASE CLASSES
+ 3. INPUT PARAMETERS & SETTINGS SYSTEM
+ 4. HISTORICAL DATA MANAGEMENT
+ 5. INDICATORS & CALCULATIONS
+ 6. MARKET DATA & REAL-TIME EVENTS
+ 7. ORDER PLACEMENT & MANAGEMENT
+ 8. POSITION & TRADE TRACKING
+ 9. STOP LOSS & TAKE PROFIT SYSTEMS
+10. SESSION & TIME MANAGEMENT
+11. VOLUME ANALYSIS & DELTA CALCULATIONS
+12. PERFORMANCE METRICS & MONITORING
+13. UTILITY CLASSES & HELPERS
+14. COMMON PATTERNS & BEST PRACTICES
+15. ERROR HANDLING & LOGGING
+16. ADVANCED PATTERNS & FRAMEWORKS
+
+═══════════════════════════════════════════════════════════════════════════════
+1. CORE ARCHITECTURE & CONCEPTS
+═══════════════════════════════════════════════════════════════════════════════
+
+1.1 CORE NAMESPACES
+───────────────────
+using TradingPlatform.BusinessLayer;
+using TradingPlatform.BusinessLayer.Integration;
+using TradingPlatform.BusinessLayer.Licence;
+using System.Diagnostics.Metrics;  // For metrics
+
+1.2 CORE.INSTANCE - CENTRAL ACCESS POINT
+─────────────────────────────────────────
+Core.Instance provides singleton access to all platform services:
+
+• Core.Instance.Symbols          → All available symbols
+• Core.Instance.Accounts         → All trading accounts  
+• Core.Instance.Positions        → All open positions
+• Core.Instance.Orders           → All orders
+• Core.Instance.OrderTypes       → Available order types
+• Core.Instance.Indicators       → Indicator factory
+• Core.Instance.Loggers          → Logging system
+• Core.Instance.TimeUtils        → Time conversion utilities
+• Core.Instance.VolumeAnalysis   → Volume analysis manager
+• Core.Instance.Connections      → Connection manager
+
+1.3 KEY BUSINESS OBJECTS
+────────────────────────
+• Symbol      → Instrument to trade (ES, NQ, etc.)
+• Account     → Trading account with balance/equity
+• Position    → Open position (long/short)
+• Order       → Pending/active orders
+• Trade       → Executed trade with fill info
+• OrderType   → Order type definition (Market, Limit, Stop)
+
+1.4 BUSINESS OBJECT STATES
+──────────────────────────
+enum BusinessObjectState {
+    Fake,     // Object needs restoration from connection
+    Real      // Object is live and connected
+}
+
+// Always check state and restore if needed:
+if (symbol.State == BusinessObjectState.Fake) {
+    symbol = Core.Instance.GetSymbol(symbol.CreateInfo());
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+2. STRATEGY LIFECYCLE & BASE CLASSES
+═══════════════════════════════════════════════════════════════════════════════
+
+2.1 STRATEGY BASE CLASS
+───────────────────────
+public class MyStrategy : Strategy, ICurrentSymbol, ICurrentAccount
+{
+    // Required interfaces for input parameters
+    [InputParameter("Symbol", 0)]
+    public Symbol CurrentSymbol { get; set; }
+    
+    [InputParameter("Account", 1)]
+    public Account CurrentAccount { get; set; }
+    
+    // Lifecycle methods (in execution order):
+    protected override void OnCreated() { }        // Called when strategy created
+    protected override void OnRun() { }            // Main initialization entry point
+    protected override void OnStop() { }           // Cleanup and unsubscribe
+    protected override void OnRemove() { }         // Final disposal
+    
+    // Metrics initialization
+    protected override void OnInitializeMetrics(Meter meter) {
+        base.OnInitializeMetrics(meter);
+        meter.CreateObservableGauge("metric-name", () => value);
+    }
+    
+    // Connection monitoring
+    public override string[] MonitoringConnectionsIds => new[] { 
+        CurrentSymbol?.ConnectionId, 
+        CurrentAccount?.ConnectionId 
+    };
+}
+
+2.2 INDICATOR BASE CLASS
+────────────────────────
+public class MyIndicator : Indicator, IVolumeAnalysisIndicator
+{
+    // Input parameters
+    [InputParameter("Period", 0, 1, 200, 1)]
+    public int Period { get; set; } = 14;
+    
+    // Constructor - define indicator metadata
+    public MyIndicator() : base() {
+        Name = "My Indicator";
+        Description = "Indicator description";
+        
+        // Add line series for output
+        AddLineSeries("Line1", Color.Blue, 1, LineStyle.Solid);
+        AddLineSeries("Line2", Color.Red, 1, LineStyle.Solid);
+        
+        SeparateWindow = true;  // Display in separate window
+    }
+    
+    // Initialization (called on init and parameter changes)
+    protected override void OnInit() {
+        // Initialize buffers, indicators, etc.
+    }
+    
+    // Main calculation (called on each bar update)
+    protected override void OnUpdate(UpdateArgs args) {
+        // Calculate indicator values
+        double value = /* calculation */;
+        SetValue(value);          // Set value for line 0
+        SetValue(value, 1);       // Set value for line 1
+    }
+    
+    // Volume analysis interface
+    public bool IsRequirePriceLevelsCalculation => false;
+    public void VolumeAnalysisData_Loaded() {
+        // Called when volume data is ready
+    }
+}
+
+2.3 LIFECYCLE EXECUTION ORDER
+──────────────────────────────
+1. Constructor() → Create instance, set defaults
+2. OnCreated() → Strategy created, basic setup
+3. OnRun() → Main initialization:
+   - Validate inputs
+   - Restore Symbol/Account if needed
+   - Get order types
+   - Load historical data
+   - Initialize indicators
+   - Subscribe to events
+   - Set initialized flag
+4. Events fire during operation
+5. OnStop() → Cleanup:
+   - Unsubscribe all events
+   - Dispose historical data
+   - Clear initialized flag
+6. OnRemove() → Final disposal
+
+═══════════════════════════════════════════════════════════════════════════════
+3. INPUT PARAMETERS & SETTINGS SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 INPUT PARAMETER ATTRIBUTE
+──────────────────────────────
+[InputParameter("Display Name", sortIndex)]
+public Type PropertyName { get; set; } = defaultValue;
+
+[InputParameter("Period", 0, minValue, maxValue, increment)]
+public int Period { get; set; } = 14;
+
+[InputParameter("Enable Feature", 1)]
+public bool EnableFeature { get; set; } = false;
+
+[InputParameter("Symbol", 0)]
+public Symbol Symbol { get; set; }
+
+[InputParameter("Account", 1)]
+public Account Account { get; set; }
+
+3.2 SETTINGS SYSTEM (ADVANCED UI)
+──────────────────────────────────
+public override IList<SettingItem> Settings {
+    get {
+        var settings = base.Settings;
+        
+        // Boolean toggle (checkbox)
+        settings.Add(new SettingItemBoolean("KEY", defaultValue) {
+            Text = "Display Name",
+            SortIndex = 100
+        });
+        
+        // Integer input
+        settings.Add(new SettingItemInteger("KEY", defaultValue) {
+            Text = "Display Name",
+            SortIndex = 101,
+            Minimum = 1,
+            Maximum = 100,
+            Increment = 1
+        });
+        
+        // Double input
+        settings.Add(new SettingItemDouble("KEY", defaultValue) {
+            Text = "Display Name", 
+            SortIndex = 102,
+            Minimum = 0.0,
+            Maximum = 100.0,
+            Increment = 0.1
+        });
+        
+        // String input
+        settings.Add(new SettingItemString("KEY", "default") {
+            Text = "Display Name",
+            SortIndex = 103
+        });
+        
+        // Selector/dropdown
+        settings.Add(new SettingItemSelector("KEY", options, selectedIndex) {
+            Text = "Display Name",
+            SortIndex = 104
+        });
+        
+        // DateTime input
+        settings.Add(new SettingItemDateTime("KEY", DateTime.Now) {
+            Text = "Display Name",
+            SortIndex = 105
+        });
+        
+        return settings;
+    }
+    set {
+        base.Settings = value;
+        
+        // Extract values from settings
+        if (value.TryGetValue("KEY", out bool boolVal))
+            _field = boolVal;
+        if (value.TryGetValue("KEY", out int intVal))
+            _field = intVal;
+        if (value.TryGetValue("KEY", out double doubleVal))
+            _field = doubleVal;
+        if (value.TryGetValue("KEY", out string strVal))
+            _field = strVal;
+        if (value.TryGetValue("KEY", out DateTime dtVal))
+            _field = dtVal;
+    }
+}
+
+3.3 CONDITIONAL VISIBILITY (RELATIONS)
+───────────────────────────────────────
+// Show setting only when parent setting has specific value
+settings.Add(new SettingItemInteger("child", 0) {
+    Text = "Child Setting",
+    Relation = new SettingItemRelationVisibility("PARENT_KEY", true)
+});
+
+// Show when parent has one of multiple values
+settings.Add(new SettingItemInteger("child", 0) {
+    Relation = new SettingItemRelationVisibility("PARENT_KEY", 1, 2, 3)
+});
+
+═══════════════════════════════════════════════════════════════════════════════
+4. HISTORICAL DATA MANAGEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 LOADING HISTORICAL DATA
+───────────────────────────
+// Method 1: Simple load with period
+HistoricalData hd = symbol.GetHistory(
+    Period.MIN1,                    // Aggregation period
+    HistoryType.Last,              // History type
+    DateTime.UtcNow.AddDays(-30)   // From time
+);
+
+// Method 2: Using HistoryRequestParameters
+var request = new HistoryRequestParameters {
+    Aggregation = new HistoryAggregationTime(Period.MIN1, HistoryType.Last),
+    FromTime = DateTime.UtcNow.AddDays(-30),
+    ToTime = DateTime.MaxValue,     // or specific end time
+    Symbol = symbol
+};
+HistoricalData hd = symbol.GetHistory(request);
+
+// Method 3: Time range
+HistoricalData hd = symbol.GetHistory(
+    Period.MIN1,
+    fromTime,
+    toTime
+);
+
+4.2 HISTORICAL DATA PROPERTIES
+───────────────────────────────
+hd.Count                    // Number of bars
+hd.FromTime                 // Start time
+hd.Symbol                   // Associated symbol
+hd.Aggregation             // Aggregation settings
+hd.High()                  // Highest high in range
+hd.Low()                   // Lowest low in range
+
+4.3 ACCESSING HISTORY ITEMS
+────────────────────────────
+// Index access (0 = most recent)
+IHistoryItem bar = hd[0];           // Current/most recent bar
+IHistoryItem bar = hd[1];           // Previous bar
+IHistoryItem bar = hd[2];           // 2 bars ago
+
+// Seek from end
+IHistoryItem bar = hd[0, SeekOriginHistory.End];    // Most recent
+IHistoryItem bar = hd[1, SeekOriginHistory.End];    // Previous
+
+// Iterate through history
+for (int i = 0; i < hd.Count; i++) {
+    var bar = hd[i];
+    // Process bar
+}
+
+4.4 HISTORY ITEM TYPES & PRICE ACCESS
+──────────────────────────────────────
+// IHistoryItem types
+HistoryItemBar      // OHLCV bar
+HistoryItemLast     // Last trade tick
+HistoryItemTick     // Bid/ask tick
+
+// Accessing price data
+double open = bar[PriceType.Open];
+double high = bar[PriceType.High];
+double low = bar[PriceType.Low];
+double close = bar[PriceType.Close];
+double volume = bar[PriceType.Volume];
+double median = bar[PriceType.Median];
+
+// Time properties
+DateTime timeLeft = bar.TimeLeft;    // Bar start time (UTC)
+DateTime timeRight = bar.TimeRight;  // Bar end time (UTC)
+
+4.5 ADDING INDICATORS TO HISTORICAL DATA
+─────────────────────────────────────────
+// Create indicator
+Indicator atr = Core.Instance.Indicators.BuiltIn.ATR(14, MaMode.SMA);
+Indicator sma = Core.Instance.Indicators.BuiltIn.SMA(20, PriceType.Close);
+
+// Add to historical data
+hd.AddIndicator(atr);
+hd.AddIndicator(sma);
+
+// Get indicator values
+double atrValue = atr.GetValue();        // Most recent value
+double atrValue = atr.GetValue(1);       // Previous bar value
+double smaValue = sma[0];                // Index access
+
+// Multi-line indicators
+double value1 = indicator.LinesSeries[0].GetValue();
+double value2 = indicator.LinesSeries[1].GetValue(1);
+
+4.6 HISTORICAL DATA EVENTS
+──────────────────────────
+// Subscribe to events
+hd.NewHistoryItem += OnNewHistoryItem;
+hd.HistoryItemUpdated += OnHistoryItemUpdated;
+
+// Event handlers
+private void OnNewHistoryItem(object sender, HistoryEventArgs e) {
+    IHistoryItem newBar = e.HistoryItem;
+    // Process new bar (previous bar just closed)
+}
+
+private void OnHistoryItemUpdated(object sender, HistoryEventArgs e) {
+    IHistoryItem updatedBar = e.HistoryItem;
+    // Process bar update (current bar tick update)
+}
+
+// Unsubscribe in OnStop()
+hd.NewHistoryItem -= OnNewHistoryItem;
+hd.HistoryItemUpdated -= OnHistoryItemUpdated;
+
+4.7 DISPOSAL
+────────────
+// Always dispose historical data in OnStop()
+protected override void OnStop() {
+    if (hd != null) {
+        hd.Dispose();
+        hd = null;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+5. INDICATORS & CALCULATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+5.1 BUILT-IN INDICATORS
+───────────────────────
+// ATR (Average True Range)
+Indicator atr = Core.Instance.Indicators.BuiltIn.ATR(period, maMode);
+
+// Moving Averages
+Indicator sma = Core.Instance.Indicators.BuiltIn.SMA(period, priceType);
+Indicator ema = Core.Instance.Indicators.BuiltIn.EMA(period, priceType);
+Indicator wma = Core.Instance.Indicators.BuiltIn.WMA(period, priceType);
+
+// MaMode options
+MaMode.SMA    // Simple Moving Average
+MaMode.EMA    // Exponential Moving Average
+MaMode.SMMA   // Smoothed Moving Average
+MaMode.LWMA   // Linear Weighted Moving Average
+
+5.2 CUSTOM INDICATORS
+─────────────────────
+// Create custom indicator by name
+var indicatorInfo = Core.Instance.Indicators.All
+    .FirstOrDefault(x => x.Name == "IndicatorName");
+Indicator indicator = Core.Instance.Indicators.CreateIndicator(indicatorInfo);
+
+// Set indicator settings
+indicator.Settings = new List<SettingItem> {
+    new SettingItemInteger("Period", 14),
+    new SettingItemBoolean("Normalize", true)
+};
+
+5.3 INDICATOR CALCULATION PATTERNS
+───────────────────────────────────
+// Pattern 1: Buffer-based calculation
+private RingBuffer<double> buffer;
+
+protected override void OnInit() {
+    buffer = new RingBuffer<double>(period);
+}
+
+protected override void OnUpdate(UpdateArgs args) {
+    double price = HistoricalData[1][PriceType.Close];
+    buffer.Add(price);
+    
+    if (buffer.IsFull) {
+        double average = buffer.ToArray().Average();
+        SetValue(average);
+    }
+}
+
+// Pattern 2: Direct calculation
+protected override void OnUpdate(UpdateArgs args) {
+    if (Count < Period)
+        return;
+        
+    double sum = 0;
+    for (int i = 0; i < Period; i++) {
+        sum += HistoricalData[i][PriceType.Close];
+    }
+    double average = sum / Period;
+    SetValue(average);
+}
+
+5.4 INDICATOR LINE SERIES
+──────────────────────────
+// Adding lines in constructor
+AddLineSeries("Main", Color.Blue, 1, LineStyle.Solid);
+AddLineSeries("Signal", Color.Red, 1, LineStyle.Dashed);
+
+// Line styles
+LineStyle.Solid
+LineStyle.Dash
+LineStyle.Dot
+LineStyle.DashDot
+LineStyle.DashDotDot
+
+// Setting values
+SetValue(value);          // Line 0
+SetValue(value, 1);       // Line 1
+SetValue(value, 2);       // Line 2
+
+// Adding markers
+LinesSeries[0].SetMarker(0, new IndicatorLineMarker(
+    Color.Green, 
+    IndicatorLineMarkerIconType.UpArrow
+));
+
+LinesSeries[1].SetMarker(0, new IndicatorLineMarker(
+    Color.Red,
+    IndicatorLineMarkerIconType.DownArrow
+));
+
+5.5 HULL MOVING AVERAGE (HMA) IMPLEMENTATION
+─────────────────────────────────────────────
+// HMA Formula: WMA(2*WMA(n/2) - WMA(n), sqrt(n))
+public static double HMA_Last(double[] values, int n) {
+    int half = n / 2;
+    int sroot = (int)Math.Round(Math.Sqrt(n));
+    
+    var wHalf = new RollingWma(half);
+    var wFull = new RollingWma(n);
+    var wOut = new RollingWma(sroot);
+    
+    double last = double.NaN;
+    for (int i = 0; i < values.Length; i++) {
+        double a = wHalf.Push(values[i]);
+        double b = wFull.Push(values[i]);
+        if (!double.IsNaN(a) && !double.IsNaN(b))
+            last = wOut.Push(2.0 * a - b);
+        else
+            _ = wOut.Push(double.NaN);
+    }
+    return last;
+}
+
+// Rolling WMA helper
+private class RollingWma {
+    private readonly int p;
+    private readonly double[] buf;
+    private int count, idx;
+    private double sum, wsum, denom;
+    
+    public RollingWma(int period) {
+        p = Math.Max(1, period);
+        buf = new double[p];
+        denom = p * (p + 1) / 2.0;
+    }
+    
+    public double Push(double v) {
+        if (p == 1) return v;
+        
+        if (count < p) {
+            buf[count] = v;
+            sum += v;
+            wsum += v * (count + 1);
+            count++;
+            return (count == p) ? (wsum / denom) : double.NaN;
+        }
+        
+        double old = buf[idx];
+        buf[idx] = v;
+        idx = (idx + 1) % p;
+        wsum = wsum + p * v - sum;
+        sum = sum + v - old;
+        return wsum / denom;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+6. MARKET DATA & REAL-TIME EVENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+6.1 SYMBOL PROPERTIES
+─────────────────────
+symbol.Name                 // Symbol name (e.g., "ES 12-24")
+symbol.ConnectionId        // Connection ID
+symbol.TickSize            // Minimum price movement
+symbol.ContractSize        // Contract multiplier
+symbol.MinLot              // Minimum order quantity
+symbol.MaxLot              // Maximum order quantity
+symbol.Last                // Last traded price
+symbol.Bid                 // Current bid price
+symbol.Ask                 // Current ask price
+symbol.HistoryType         // Default history type
+symbol.DeltaCalculationType // Delta calculation method
+
+// Formatting
+string priceStr = symbol.FormatPrice(price);
+string qtyStr = symbol.FormatQuantity(quantity);
+
+// Rounding
+double rounded = symbol.RoundPriceToTickSize(price);
+double roundedQty = Math.Floor(qty / symbol.MinLot) * symbol.MinLot;
+
+// Tick calculations
+double ticks = symbol.CalculateTicks(fromPrice, toPrice);
+
+// Trading permissions
+bool canTrade = symbol.IsTradingAllowed(account);
+
+6.2 SYMBOL EVENTS
+─────────────────
+// Last price update (trade occurred)
+symbol.NewLast += OnNewLast;
+private void OnNewLast(Symbol symbol, Last last) {
+    double price = last.Price;
+    double volume = last.Volume;
+    DateTime time = last.Time;
+    AggressorFlag side = last.AggressorFlag;  // Buy/Sell
+}
+
+// Quote update (bid/ask change)
+symbol.NewQuote += OnNewQuote;
+private void OnNewQuote(Symbol symbol, Quote quote) {
+    double bid = quote.Bid;
+    double ask = quote.Ask;
+    double bidSize = quote.BidSize;
+    double askSize = quote.AskSize;
+    DateTime time = quote.Time;
+}
+
+// Level2 (market depth) update
+symbol.NewLevel2 += OnNewLevel2;
+private void OnNewLevel2(Symbol symbol, Level2Quote quote) {
+    // Process depth update
+}
+
+// Daily bar update
+symbol.NewDayBar += OnNewDayBar;
+private void OnNewDayBar(Symbol symbol, HistoryItemBar bar) {
+    // Process daily bar
+}
+
+// Unsubscribe in OnStop()
+symbol.NewLast -= OnNewLast;
+symbol.NewQuote -= OnNewQuote;
+
+6.3 AGGRESSOR FLAG
+──────────────────
+enum AggressorFlag {
+    Buy,    // Trade was buyer-initiated
+    Sell,   // Trade was seller-initiated
+    None    // Unknown/undefined
+}
+
+6.4 ACCOUNT PROPERTIES
+──────────────────────
+account.Name               // Account name
+account.ConnectionId       // Connection ID
+account.Balance            // Account balance
+account.Equity             // Account equity
+account.Margin             // Used margin
+account.FreeMargin         // Available margin
+account.PnL                // Total P&L
+
+6.5 CONNECTION MANAGEMENT
+─────────────────────────
+// Get fresh instances
+Symbol freshSymbol = Core.Instance.GetSymbol(symbol.CreateInfo());
+Account freshAccount = Core.Instance.GetAccount(account.CreateInfo());
+
+// Connection monitoring
+Core.Instance.Connections.ConnectionStateChanged += OnConnectionStateChanged;
+private void OnConnectionStateChanged(Connection connection, ConnectionState state) {
+    // Handle connection state changes
+}
+
+enum ConnectionState {
+    Connected,
+    Disconnected,
+    Connecting,
+    Error
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+7. ORDER PLACEMENT & MANAGEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+7.1 ORDER TYPE RESOLUTION
+─────────────────────────
+// Get market order type
+var marketOrderType = Core.Instance.OrderTypes.FirstOrDefault(x =>
+    x.ConnectionId == symbol.ConnectionId &&
+    x.Behavior == OrderTypeBehavior.Market);
+
+// Get from symbol (recommended)
+var marketOrderType = symbol.GetAlowedOrderTypes(OrderTypeUsage.Order)
+    .FirstOrDefault(x => x.Behavior == OrderTypeBehavior.Market);
+
+// For SL/TP orders
+var stopOrderType = symbol.GetAlowedOrderTypes(OrderTypeUsage.CloseOrder)
+    .FirstOrDefault(x => x.Behavior == OrderTypeBehavior.Stop);
+
+var limitOrderType = symbol.GetAlowedOrderTypes(OrderTypeUsage.CloseOrder)
+    .FirstOrDefault(x => x.Behavior == OrderTypeBehavior.Limit);
+
+// Order type behaviors
+OrderTypeBehavior.Market    // Market order
+OrderTypeBehavior.Limit     // Limit order
+OrderTypeBehavior.Stop      // Stop order
+OrderTypeBehavior.StopLimit // Stop-limit order
+
+// Order type usage
+OrderTypeUsage.All          // All order types
+OrderTypeUsage.Order        // Entry orders
+OrderTypeUsage.CloseOrder   // Exit orders
+
+7.2 PLACING ORDERS - SIMPLE METHOD
+───────────────────────────────────
+TradingOperationResult result = Core.Instance.PlaceOrder(
+    symbol,
+    account,
+    side,
+    timeInForce,
+    quantity,
+    price,           // Optional
+    triggerPrice,    // Optional
+    trailOffset      // Optional
+);
+
+// Check result
+if (result.Status == TradingOperationResultStatus.Success) {
+    // Order placed successfully
+} else {
+    // Handle error: result.Message
+}
+
+7.3 PLACING ORDERS - ADVANCED METHOD
+─────────────────────────────────────
+var request = new PlaceOrderRequestParameters {
+    Symbol = symbol,
+    Account = account,
+    Side = side,                    // Side.Buy or Side.Sell
+    OrderTypeId = orderTypeId,      // From order type resolution
+    Quantity = quantity,
+    Price = price,                  // For limit orders
+    TriggerPrice = triggerPrice,    // For stop orders
+    TimeInForce = TimeInForce.GTC,  // GTC, DAY, IOC, FOK
+    ExpirationTime = DateTime.MaxValue,
+    Comment = "Order comment",      // Optional tracking
+    PositionId = positionId,        // Link to position (for SL/TP)
+    AdditionalParameters = new List<SettingItem> {
+        new SettingItemBoolean(OrderType.REDUCE_ONLY, true),
+        new SettingItemBoolean(OrderType.POST_ONLY, true)
+    }
+};
+
+TradingOperationResult result = Core.Instance.PlaceOrder(request);
+
+7.4 TIME IN FORCE OPTIONS
+─────────────────────────
+TimeInForce.GTC    // Good Till Cancel
+TimeInForce.DAY    // Day order
+TimeInForce.IOC    // Immediate Or Cancel
+TimeInForce.FOK    // Fill Or Kill
+TimeInForce.GTD    // Good Till Date
+
+7.5 ORDER SIDE
+──────────────
+Side.Buy     // Long/Buy
+Side.Sell    // Short/Sell
+
+7.6 ADDITIONAL ORDER PARAMETERS
+────────────────────────────────
+// Reduce-only (only close positions, don't open new)
+new SettingItemBoolean(OrderType.REDUCE_ONLY, true)
+
+// Post-only (maker order, no taker fee)
+new SettingItemBoolean(OrderType.POST_ONLY, true)
+
+7.7 MODIFYING ORDERS
+────────────────────
+var modifyRequest = new ModifyOrderRequestParameters {
+    OrderId = order.Id,
+    Symbol = symbol,
+    Account = account,
+    Quantity = newQuantity,         // Optional
+    Price = newPrice,               // Optional
+    TriggerPrice = newTriggerPrice  // Optional
+};
+
+TradingOperationResult result = Core.Instance.ModifyOrder(modifyRequest);
+
+// Simple modify
+TradingOperationResult result = Core.Instance.ModifyOrder(
+    order,
+    quantity: newQty,
+    price: newPrice,
+    triggerPrice: newTrigger
+);
+
+7.8 CANCELING ORDERS
+────────────────────
+// Cancel single order
+TradingOperationResult result = order.Cancel();
+TradingOperationResult result = Core.Instance.CancelOrder(order);
+
+// Cancel with source tracking
+TradingOperationResult result = order.Cancel(sendingSource: "MyStrategy");
+
+// Cancel all orders for symbol/account
+var orders = Core.Instance.Orders
+    .Where(o => o.Symbol == symbol && o.Account == account)
+    .ToList();
+
+foreach (var order in orders) {
+    order.Cancel();
+}
+
+7.9 ORDER PROPERTIES
+────────────────────
+order.Id                    // Order ID
+order.Symbol               // Symbol
+order.Account              // Account
+order.Side                 // Buy/Sell
+order.OrderType            // Order type
+order.Status               // Order status
+order.TotalQuantity        // Total order quantity
+order.FilledQuantity       // Filled quantity
+order.RemainingQuantity    // Remaining quantity
+order.Price                // Limit price
+order.TriggerPrice         // Stop price
+order.TimeInForce          // TIF
+order.Comment              // Order comment
+order.PositionId           // Linked position ID
+
+// Order status
+OrderStatus.Opened
+OrderStatus.PartiallyFilled
+OrderStatus.Filled
+OrderStatus.Cancelled
+OrderStatus.Rejected
+
+7.10 ORDER EVENTS
+─────────────────
+Core.Instance.OrderAdded += OnOrderAdded;
+Core.Instance.OrderRemoved += OnOrderRemoved;
+Core.Instance.OrdersHistoryAdded += OnOrderHistoryAdded;
+
+private void OnOrderAdded(Order order) {
+    if (order.Symbol == symbol && order.Account == account) {
+        // Track order
+    }
+}
+
+private void OnOrderRemoved(Order order) {
+    // Order removed (filled, cancelled, etc.)
+}
+
+// Unsubscribe
+Core.Instance.OrderAdded -= OnOrderAdded;
+Core.Instance.OrderRemoved -= OnOrderRemoved;
+
+═══════════════════════════════════════════════════════════════════════════════
+8. POSITION & TRADE TRACKING
+═══════════════════════════════════════════════════════════════════════════════
+
+8.1 POSITION PROPERTIES
+───────────────────────
+position.Id            // Position ID
+position.Symbol        // Symbol
+position.Account       // Account
+position.Side          // Buy/Sell
+position.Quantity      // Position size
+position.OpenPrice     // Average entry price
+position.CurrentPrice  // Current market price
+position.GrossPnL      // Gross P&L (Value type)
+position.NetPnL        // Net P&L (Value type)
+
+// Value type access
+double grossPnl = position.GrossPnL?.Value ?? 0;
+double netPnl = position.NetPnL?.Value ?? 0;
+
+8.2 POSITION EVENTS
+───────────────────
+Core.Instance.PositionAdded += OnPositionAdded;
+Core.Instance.PositionRemoved += OnPositionRemoved;
+
+private void OnPositionAdded(Position position) {
+    if (position.Symbol == symbol && position.Account == account) {
+        currentPosition = position;
+        entryPrice = position.OpenPrice;
+        // Place SL/TP orders
+    }
+}
+
+private void OnPositionRemoved(Position position) {
+    if (position.Symbol == symbol && position.Account == account) {
+        double pnl = position.NetPnL?.Value ?? 0;
+        // Cleanup
+        currentPosition = null;
+    }
+}
+
+// Unsubscribe
+Core.Instance.PositionAdded -= OnPositionAdded;
+Core.Instance.PositionRemoved -= OnPositionRemoved;
+
+8.3 CLOSING POSITIONS
+─────────────────────
+// Close entire position
+TradingOperationResult result = position.Close();
+
+// Close partial
+TradingOperationResult result = Core.Instance.ClosePosition(
+    position,
+    quantity: partialQty
+);
+
+// Close all positions for symbol/account
+var positions = Core.Instance.Positions
+    .Where(p => p.Symbol == symbol && p.Account == account)
+    .ToList();
+
+foreach (var pos in positions) {
+    pos.Close();
+}
+
+8.4 TRADE PROPERTIES
+────────────────────
+trade.Id                  // Trade ID
+trade.Symbol             // Symbol
+trade.Account            // Account
+trade.Side               // Buy/Sell
+trade.Quantity           // Trade quantity
+trade.Price              // Execution price
+trade.Time               // Execution time
+trade.GrossPnl           // Gross P&L (Value type)
+trade.NetPnl             // Net P&L (Value type)
+trade.Fee                // Commission (Value type)
+trade.PositionImpactType // Position impact
+
+// Position impact types
+PositionImpactType.Open    // Opens position
+PositionImpactType.Close   // Closes position
+PositionImpactType.None    // No impact
+
+8.5 TRADE EVENTS
+────────────────
+Core.Instance.TradeAdded += OnTradeAdded;
+
+private void OnTradeAdded(Trade trade) {
+    if (trade.Symbol == symbol && trade.Account == account) {
+        double pnl = trade.NetPnl?.Value ?? 0;
+        double fee = trade.Fee?.Value ?? 0;
+        
+        // Track trade
+    }
+}
+
+// Unsubscribe
+Core.Instance.TradeAdded -= OnTradeAdded;
+
+═══════════════════════════════════════════════════════════════════════════════
+9. STOP LOSS & TAKE PROFIT SYSTEMS
+═══════════════════════════════════════════════════════════════════════════════
+
+9.1 PLACING STOP LOSS ORDER
+────────────────────────────
+// Calculate SL price
+double slPrice = entryPrice - (entryPrice * stopLossPercent / 100.0);  // Long
+double slPrice = entryPrice + (entryPrice * stopLossPercent / 100.0);  // Short
+slPrice = symbol.RoundPriceToTickSize(slPrice);
+
+// Place SL order
+var slRequest = new PlaceOrderRequestParameters {
+    Symbol = symbol,
+    Account = account,
+    Side = position.Side == Side.Buy ? Side.Sell : Side.Buy,  // Opposite
+    OrderTypeId = stopOrderTypeId,
+    Quantity = position.Quantity,
+    TriggerPrice = slPrice,
+    PositionId = position.Id,
+    TimeInForce = TimeInForce.GTC,
+    AdditionalParameters = new List<SettingItem> {
+        new SettingItemBoolean(OrderType.REDUCE_ONLY, true)
+    }
+};
+
+TradingOperationResult result = Core.Instance.PlaceOrder(slRequest);
+
+9.2 PLACING TAKE PROFIT ORDER
+──────────────────────────────
+// Calculate TP price
+double tpPrice = entryPrice + (entryPrice * takeProfitPercent / 100.0);  // Long
+double tpPrice = entryPrice - (entryPrice * takeProfitPercent / 100.0);  // Short
+tpPrice = symbol.RoundPriceToTickSize(tpPrice);
+
+// Place TP order
+var tpRequest = new PlaceOrderRequestParameters {
+    Symbol = symbol,
+    Account = account,
+    Side = position.Side == Side.Buy ? Side.Sell : Side.Buy,  // Opposite
+    OrderTypeId = limitOrderTypeId,
+    Quantity = position.Quantity,
+    Price = tpPrice,
+    PositionId = position.Id,
+    TimeInForce = TimeInForce.GTC,
+    AdditionalParameters = new List<SettingItem> {
+        new SettingItemBoolean(OrderType.REDUCE_ONLY, true)
+    }
+};
+
+TradingOperationResult result = Core.Instance.PlaceOrder(tpRequest);
+
+9.3 ATR-BASED STOP LOSS
+───────────────────────
+// Get ATR value
+double atrValue = atrIndicator.GetValue();
+
+// Calculate SL based on ATR
+double slDistance = atrValue * atrMultiplier;
+double slPrice = position.Side == Side.Buy
+    ? entryPrice - slDistance
+    : entryPrice + slDistance;
+slPrice = symbol.RoundPriceToTickSize(slPrice);
+
+9.4 TRAILING STOP
+─────────────────
+private void UpdateTrailingStop() {
+    if (stopLossOrder == null || atrIndicator == null)
+        return;
+        
+    double atrValue = atrIndicator.GetValue();
+    double currentPrice = symbol.Last;
+    double currentStopPrice = stopLossOrder.TriggerPrice;
+    
+    double newStopPrice;
+    if (position.Side == Side.Buy) {
+        // Trail up, never down
+        newStopPrice = currentPrice - (atrValue * atrMultiplier);
+        newStopPrice = symbol.RoundPriceToTickSize(newStopPrice);
+        
+        if (newStopPrice > currentStopPrice) {
+            ModifyStopLoss(newStopPrice);
+        }
+    } else {
+        // Trail down, never up
+        newStopPrice = currentPrice + (atrValue * atrMultiplier);
+        newStopPrice = symbol.RoundPriceToTickSize(newStopPrice);
+        
+        if (newStopPrice < currentStopPrice) {
+            ModifyStopLoss(newStopPrice);
+        }
+    }
+}
+
+9.5 BREAKEVEN MANAGEMENT
+────────────────────────
+private void CheckAndMoveToBreakeven() {
+    double currentPrice = symbol.Last;
+    double triggerPercent = breakevenTriggerPercent / 100.0;
+    
+    if (position.Side == Side.Buy) {
+        double triggerPrice = entryPrice * (1 + triggerPercent);
+        if (currentPrice >= triggerPrice) {
+            MoveStopToBreakeven();
+        }
+    } else {
+        double triggerPrice = entryPrice * (1 - triggerPercent);
+        if (currentPrice <= triggerPrice) {
+            MoveStopToBreakeven();
+        }
+    }
+}
+
+private void MoveStopToBreakeven() {
+    double bePrice = symbol.RoundPriceToTickSize(entryPrice);
+    
+    var modifyRequest = new ModifyOrderRequestParameters {
+        OrderId = stopLossOrder.Id,
+        Symbol = symbol,
+        Account = account,
+        TriggerPrice = bePrice
+    };
+    
+    Core.Instance.ModifyOrder(modifyRequest);
+    breakevenTriggered = true;
+}
+
+9.6 MULTIPLE SL/TP LEVELS
+─────────────────────────
+// Split quantity across multiple exits
+double totalQty = position.Quantity;
+int numLevels = 3;
+double qtyPerLevel = Math.Floor((totalQty / numLevels) / symbol.MinLot) * symbol.MinLot;
+
+for (int i = 0; i < numLevels; i++) {
+    double tpPrice = entryPrice + (entryPrice * tpPercents[i] / 100.0);
+    tpPrice = symbol.RoundPriceToTickSize(tpPrice);
+    
+    var tpRequest = new PlaceOrderRequestParameters {
+        Symbol = symbol,
+        Account = account,
+        Side = position.Side == Side.Buy ? Side.Sell : Side.Buy,
+        OrderTypeId = limitOrderTypeId,
+        Quantity = qtyPerLevel,
+        Price = tpPrice,
+        PositionId = position.Id,
+        TimeInForce = TimeInForce.GTC,
+        AdditionalParameters = new List<SettingItem> {
+            new SettingItemBoolean(OrderType.REDUCE_ONLY, true)
+        }
+    };
+    
+    Core.Instance.PlaceOrder(tpRequest);
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+10. SESSION & TIME MANAGEMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+10.1 TIME UTILITIES
+───────────────────
+// Current UTC time
+DateTime utcNow = Core.Instance.TimeUtils.DateTimeUtcNow;
+
+// Convert UTC to specific timezone
+DateTime localTime = Core.Instance.TimeUtils.ConvertFromUTC(
+    utcTime,
+    Core.Instance.TimeUtils.SelectedTimeZone
+);
+
+// Convert from timezone to UTC
+DateTime utcTime = Core.Instance.TimeUtils.ConvertFromTimeZoneToUTC(
+    localTime,
+    Core.Instance.TimeUtils.SelectedTimeZone
+);
+
+// Get timezone
+TimeZoneInfo easternTz = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+
+// Convert using TimeZoneInfo
+DateTime etTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, easternTz);
+DateTime utcTime = TimeZoneInfo.ConvertTimeToUtc(etTime, easternTz);
+
+10.2 SESSION DEFINITION (UTC-BASED)
+────────────────────────────────────
+public class SimpleSessionUtc {
+    public string Name { get; }
+    public HashSet<DayOfWeek> Days { get; }
+    public TimeOnly Open { get; }
+    public TimeOnly Close { get; }
+    public bool IsOvernight => Close <= Open;
+    public Status Status { get; private set; }
+    public event EventHandler<Status> StatusChanged;
+    
+    public SimpleSessionUtc(
+        string name,
+        IEnumerable<DayOfWeek> days,
+        TimeOnly openUtc,
+        TimeOnly closeUtc
+    ) {
+        Name = name;
+        Days = new HashSet<DayOfWeek>(days);
+        Open = openUtc;
+        Close = closeUtc;
+    }
+    
+    public bool ContainsUtc(DateTime utc) {
+        var tod = TimeOnly.FromDateTime(utc);
+        
+        if (!IsOvernight) {
+            return Days.Contains(utc.DayOfWeek) 
+                && tod >= Open && tod < Close;
+        }
+        
+        // Overnight session
+        if (tod >= Open)
+            return Days.Contains(utc.DayOfWeek);
+        else
+            return Days.Contains(utc.AddDays(-1).DayOfWeek) && tod < Close;
+    }
+    
+    public void UpdateStatus(IHistoryItem item) {
+        Status newStatus = ContainsUtc(item.TimeLeft) 
+            ? Status.Active 
+            : Status.Inactive;
+            
+        if (newStatus != Status) {
+            Status = newStatus;
+            StatusChanged?.Invoke(this, newStatus);
+        }
+    }
+}
+
+10.3 SESSION USAGE PATTERN
+──────────────────────────
+// Define sessions
+var session1 = new SimpleSessionUtc(
+    "Overnight Session",
+    new[] { DayOfWeek.Sunday, DayOfWeek.Monday, /* ... */ },
+    new TimeOnly(23, 0, 0),  // 11 PM UTC
+    new TimeOnly(9, 0, 0)    // 9 AM UTC (next day)
+);
+
+// Subscribe to status changes
+session1.StatusChanged += (sender, status) => {
+    if (status == Status.Active) {
+        // Session started
+        OnSessionStart();
+    } else {
+        // Session ended
+        OnSessionEnd();
+    }
+};
+
+// Update session on each bar
+private void OnNewHistoryItem(object sender, HistoryEventArgs e) {
+    session1.UpdateStatus(e.HistoryItem);
+}
+
+10.4 CHECKING TRADING HOURS
+────────────────────────────
+private bool IsInTradingSession(DateTime utcTime) {
+    // Convert to Eastern Time
+    DateTime etTime = TimeZoneInfo.ConvertTimeFromUtc(utcTime, easternTz);
+    TimeSpan currentTime = etTime.TimeOfDay;
+    
+    TimeSpan sessionStart = new TimeSpan(tradingStartHour, tradingStartMinute, 0);
+    TimeSpan sessionEnd = new TimeSpan(tradingEndHour, tradingEndMinute, 0);
+    
+    if (sessionEnd > sessionStart) {
+        // Same-day session (9 AM - 5 PM)
+        return currentTime >= sessionStart && currentTime < sessionEnd;
+    } else {
+        // Overnight session (6 PM - 9 AM)
+        return currentTime >= sessionStart || currentTime < sessionEnd;
+    }
+}
+
+10.5 PERIOD TYPES
+─────────────────
+Period.TICK1        // 1 tick
+Period.SECOND1      // 1 second
+Period.MIN1         // 1 minute
+Period.MIN5         // 5 minutes
+Period.MIN15        // 15 minutes
+Period.MIN30        // 30 minutes
+Period.HOUR1        // 1 hour
+Period.HOUR4        // 4 hours
+Period.DAY1         // 1 day
+Period.WEEK1        // 1 week
+Period.MONTH1       // 1 month
+
+═══════════════════════════════════════════════════════════════════════════════
+11. VOLUME ANALYSIS & DELTA CALCULATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+11.1 VOLUME ANALYSIS CALCULATION
+─────────────────────────────────
+// Create volume analysis parameters
+var volumeParams = new VolumeAnalysisCalculationParameters {
+    CalculatePriceLevels = true,
+    DeltaCalculationType = symbol.DeltaCalculationType
+};
+
+// Calculate volume profile
+IVolumeAnalysisCalculationProgress progress = 
+    Core.Instance.VolumeAnalysis.CalculateProfile(historicalData, volumeParams);
+
+// Monitor progress
+progress.ProgressChanged += (sender, e) => {
+    if (e.State == VolumeAnalysisCalculationState.Finished) {
+        // Volume data ready
+        OnVolumeDataReady();
+    }
+};
+
+11.2 ACCESSING VOLUME ANALYSIS DATA
+────────────────────────────────────
+// From historical item
+IHistoryItem bar = historicalData[1];
+VolumeAnalysisData volData = bar.VolumeAnalysisData;
+
+if (volData != null && volData.Total != null) {
+    double buyVolume = volData.Total.BuyVolume;
+    double sellVolume = volData.Total.SellVolume;
+    double delta = volData.Total.Delta;
+    double cumulativeDelta = volData.Total.CumulativeDelta;
+    
+    int buyTrades = volData.Total.BuyTrades;
+    int sellTrades = volData.Total.SellTrades;
+    
+    double totalVolume = bar[PriceType.Volume];
+}
+
+// Price levels (if CalculatePriceLevels = true)
+if (volData.PriceLevels != null) {
+    foreach (var kvp in volData.PriceLevels) {
+        double price = kvp.Key;
+        VolumeAnalysisItem item = kvp.Value;
+        
+        double levelBuyVol = item.BuyVolume;
+        double levelSellVol = item.SellVolume;
+        double levelDelta = item.Delta;
+    }
+}
+
+11.3 SAFE DELTA CALCULATION (CROSS-BROKER)
+───────────────────────────────────────────
+private double GetVolumeDelta(int barIndex) {
+    try {
+        var bar = historicalData[barIndex];
+        
+        // Try VolumeAnalysisData delta (Rithmic)
+        if (bar.VolumeAnalysisData?.Total?.Delta != null) {
+            return bar.VolumeAnalysisData.Total.Delta;
+        }
+        
+        // Calculate from buy/sell volumes (dxFeed)
+        if (bar.VolumeAnalysisData?.Total != null) {
+            double buyVol = bar.VolumeAnalysisData.Total.BuyVolume;
+            double sellVol = bar.VolumeAnalysisData.Total.SellVolume;
+            return buyVol - sellVol;
+        }
+        
+        // Fallback: estimate from price direction
+        double close = bar[PriceType.Close];
+        double open = bar[PriceType.Open];
+        double volume = bar[PriceType.Volume];
+        
+        if (close > open)
+            return volume * 0.6;  // Assume 60% buy
+        else if (close < open)
+            return -volume * 0.6; // Assume 60% sell
+        else
+            return 0;
+    } catch (Exception ex) {
+        Log($"Error calculating delta: {ex.Message}", LoggingLevel.Error);
+        return 0;
+    }
+}
+
+11.4 VOLUME DELTA INDICATORS
+─────────────────────────────
+// Volume Delta Strength
+double avgDelta = deltaBuffer.ToArray().Average();
+bool strongDelta = Math.Abs(currentDelta) > (avgDelta * strengthMultiplier);
+
+// Volume Delta to Price Ratio
+double avgPriceMove = priceBuffer.ToArray().Average();
+double currentPriceMove = Math.Abs(close - open);
+double avgRatio = avgPriceMove / avgDelta;
+double currentRatio = currentPriceMove / Math.Abs(currentDelta);
+bool strongRatio = currentRatio > (avgRatio * ratioMultiplier);
+
+// Volume Delta to Volume Ratio
+double avgVolume = volumeBuffer.ToArray().Average();
+double avgDeltaVolumeRatio = avgDelta / avgVolume;
+double currentDeltaVolumeRatio = currentDelta / volume;
+bool strongVolumeRatio = currentDeltaVolumeRatio > 
+    (avgDeltaVolumeRatio * volumeRatioMultiplier);
+
+// Volume Delta Divergence
+bool priceBullish = close > open;
+bool deltaBullish = currentDelta > 0;
+bool divergence = priceBullish != deltaBullish;
+
+11.5 IVOLUMEANALYSISINDICATOR INTERFACE
+────────────────────────────────────────
+public class MyIndicator : Indicator, IVolumeAnalysisIndicator
+{
+    public bool IsRequirePriceLevelsCalculation => false;
+    
+    public void VolumeAnalysisData_Loaded() {
+        // Called when volume data is ready
+        volumeReady = true;
+    }
+    
+    protected override void OnUpdate(UpdateArgs args) {
+        if (!volumeReady)
+            return;
+            
+        // Use volume data
+        double delta = GetVolumeDelta(1);
+        // ...
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+12. PERFORMANCE METRICS & MONITORING
+═══════════════════════════════════════════════════════════════════════════════
+
+12.1 STRATEGY METRICS
+─────────────────────
+protected override void OnInitializeMetrics(Meter meter) {
+    base.OnInitializeMetrics(meter);
+    
+    // Observable Gauge (current value)
+    meter.CreateObservableGauge("account-balance", 
+        () => account?.Balance ?? 0,
+        description: "Account Balance");
+    
+    meter.CreateObservableGauge("position-pnl",
+        () => currentPosition?.NetPnL?.Value ?? 0,
+        description: "Current Position P&L");
+    
+    meter.CreateObservableGauge("position-quantity",
+        () => currentPosition?.Quantity ?? 0,
+        description: "Position Size");
+    
+    // Observable Counter (incrementing value)
+    meter.CreateObservableCounter("trade-count",
+        () => tradeCount,
+        description: "Total Trades");
+    
+    meter.CreateObservableCounter("win-count",
+        () => winCount,
+        description: "Winning Trades");
+    
+    // Histogram (distribution tracking)
+    var pnlHistogram = meter.CreateHistogram<double>("trade-pnl",
+        description: "Trade P&L Distribution");
+}
+
+12.2 CUSTOM METRICS CLASS
+─────────────────────────
+public class PerformanceMetrics {
+    public double NetProfit { get; private set; }
+    public int TradeCount { get; private set; }
+    public int WinCount { get; private set; }
+    public int LossCount { get; private set; }
+    public double WinRate => TradeCount > 0 ? (double)WinCount / TradeCount : 0;
+    public double MaxDrawdown { get; private set; }
+    public double CurrentDrawdown { get; private set; }
+    
+    public ExpositionSide ExposedSide { get; private set; }
+    public int ExposedCount { get; private set; }
+    
+    public void RegisterTrade(Trade trade) {
+        TradeCount++;
+        double pnl = trade.NetPnl?.Value ?? 0;
+        NetProfit += pnl;
+        
+        if (pnl > 0) WinCount++;
+        else if (pnl < 0) LossCount++;
+        
+        // Update drawdown
+        if (NetProfit > peakProfit) {
+            peakProfit = NetProfit;
+        }
+        CurrentDrawdown = peakProfit - NetProfit;
+        if (CurrentDrawdown > MaxDrawdown) {
+            MaxDrawdown = CurrentDrawdown;
+        }
+    }
+    
+    public void ExportToMeter(Meter meter) {
+        meter.CreateObservableGauge("net-profit", () => NetProfit);
+        meter.CreateObservableCounter("trade-count", () => TradeCount);
+        meter.CreateObservableGauge("win-rate", () => WinRate);
+        meter.CreateObservableGauge("max-drawdown", () => MaxDrawdown);
+    }
+}
+
+enum ExpositionSide {
+    Unexposed,  // No positions
+    Long,       // Long positions only
+    Short,      // Short positions only
+    Both        // Both long and short
+}
+
+12.3 LOGGING
+────────────
+// Strategy logging
+this.Log("Message", StrategyLoggingLevel.Trading);
+this.Log("Error message", StrategyLoggingLevel.Error);
+this.Log("Info message", StrategyLoggingLevel.Info);
+
+// Core logging
+Core.Instance.Loggers.Log("Message", LoggingLevel.Trading);
+Core.Instance.Loggers.Log("Error", LoggingLevel.Error);
+Core.Instance.Loggers.Log("System", LoggingLevel.System);
+
+// Logging levels
+LoggingLevel.Trading    // Trading events
+LoggingLevel.Error      // Errors
+LoggingLevel.Info       // Information
+LoggingLevel.System     // System events
+LoggingLevel.Network    // Network events
+
+StrategyLoggingLevel.Trading
+StrategyLoggingLevel.Error  
+StrategyLoggingLevel.Info
+
+═══════════════════════════════════════════════════════════════════════════════
+13. UTILITY CLASSES & HELPERS
+═══════════════════════════════════════════════════════════════════════════════
+
+13.1 RINGBUFFER<T> - CIRCULAR BUFFER
+─────────────────────────────────────
+public class RingBuffer<T> {
+    private readonly int _size;
+    private readonly T[] _buffer;
+    private int _head;
+    private int _count;
+    
+    public int Count => _count;
+    public bool IsFull => _count >= _size;
+    public bool FromBeginning { get; private set; }
+    
+    public RingBuffer(int length, bool fromBeginning = true) {
+        _size = length;
+        _buffer = new T[length];
+        _head = 0;
+        _count = 0;
+        FromBeginning = fromBeginning;
+    }
+    
+    public void Add(T item) {
+        _buffer[_head] = item;
+        _head = (_head + 1) % _size;
+        if (_count < _size)
+            _count++;
+    }
+    
+    public T this[int index] {
+        get {
+            if (index < 0 || index >= _count)
+                throw new ArgumentOutOfRangeException();
+                
+            int realIndex = FromBeginning
+                ? (_head - _count + index + _size) % _size
+                : (_head - 1 - index + _size) % _size;
+                
+            return _buffer[realIndex];
+        }
+    }
+    
+    public T[] ToArray() {
+        if (_count == 0)
+            return Array.Empty<T>();
+            
+        var result = new T[_count];
+        if (FromBeginning) {
+            int start = (_head - _count + _size) % _size;
+            int len1 = Math.Min(_count, _size - start);
+            Array.Copy(_buffer, start, result, 0, len1);
+            if (len1 < _count)
+                Array.Copy(_buffer, 0, result, len1, _count - len1);
+        } else {
+            int phys = (_head - 1 + _size) % _size;
+            for (int i = 0; i < _count; i++) {
+                result[i] = _buffer[phys];
+                phys = (phys - 1 + _size) % _size;
+            }
+        }
+        return result;
+    }
+    
+    public void Clear() {
+        Array.Clear(_buffer, 0, _buffer.Length);
+        _head = 0;
+        _count = 0;
+    }
+}
+
+// Usage
+var buffer = new RingBuffer<double>(30);
+buffer.Add(value);
+if (buffer.IsFull) {
+    double average = buffer.ToArray().Average();
+}
+
+13.2 QUANTITY ROUNDING
+──────────────────────
+protected double RoundQuantity(double quantity) {
+    double rounded = Math.Floor(quantity / symbol.MinLot) * symbol.MinLot;
+    
+    if (rounded < symbol.MinLot)
+        rounded = 0;
+        
+    return Math.Min(rounded, symbol.MaxLot);
+}
+
+13.3 PRICE ROUNDING
+───────────────────
+double roundedPrice = symbol.RoundPriceToTickSize(price);
+
+// Manual rounding
+double tickSize = symbol.TickSize;
+double roundedPrice = Math.Round(price / tickSize) * tickSize;
+
+13.4 CONNECTION DIAGNOSTIC
+──────────────────────────
+public static class ConnectionDiagnostic {
+    public static string RunDiagnostic(HistoricalData hd, Symbol symbol) {
+        var sb = new StringBuilder();
+        sb.AppendLine("=== CONNECTION DIAGNOSTIC ===");
+        sb.AppendLine($"Symbol: {symbol?.Name ?? "NULL"}");
+        sb.AppendLine($"Connection ID: {symbol?.ConnectionId ?? "NULL"}");
+        sb.AppendLine($"Historical Data Count: {hd?.Count ?? 0}");
+        sb.AppendLine($"Volume Analysis State: {hd?.VolumeAnalysisCalculationProgress?.State}");
+        return sb.ToString();
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+14. COMMON PATTERNS & BEST PRACTICES
+═══════════════════════════════════════════════════════════════════════════════
+
+14.1 INITIALIZATION PATTERN
+───────────────────────────
+protected override void OnRun() {
+    try {
+        // 1. Validate inputs
+        if (!ValidateInputs())
+            return StopStrategy();
+        
+        // 2. Restore Symbol/Account if fake
+        RestoreBusinessObjects();
+        
+        // 3. Get and cache order types
+        if (!InitializeOrderTypes())
+            return StopStrategy();
+        
+        // 4. Load historical data
+        LoadHistoricalData();
+        
+        // 5. Initialize indicators
+        InitializeIndicators();
+        
+        // 6. Subscribe to events
+        SubscribeToEvents();
+        
+        // 7. Set initialized flag
+        isInitialized = true;
+        
+        Log("Strategy initialized successfully");
+    } catch (Exception ex) {
+        Log($"Error in OnRun: {ex.Message}", StrategyLoggingLevel.Error);
+        StopStrategy();
+    }
+}
+
+14.2 CLEANUP PATTERN
+────────────────────
+protected override void OnStop() {
+    try {
+        // 1. Unsubscribe from all events
+        UnsubscribeFromEvents();
+        
+        // 2. Dispose historical data
+        if (historicalData != null) {
+            historicalData.Dispose();
+            historicalData = null;
+        }
+        
+        // 3. Dispose indicators
+        indicators?.ForEach(i => i?.Dispose());
+        
+        // 4. Clear references
+        currentPosition = null;
+        stopLossOrder = null;
+        takeProfitOrder = null;
+        
+        // 5. Reset state
+        isInitialized = false;
+        
+        Log("Strategy stopped successfully");
+    } catch (Exception ex) {
+        Log($"Error in OnStop: {ex.Message}", StrategyLoggingLevel.Error);
+    }
+    
+    base.OnStop();
+}
+
+14.3 EVENT SUBSCRIPTION PATTERN
+────────────────────────────────
+private void SubscribeToEvents() {
+    // Historical data events
+    historicalData.NewHistoryItem += OnNewHistoryItem;
+    historicalData.HistoryItemUpdated += OnHistoryItemUpdated;
+    
+    // Symbol events
+    symbol.NewLast += OnNewLast;
+    symbol.NewQuote += OnNewQuote;
+    
+    // Core events
+    Core.Instance.PositionAdded += OnPositionAdded;
+    Core.Instance.PositionRemoved += OnPositionRemoved;
+    Core.Instance.OrderAdded += OnOrderAdded;
+    Core.Instance.TradeAdded += OnTradeAdded;
+}
+
+private void UnsubscribeFromEvents() {
+    // Use -= even if not subscribed (safe)
+    if (historicalData != null) {
+        historicalData.NewHistoryItem -= OnNewHistoryItem;
+        historicalData.HistoryItemUpdated -= OnHistoryItemUpdated;
+    }
+    
+    if (symbol != null) {
+        symbol.NewLast -= OnNewLast;
+        symbol.NewQuote -= OnNewQuote;
+    }
+    
+    Core.Instance.PositionAdded -= OnPositionAdded;
+    Core.Instance.PositionRemoved -= OnPositionRemoved;
+    Core.Instance.OrderAdded -= OnOrderAdded;
+    Core.Instance.TradeAdded -= OnTradeAdded;
+}
+
+14.4 VALIDATION PATTERN
+───────────────────────
+private bool ValidateInputs() {
+    if (symbol == null) {
+        Log("Symbol not specified", StrategyLoggingLevel.Error);
+        return false;
+    }
+    
+    if (account == null) {
+        Log("Account not specified", StrategyLoggingLevel.Error);
+        return false;
+    }
+    
+    if (symbol.ConnectionId != account.ConnectionId) {
+        Log("Symbol and Account must be from same connection", 
+            StrategyLoggingLevel.Error);
+        return false;
+    }
+    
+    if (!symbol.IsTradingAllowed(account)) {
+        Log("Trading not allowed for this symbol/account", 
+            StrategyLoggingLevel.Error);
+        return false;
+    }
+    
+    return true;
+}
+
+14.5 POSITION TRACKING PATTERN
+───────────────────────────────
+private Position currentPosition;
+private Order stopLossOrder;
+private Order takeProfitOrder;
+private double entryPrice;
+private bool breakevenTriggered;
+
+private void OnPositionAdded(Position position) {
+    if (position.Symbol == symbol && position.Account == account) {
+        currentPosition = position;
+        entryPrice = position.OpenPrice;
+        breakevenTriggered = false;
+        
+        Log($"Position opened: {position.Side} {position.Quantity} @ {entryPrice}");
+        
+        // Place SL/TP
+        PlaceStopLossOrder();
+        PlaceTakeProfitOrder();
+    }
+}
+
+private void OnPositionRemoved(Position position) {
+    if (position.Symbol == symbol && position.Account == account) {
+        double pnl = position.NetPnL?.Value ?? 0;
+        Log($"Position closed: PnL = {pnl}");
+        
+        // Cleanup
+        currentPosition = null;
+        stopLossOrder = null;
+        takeProfitOrder = null;
+        entryPrice = 0;
+        breakevenTriggered = false;
+    }
+}
+
+14.6 ORDER TRACKING PATTERN
+────────────────────────────
+private void OnOrderAdded(Order order) {
+    if (order.Symbol == symbol && order.Account == account) {
+        if (currentPosition != null && order.PositionId == currentPosition.Id) {
+            // Track SL/TP orders
+            if (order.OrderType.Behavior == OrderTypeBehavior.Stop) {
+                stopLossOrder = order;
+                Log($"SL order placed @ {order.TriggerPrice}");
+            } else if (order.OrderType.Behavior == OrderTypeBehavior.Limit) {
+                takeProfitOrder = order;
+                Log($"TP order placed @ {order.Price}");
+            }
+        }
+    }
+}
+
+14.7 SAFE INDICATOR ACCESS
+──────────────────────────
+private double GetIndicatorValue(Indicator ind, int offset = 0) {
+    try {
+        if (ind == null || ind.Count == 0)
+            return double.NaN;
+            
+        double value = ind.GetValue(offset);
+        return double.IsNaN(value) ? 0 : value;
+    } catch {
+        return double.NaN;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+15. ERROR HANDLING & LOGGING
+═══════════════════════════════════════════════════════════════════════════════
+
+15.1 TRADING OPERATION RESULT HANDLING
+───────────────────────────────────────
+TradingOperationResult result = Core.Instance.PlaceOrder(request);
+
+if (result.Status == TradingOperationResultStatus.Success) {
+    Log("Order placed successfully");
+} else {
+    Log($"Order failed: {result.Message}", StrategyLoggingLevel.Error);
+    
+    // Handle specific errors
+    switch (result.Status) {
+        case TradingOperationResultStatus.Reject:
+            // Order rejected by broker
+            break;
+        case TradingOperationResultStatus.ConnectionError:
+            // Connection issue
+            break;
+        case TradingOperationResultStatus.InsufficientFunds:
+            // Not enough margin
+            break;
+    }
+}
+
+// Result statuses
+TradingOperationResultStatus.Success
+TradingOperationResultStatus.Reject
+TradingOperationResultStatus.ConnectionError
+TradingOperationResultStatus.InsufficientFunds
+TradingOperationResultStatus.Timeout
+
+15.2 EXCEPTION HANDLING PATTERN
+────────────────────────────────
+try {
+    // Trading operation
+    var result = Core.Instance.PlaceOrder(request);
+    
+    if (result.Status != TradingOperationResultStatus.Success) {
+        Log($"Trading error: {result.Message}", StrategyLoggingLevel.Error);
+        return;
+    }
+} catch (Exception ex) {
+    Log($"Exception in trading: {ex.Message}", StrategyLoggingLevel.Error);
+    Log($"Stack trace: {ex.StackTrace}", StrategyLoggingLevel.Error);
+    
+    // Optionally stop strategy on critical errors
+    if (ex is NullReferenceException || ex is InvalidOperationException) {
+        StopStrategy();
+    }
+}
+
+15.3 DEBUG LOGGING HELPER
+─────────────────────────
+[InputParameter("Enable Debug", 10)]
+public bool EnableDebug { get; set; } = false;
+
+private void DebugLog(string message) {
+    if (EnableDebug) {
+        Log($"[DEBUG] {message}", StrategyLoggingLevel.Info);
+    }
+}
+
+// Usage
+DebugLog($"Bar {barIndex}: O={open}, C={close}, Signal={signal}");
+
+15.4 CONDITIONAL COMPILATION
+────────────────────────────
+#if DEBUG
+    Log("Debug mode active", StrategyLoggingLevel.Info);
+    // Additional debug logging
+#endif
+
+═══════════════════════════════════════════════════════════════════════════════
+16. ADVANCED PATTERNS & FRAMEWORKS
+═══════════════════════════════════════════════════════════════════════════════
+
+16.1 SL/TP MANAGER PATTERN
+──────────────────────────
+public class SlTpItems {
+    public string Id { get; private set; }
+    public PositionManagerStatus Status { get; private set; }
+    public Order EntryOrder { get; private set; }
+    public List<Order> SlOrders { get; private set; }
+    public List<Order> TpOrders { get; private set; }
+    public List<Trade> EntryTrades { get; private set; }
+    public List<Trade> ExitTrades { get; private set; }
+    public Side Side { get; private set; }
+    public double GrossProfit { get; private set; }
+    public double NetProfit => GrossProfit - Fees;
+    public double FilledQuantity { get; private set; }
+    public double ClosedQuantity { get; private set; }
+    public double RemainQuantity => Quantity - FilledQuantity;
+    
+    public void RegisterTrade(Trade trade) {
+        switch (trade.PositionImpactType) {
+            case PositionImpactType.Open:
+                EntryTrades.Add(trade);
+                FilledQuantity += trade.Quantity;
+                Fees += trade.Fee?.Value ?? 0;
+                
+                if (RemainQuantity == 0)
+                    Status = PositionManagerStatus.Filled;
+                else if (RemainQuantity > 0)
+                    Status = PositionManagerStatus.PartialyFilled;
+                break;
+                
+            case PositionImpactType.Close:
+                ExitTrades.Add(trade);
+                GrossProfit += trade.GrossPnl?.Value ?? 0;
+                Fees += trade.Fee?.Value ?? 0;
+                ClosedQuantity += trade.Quantity;
+                
+                bool closed = (FilledQuantity - ClosedQuantity) < trade.Symbol.MinLot;
+                if (closed) {
+                    Status = PositionManagerStatus.Closed;
+                    ClosedQuantity = FilledQuantity;
+                    CloseAll();
+                } else {
+                    Status = PositionManagerStatus.PartialyClosed;
+                }
+                break;
+        }
+    }
+    
+    public void CloseAll() {
+        Status = PositionManagerStatus.Closed;
+        
+        // Cancel entry order if any remaining
+        if (RemainQuantity != 0) {
+            EntryOrder?.Cancel();
+        }
+        
+        // Cancel all SL orders
+        foreach (var sl in SlOrders) {
+            if (Core.Instance.Orders.Any(o => o.Id == sl.Id)) {
+                Core.Instance.Orders.First(o => o.Id == sl.Id).Cancel();
+            }
+        }
+        
+        // Cancel all TP orders
+        foreach (var tp in TpOrders) {
+            if (Core.Instance.Orders.Any(o => o.Id == tp.Id)) {
+                Core.Instance.Orders.First(o => o.Id == tp.Id).Cancel();
+            }
+        }
+    }
+}
+
+16.2 CONDITIONABLE BASE PATTERN
+────────────────────────────────
+public abstract class ConditionableBase<T> : IDisposable {
+    public TpSlManager Manager { get; protected set; }
+    public PerformanceMetrics Metrics { get; protected set; }
+    public Account Account { get; protected set; }
+    public Symbol Symbol { get; protected set; }
+    public bool Initialized { get; protected set; }
+    
+    public virtual void Init(
+        HistoryRequestParameters req,
+        Account account,
+        bool loadAsync = false
+    ) {
+        Account = account;
+        Symbol = req.Symbol;
+        Metrics.SetAccount(account);
+        RegisterHandlers();
+        Quantity = SetQuantity();
+        InitHistoryProvider(req, loadAsync);
+        Initialized = true;
+    }
+    
+    public virtual void Trade(
+        Side side,
+        double price,
+        T slMarketData,
+        T tpMarketData
+    ) {
+        var comment = GenerateComment();
+        var request = new PlaceOrderRequestParameters {
+            Account = Account,
+            Symbol = Symbol,
+            Side = side,
+            Quantity = RoundQuantity(Quantity / price),
+            OrderTypeId = GetMarketOrderType().Id,
+            Comment = comment
+        };
+        
+        var slPrices = Strategy.CalculateSl(slMarketData, side, price);
+        var tpPrices = Strategy.CalculateTp(tpMarketData, side, price);
+        
+        var slRequests = CreateExitOrders(slPrices, request, stopOrderType);
+        var tpRequests = CreateExitOrders(tpPrices, request, limitOrderType);
+        
+        Manager.PlaceEntryOrder(request, comment, slRequests, tpRequests);
+    }
+    
+    public abstract void Update(object obj);
+    public abstract double SetQuantity();
+}
+
+16.3 STRATEGY INTERFACE PATTERN
+────────────────────────────────
+public interface ISlTpStrategy<T> {
+    List<double> CalculateSl(T marketData, Side side, double entryPrice);
+    List<double> CalculateTp(T marketData, Side side, double entryPrice);
+    Func<double, double> UpdateSl(T marketData, SlTpItems item);
+    Func<double, double> UpdateTp(T marketData, SlTpItems item);
+}
+
+// Implementation
+public class FixedSlTpStrategy : ISlTpStrategy<SlTpData> {
+    private double slDistance;
+    private double tpDistance;
+    
+    public List<double> CalculateSl(SlTpData data, Side side, double entry) {
+        double sl = side == Side.Buy
+            ? entry - slDistance
+            : entry + slDistance;
+        return new List<double> { data.Symbol.RoundPriceToTickSize(sl) };
+    }
+    
+    public List<double> CalculateTp(SlTpData data, Side side, double entry) {
+        double tp = side == Side.Buy
+            ? entry + tpDistance
+            : entry - tpDistance;
+        return new List<double> { data.Symbol.RoundPriceToTickSize(tp) };
+    }
+    
+    public Func<double, double> UpdateSl(SlTpData data, SlTpItems item) {
+        return (currentPrice) => {
+            // Return new SL price based on current market
+            return currentPrice;
+        };
+    }
+}
+
+16.4 HISTORY PROVIDER FACTORY PATTERN
+──────────────────────────────────────
+public static class HistoryDataProviderFactory {
+    public static HistoryDataProvider Create(
+        HistoryRequestParameters request,
+        Symbol symbol,
+        List<HistoryUpdateType> updateTypes,
+        VolumeAnalysisCalculationParameters volumeRequest,
+        bool async,
+        Action<object> onUpdate,
+        Action onVolumeReady,
+        int timeoutMs = 10000,
+        int retryDelayMs = 500
+    ) {
+        var provider = new HistoryDataProvider {
+            HistoricalData = symbol.GetHistory(request)
+        };
+        
+        // Calculate volume analysis
+        if (volumeRequest != null) {
+            if (async) {
+                provider.CalculateVolumeAsync(
+                    volumeRequest,
+                    onVolumeReady,
+                    timeoutMs,
+                    retryDelayMs
+                );
+            } else {
+                var progress = Core.Instance.VolumeAnalysis.CalculateProfile(
+                    provider.HistoricalData,
+                    volumeRequest
+                );
+                // Wait for completion...
+            }
+        }
+        
+        // Subscribe to updates
+        foreach (var updateType in updateTypes) {
+            switch (updateType) {
+                case HistoryUpdateType.NewItem:
+                    provider.HistoricalData.NewHistoryItem += 
+                        (s, e) => onUpdate(e);
+                    break;
+                case HistoryUpdateType.UpdateItem:
+                    provider.HistoricalData.HistoryItemUpdated += 
+                        (s, e) => onUpdate(e);
+                    break;
+            }
+        }
+        
+        return provider;
+    }
+}
+
+16.5 SIGNAL CALCULATION PATTERN
+────────────────────────────────
+enum TradeSignal {
+    OpenBuy,
+    OpenSell,
+    CloseLong,
+    CloseSell,
+    Wait,
+    Unknown
+}
+
+private TradeSignal CalculateTradeSignal() {
+    int longSignals = 0;
+    int shortSignals = 0;
+    
+    // Check each indicator line
+    foreach (var line in deltaIndicator.LinesSeries) {
+        double value = line.GetValue();
+        if (!double.IsNaN(value)) {
+            if (value > 0) longSignals++;
+            else if (value < 0) shortSignals++;
+        }
+    }
+    
+    foreach (var line in atrIndicator.LinesSeries) {
+        double value = line.GetValue();
+        if (!double.IsNaN(value)) {
+            if (value > 0) longSignals++;
+            else if (value < 0) shortSignals++;
+        }
+    }
+    
+    // Determine signal
+    if (longSignals == shortSignals)
+        return TradeSignal.Unknown;
+    else if (longSignals > shortSignals) {
+        if (longSignals >= minSignalsForEntry)
+            return TradeSignal.OpenBuy;
+        else if (shortSignals >= minSignalsForExit)
+            return TradeSignal.CloseSell;
+        else
+            return TradeSignal.Wait;
+    } else {
+        if (shortSignals >= minSignalsForEntry)
+            return TradeSignal.OpenSell;
+        else if (longSignals >= minSignalsForExit)
+            return TradeSignal.CloseLong;
+        else
+            return TradeSignal.Wait;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+END OF QUANTOWER API REFERENCE
+═══════════════════════════════════════════════════════════════════════════════
+
+This comprehensive reference covers all major aspects of Quantower strategy development.
+Use this as a complete guide for understanding the API, patterns, and best practices.
+
+Key Takeaways for AI Agents:
+• Always validate Symbol/Account ConnectionId match
+• Restore BusinessObjects if State == Fake
+• Subscribe to events in OnRun(), unsubscribe in OnStop()
+• Always dispose HistoricalData and indicators
+• Use try-catch for all trading operations
+• Check TradingOperationResult.Status
+• Round prices to TickSize and quantities to MinLot
+• Use REDUCE_ONLY for SL/TP orders
+• Track positions/orders through Core events
+• Implement proper cleanup in OnStop()
+
+═══════════════════════════════════════════════════════════════════════════════

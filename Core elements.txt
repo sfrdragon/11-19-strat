@@ -1,0 +1,806 @@
+Core elements
+
+Class Core
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Core
+Properties
+AccountOperations
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public AccountOperation[] AccountOperations { get; }
+Property Value
+Type	Description
+AccountOperation[]	
+Accounts
+Gets all available Accounts from open connections
+
+Declaration
+public Account[] Accounts { get; }
+Property Value
+Type	Description
+Account[]	
+AdvancedTradingOperations
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public AdvancedTradingOperations AdvancedTradingOperations { get; }
+Property Value
+Type	Description
+AdvancedTradingOperations	
+Assets
+Gets all available Assets from open connections
+
+Declaration
+public Asset[] Assets { get; }
+Property Value
+Type	Description
+Asset[]	
+BrandingInformation
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public IBrandingInformation BrandingInformation { get; }
+Property Value
+Type	Description
+IBrandingInformation	
+ClosedPositions
+Gets all available ClosedPositions from open connections
+
+Declaration
+public ClosedPosition[] ClosedPositions { get; }
+Property Value
+Type	Description
+ClosedPosition[]	
+Connections
+Gets an access to all created connections and manages them
+
+Declaration
+public ConnectionsManager Connections { get; }
+Property Value
+Type	Description
+ConnectionsManager	
+CorporateActions
+Gets all available CorporateActions from open connections
+
+Declaration
+public CorporateAction[] CorporateActions { get; }
+Property Value
+Type	Description
+CorporateAction[]	
+CurrentVersion
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public Version CurrentVersion { get; }
+Property Value
+Type	Description
+Version	
+CustomAccountPropertiesProvider
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public CustomAccountPropertiesProvider CustomAccountPropertiesProvider { get; }
+Property Value
+Type	Description
+CustomAccountPropertiesProvider	
+CustomSessions
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public CustomSessionsManager CustomSessions { get; }
+Property Value
+Type	Description
+CustomSessionsManager	
+DeliveredAssets
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public DeliveredAsset[] DeliveredAssets { get; }
+Property Value
+Type	Description
+DeliveredAsset[]	
+Exchanges
+Gets all available Exchanges from open connections
+
+Declaration
+public Exchange[] Exchanges { get; }
+Property Value
+Type	Description
+Exchange[]	
+Indicators
+Gets an access to the all available indicators and creates them
+
+Declaration
+public IndicatorManager Indicators { get; }
+Property Value
+Type	Description
+IndicatorManager	
+Instance
+Gets a singleton instance of Core. API entry point
+
+Declaration
+public static Core Instance { get; }
+Property Value
+Type	Description
+Core	
+LocalOrders
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public LocalOrdersManager LocalOrders { get; }
+Property Value
+Type	Description
+LocalOrdersManager	
+Loggers
+Gets an access to the system logging mechanism
+
+Declaration
+public LoggerManager Loggers { get; }
+Property Value
+Type	Description
+LoggerManager	
+MailUtils
+Gets SMTP mail service for sending emails
+
+Declaration
+public MailUtils MailUtils { get; }
+Property Value
+Type	Description
+MailUtils	
+Messengers
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public MessengersManager Messengers { get; }
+Property Value
+Type	Description
+MessengersManager	
+OrderPlacingStrategies
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public OrderPlacingStrategiesManager OrderPlacingStrategies { get; }
+Property Value
+Type	Description
+OrderPlacingStrategiesManager	
+OrderTypes
+Gets all available OrderTypes from open connections
+
+Declaration
+public OrderType[] OrderTypes { get; }
+Property Value
+Type	Description
+OrderType[]	
+Orders
+Gets all available Orders from open connections
+
+Declaration
+public Order[] Orders { get; }
+Property Value
+Type	Description
+Order[]	
+Positions
+Gets all available Positions from open connections
+
+Declaration
+public Position[] Positions { get; }
+Property Value
+Type	Description
+Position[]	
+ReportTypes
+Gets all available ReportTypes from open connections. Otherwise returns empty list
+
+Declaration
+public ReportType[] ReportTypes { get; }
+Property Value
+Type	Description
+ReportType[]	
+Strategies
+Gets an access to the all available trading strategies and manages them
+
+Declaration
+public StrategyManager Strategies { get; }
+Property Value
+Type	Description
+StrategyManager	
+SymbolTypes
+Gets all available SymbolTypes from open connections
+
+Declaration
+public SymbolType[] SymbolTypes { get; }
+Property Value
+Type	Description
+SymbolType[]	
+Symbols
+Gets all available Symbols from open connections
+
+Declaration
+public Symbol[] Symbols { get; }
+Property Value
+Type	Description
+Symbol[]	
+SymbolsMapping
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public SymbolsMappingManager SymbolsMapping { get; }
+Property Value
+Type	Description
+SymbolsMappingManager	
+TimeUtils
+Gets a time based conversion and synchronization mechanism
+
+Declaration
+public TimeUtils TimeUtils { get; }
+Property Value
+Type	Description
+TimeUtils	
+TradingProtection
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingProtector TradingProtection { get; }
+Property Value
+Type	Description
+TradingProtector	
+TradingSignals
+Gets all available TradingSignals from open connections. Otherwise returns empty list
+
+Declaration
+public TradingSignal[] TradingSignals { get; }
+Property Value
+Type	Description
+TradingSignal[]	
+TradingStatus
+Represents current trading status
+
+Declaration
+public TradingStatus TradingStatus { get; set; }
+Property Value
+Type	Description
+TradingStatus	
+VolumeAnalysis
+Access to Volume Analysis calculations
+
+Declaration
+public VolumeAnalysisManager VolumeAnalysis { get; }
+Property Value
+Type	Description
+VolumeAnalysisManager	
+Methods
+Alert(string, string, string, Action)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(string text, string symbolName = "", string connectionName = "", Action onConfirm = null)
+Parameters
+Type	Name	Description
+string	text	
+string	symbolName	
+string	connectionName	
+Action	onConfirm	
+Alert(string, string, string, Action, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(string text, string symbolName, string connectionName, Action onConfirm, string alertName)
+Parameters
+Type	Name	Description
+string	text	
+string	symbolName	
+string	connectionName	
+Action	onConfirm	
+string	alertName	
+Alert(Alert)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void Alert(Alert alert)
+Parameters
+Type	Name	Description
+Alert	alert	
+CalculatePnL(PnLRequestParameters)
+Gets Profit'n'Loss PnL with given request parameters from open connection. Otherwise returns null
+
+Declaration
+public PnL CalculatePnL(PnLRequestParameters parameters)
+Parameters
+Type	Name	Description
+PnLRequestParameters	parameters	
+Returns
+Type	Description
+PnL	
+CancelOrder(CancelOrderRequestParameters)
+Cancels Order with given request parameters
+
+Declaration
+public TradingOperationResult CancelOrder(CancelOrderRequestParameters request)
+Parameters
+Type	Name	Description
+CancelOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+CancelOrder(IOrder, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult CancelOrder(IOrder order, string sendingSource = null)
+Parameters
+Type	Name	Description
+IOrder	order	
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+CancelOrder(Order, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult CancelOrder(Order order, string sendingSource = null)
+Parameters
+Type	Name	Description
+Order	order	
+string	sendingSource	
+Returns
+Type	Description
+TradingOperationResult	
+ClosePosition(ClosePositionRequestParameters)
+Closes Position with given request parameters
+
+Declaration
+public TradingOperationResult ClosePosition(ClosePositionRequestParameters request)
+Parameters
+Type	Name	Description
+ClosePositionRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+ClosePosition(Position, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult ClosePosition(Position position, double closeQuantity = -1)
+Parameters
+Type	Name	Description
+Position	position	
+double	closeQuantity	
+Returns
+Type	Description
+TradingOperationResult	
+ForceTimeSync()
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void ForceTimeSync()
+GetAccount(BusinessObjectInfo)
+Gets an instance of exist Account or creates a new one with given info parameter
+
+Declaration
+public Account GetAccount(BusinessObjectInfo accountInfo)
+Parameters
+Type	Name	Description
+BusinessObjectInfo	accountInfo	
+Returns
+Type	Description
+Account	
+GetOrderById(string, string)
+Gets Order instance by given Id string. Otherwise returns null
+
+Declaration
+public Order GetOrderById(string orderId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	orderId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+Order	
+GetOrderType(string, string)
+Gets OrderType instance by given Id string. Otherwise returns null
+
+Declaration
+public OrderType GetOrderType(string orderTypeId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	orderTypeId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+OrderType	
+GetOrdersHistory(OrdersHistoryRequestParameters, string)
+Gets collection of OrderHistory by given parameters
+
+Declaration
+public IList<OrderHistory> GetOrdersHistory(OrdersHistoryRequestParameters parameters, string connectionId = null)
+Parameters
+Type	Name	Description
+OrdersHistoryRequestParameters	parameters	
+string	connectionId	
+Returns
+Type	Description
+IList<OrderHistory>	
+GetPositionById(string, string)
+Gets Position instance by given Id string. Otherwise returns null
+
+Declaration
+public Position GetPositionById(string positionId, string connectionId = null)
+Parameters
+Type	Name	Description
+string	positionId	
+string	connectionId	
+Must be specified if open connections total is more than one
+
+Returns
+Type	Description
+Position	
+GetReport(ReportRequestParameters)
+Returns Report with given request parameters from open connection
+
+Declaration
+public Report GetReport(ReportRequestParameters requestParameters)
+Parameters
+Type	Name	Description
+ReportRequestParameters	requestParameters	
+Returns
+Type	Description
+Report	
+GetSymbol(BusinessObjectInfo)
+Gets an instance of exist symbol or creates a new one with given info parameter
+
+Declaration
+public Symbol GetSymbol(BusinessObjectInfo symbolInfo)
+Parameters
+Type	Name	Description
+BusinessObjectInfo	symbolInfo	
+Returns
+Type	Description
+Symbol	
+GetSymbol(GetSymbolRequestParameters, string, NonFixedListDownload)
+Retrieves any Symbol by given request parameters. Otherwise returns null
+
+Declaration
+public Symbol GetSymbol(GetSymbolRequestParameters requestParameters, string connectionId = null, NonFixedListDownload downloadSymbol = NonFixedListDownload.Download)
+Parameters
+Type	Name	Description
+GetSymbolRequestParameters	requestParameters	
+string	connectionId	
+Must be specified if open connections total is more than one. Will search only in Synthetic symbols list if id is equal to SYNTHETIC_CONNECTION_ID
+
+NonFixedListDownload	downloadSymbol	
+Returns
+Type	Description
+Symbol	
+GetTrades(TradesHistoryRequestParameters, string)
+Gets collection of Trade by given parameters
+
+Declaration
+public IList<Trade> GetTrades(TradesHistoryRequestParameters parameters, string connectionId = null)
+Parameters
+Type	Name	Description
+TradesHistoryRequestParameters	parameters	
+string	connectionId	
+Returns
+Type	Description
+IList<Trade>	
+GetTrades(TradesHistoryRequestParameters, AccountTradesLoadingCallback, string)
+Gets collection of Trade by given parameters and callback
+
+Declaration
+public void GetTrades(TradesHistoryRequestParameters parameters, AccountTradesLoadingCallback callback, string connectionId = null)
+Parameters
+Type	Name	Description
+TradesHistoryRequestParameters	parameters	
+AccountTradesLoadingCallback	callback	
+string	connectionId	
+Exceptions
+Type	Condition
+ArgumentNullException	
+InitializeBrandingInformation()
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void InitializeBrandingInformation()
+LockAccount(Account)
+Lock trading for the specified account
+
+Declaration
+public void LockAccount(Account account)
+Parameters
+Type	Name	Description
+Account	account	
+ModifyOrder(ModifyOrderRequestParameters)
+Modifies Order by given request parameters
+
+Declaration
+public TradingOperationResult ModifyOrder(ModifyOrderRequestParameters request)
+Parameters
+Type	Name	Description
+ModifyOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+ModifyOrder(Order, TimeInForce, double, double, double, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult ModifyOrder(Order order, TimeInForce timeInForce = TimeInForce.Default, double quantity = 1, double price = -1, double triggerPrice = -1, double trailOffset = -1)
+Parameters
+Type	Name	Description
+Order	order	
+TimeInForce	timeInForce	
+double	quantity	
+double	price	
+double	triggerPrice	
+double	trailOffset	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrder(PlaceOrderRequestParameters)
+Places Order with given request parameters
+
+Declaration
+public TradingOperationResult PlaceOrder(PlaceOrderRequestParameters request)
+Parameters
+Type	Name	Description
+PlaceOrderRequestParameters	request	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrder(Symbol, Account, Side, TimeInForce, double, double, double, double)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public TradingOperationResult PlaceOrder(Symbol symbol, Account account, Side side, TimeInForce timeInForce = TimeInForce.Day, double quantity = 1, double price = -1, double triggerPrice = -1, double trailOffset = -1)
+Parameters
+Type	Name	Description
+Symbol	symbol	
+Account	account	
+Side	side	
+TimeInForce	timeInForce	
+double	quantity	
+double	price	
+double	triggerPrice	
+double	trailOffset	
+Returns
+Type	Description
+TradingOperationResult	
+PlaceOrders(ICollection<PlaceOrderRequestParameters>, GroupOrderType)
+Places multiple Orders with given request parameters
+
+Declaration
+public void PlaceOrders(ICollection<PlaceOrderRequestParameters> requests, GroupOrderType groupOrderType = GroupOrderType.None)
+Parameters
+Type	Name	Description
+ICollection<PlaceOrderRequestParameters>	requests	
+GroupOrderType	groupOrderType	
+RequestOTP(OTPHolder, string, string)
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public void RequestOTP(OTPHolder otpHolder, string title, string text)
+Parameters
+Type	Name	Description
+OTPHolder	otpHolder	
+string	title	
+string	text	
+SendCustomRequest(string, RequestParameters)
+Sends custom request if connection with given Id is open
+
+Declaration
+public void SendCustomRequest(string connectionId, RequestParameters parameters)
+Parameters
+Type	Name	Description
+string	connectionId	
+RequestParameters	parameters	
+SubscribeToCustomMessages(Action<CustomMessage>, params int[])
+Subscribe on custom messages
+
+Declaration
+public void SubscribeToCustomMessages(Action<CustomMessage> handler, params int[] messagesTypes)
+Parameters
+Type	Name	Description
+Action<CustomMessage>	handler	
+custom message handler
+
+int[]	messagesTypes	
+custom messages Id
+
+UnLockAccount(Account)
+Unlock trading for the specified account
+
+Declaration
+public void UnLockAccount(Account account)
+Parameters
+Type	Name	Description
+Account	account	
+UnsubscribeFromCustomMessages(Action<CustomMessage>, params int[])
+Unsubscribe from custom messages
+
+Declaration
+public void UnsubscribeFromCustomMessages(Action<CustomMessage> handler, params int[] messagesTypes)
+Parameters
+Type	Name	Description
+Action<CustomMessage>	handler	
+custom message handler
+
+int[]	messagesTypes	
+custom messages Id
+
+Events
+AccountAdded
+Will be triggered when new Account added to the core
+
+Declaration
+public event Action<Account> AccountAdded
+Event Type
+Type	Description
+Action<Account>	
+ClosedPositionAdded
+Will be triggered when new ClosedPosition added
+
+Declaration
+public event Action<ClosedPosition> ClosedPositionAdded
+Event Type
+Type	Description
+Action<ClosedPosition>	
+ClosedPositionRemoved
+Will be triggered when ClosedPosition removed
+
+Declaration
+public event Action<ClosedPosition> ClosedPositionRemoved
+Event Type
+Type	Description
+Action<ClosedPosition>	
+CorporateActionAdded
+Will be triggered when new CorporateAction occured
+
+Declaration
+public event Action<CorporateAction> CorporateActionAdded
+Event Type
+Type	Description
+Action<CorporateAction>	
+DealTicketReceived
+Will be triggered when new DealTicket received
+
+Declaration
+public event Action<DealTicket> DealTicketReceived
+Event Type
+Type	Description
+Action<DealTicket>	
+DeliveredAssetAdded
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<DeliveredAsset> DeliveredAssetAdded
+Event Type
+Type	Description
+Action<DeliveredAsset>	
+DeliveredAssetRemoved
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<DeliveredAsset> DeliveredAssetRemoved
+Event Type
+Type	Description
+Action<DeliveredAsset>	
+NewPerformedRequest
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event EventHandler<PerformedRequestEventArgs> NewPerformedRequest
+Event Type
+Type	Description
+EventHandler<PerformedRequestEventArgs>	
+NewRequest
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event EventHandler<RequestEventArgs> NewRequest
+Event Type
+Type	Description
+EventHandler<RequestEventArgs>	
+OnAlert
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<Alert> OnAlert
+Event Type
+Type	Description
+Action<Alert>	
+OnAskUserConfirmationForTradingWithRunningEmulator
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Func<string, string, bool> OnAskUserConfirmationForTradingWithRunningEmulator
+Event Type
+Type	Description
+Func<string, string, bool>	
+OnRequestOTP
+The main entry point in the API. Core keeps access to all business logic entities and their properties: connections, accounts, symbols, positions, orders, etc. Some of them can be reached through using managers or directly via specified collections. You can always access the Core object via static Core.Instance property.
+
+Declaration
+public event Action<OTPHolder, string, string> OnRequestOTP
+Event Type
+Type	Description
+Action<OTPHolder, string, string>	
+OnTradingStatusChanged
+Will be triggered when TradingStatus changed
+
+Declaration
+public event Action<TradingStatus> OnTradingStatusChanged
+Event Type
+Type	Description
+Action<TradingStatus>	
+OrderAdded
+Will be triggered when new Order placed
+
+Declaration
+public event Action<Order> OrderAdded
+Event Type
+Type	Description
+Action<Order>	
+OrderRemoved
+Will be triggered when Order canceled
+
+Declaration
+public event Action<Order> OrderRemoved
+Event Type
+Type	Description
+Action<Order>	
+OrdersHistoryAdded
+Will be triggered when new OrderHistory added
+
+Declaration
+public event Action<OrderHistory> OrdersHistoryAdded
+Event Type
+Type	Description
+Action<OrderHistory>	
+PositionAdded
+Will be triggered when new Position opened
+
+Declaration
+public event Action<Position> PositionAdded
+Event Type
+Type	Description
+Action<Position>	
+PositionRemoved
+Will be triggered when Position closed
+
+Declaration
+public event Action<Position> PositionRemoved
+Event Type
+Type	Description
+Action<Position>	
+SymbolAdded
+Will be triggered when new Symbol added to the core
+
+Declaration
+public event Action<Symbol> SymbolAdded
+Event Type
+Type	Description
+Action<Symbol>	
+TradeAdded
+Will be triggered when new Trade occured
+
+Declaration
+public event Action<Trade> TradeAdded
+Event Type
+Type	Description
+Action<Trade>	
+TradingSignalUpdate
+Will be triggered when TradingSignal created/chenged/removed
+
+Declaration
+public event EventHandler<TradingSignalEventArgs> TradingSignalUpdate
+Event Type
+Type	Description
+EventHandler<TradingSignalEventArgs>	

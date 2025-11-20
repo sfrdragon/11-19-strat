@@ -1,0 +1,217 @@
+quotes - 
+
+Class Quote
+Represent access to quote information.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Quote : MessageQuote
+Properties
+Ask
+Ask price
+
+Declaration
+public double Ask { get; set; }
+Property Value
+Type	Description
+double	
+AskSize
+Ask size
+
+Declaration
+public double AskSize { get; set; }
+Property Value
+Type	Description
+double	
+AskTickDirection
+Shows the direction of ask price movement, comparing to previous value.
+
+Declaration
+public TickDirection AskTickDirection { get; }
+Property Value
+Type	Description
+TickDirection	
+Bid
+Bid price
+
+Declaration
+public double Bid { get; set; }
+Property Value
+Type	Description
+double	
+BidSize
+Bid size
+
+Declaration
+public double BidSize { get; set; }
+Property Value
+Type	Description
+double	
+BidTickDirection
+Shows the direction of bid price movement, comparing to previous value.
+
+Declaration
+public TickDirection BidTickDirection { get; }
+Property Value
+Type	Description
+TickDirection	
+
+Class Last
+Represent access to trade information.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Last : MessageQuote
+Properties
+AggressorFlag
+Information about operation side of the trade
+
+Declaration
+public AggressorFlag AggressorFlag { get; set; }
+Property Value
+Type	Description
+AggressorFlag	
+Buyer
+Represent access to trade information.
+
+Declaration
+public string Buyer { get; set; }
+Property Value
+Type	Description
+string	
+OpenInterest
+Represent access to trade information.
+
+Declaration
+public double OpenInterest { get; set; }
+Property Value
+Type	Description
+double	
+Price
+Price at which trade occured
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+QuoteAssetVolume
+Represent access to trade information.
+
+Declaration
+public double QuoteAssetVolume { get; set; }
+Property Value
+Type	Description
+double	
+Seller
+Represent access to trade information.
+
+Declaration
+public string Seller { get; set; }
+Property Value
+Type	Description
+string	
+Size
+Size of the trade
+
+Declaration
+public double Size { get; set; }
+Property Value
+Type	Description
+double	
+TickDirection
+Shows the direction of price movement, comparing to previous value.
+
+Declaration
+public TickDirection TickDirection { get; set; }
+Property Value
+Type	Description
+TickDirection	
+TradeId
+Represent access to trade information.
+
+Declaration
+public string TradeId { get; set; }
+Property Value
+Type	Description
+string	
+
+Class Level2Quote
+Represent access to Level2 quote.
+
+Namespace: TradingPlatform.BusinessLayer
+Syntax
+public class Level2Quote : MessageQuote
+Properties
+Broker
+Broker identifier that send level2 quote
+
+Declaration
+public string Broker { get; set; }
+Property Value
+Type	Description
+string	
+Closed
+Shows, whether Level2 quote is using only for removing from depth
+
+Declaration
+public bool Closed { get; set; }
+Property Value
+Type	Description
+bool	
+Id
+Unique ID of Level2 quote
+
+Declaration
+public string Id { get; }
+Property Value
+Type	Description
+string	
+ImpliedSize
+specifies the implied quantity associated with the price for the quote. Subtracting this amount from the Size yields the outright quantity for the price level. A value of zero indicates that the implied size is not available/defined or that it is actually zero.
+
+Declaration
+public double ImpliedSize { get; set; }
+Property Value
+Type	Description
+double	
+NumberOrders
+Number orders of Level2 quote
+
+Declaration
+public int NumberOrders { get; set; }
+Property Value
+Type	Description
+int	
+Price
+Price of Level2 quote
+
+Declaration
+public double Price { get; }
+Property Value
+Type	Description
+double	
+PriceType
+Price type of Level2 quote: Bid or Ask
+
+Declaration
+public QuotePriceType PriceType { get; }
+Property Value
+Type	Description
+QuotePriceType	
+Priority
+Represent access to Level2 quote.
+
+Declaration
+public long Priority { get; set; }
+Property Value
+Type	Description
+long	
+Size
+Size of Level2 quote
+
+Declaration
+public double Size { get; }
+Property Value
+Type	Description
+double	
